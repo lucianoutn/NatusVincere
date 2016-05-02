@@ -10,16 +10,24 @@ using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Terrain;
+using TgcViewer.Utils.Input;
+using Microsoft.DirectX.DirectInput;
+using TgcViewer.Utils.TgcSkeletalAnimation;
+using System.IO;
 
 namespace AlumnoEjemplos.NatusVincere
 {
     public class NatusVincere : TgcExample
     {
+        const float MOVEMENT_SPEED = 200f;
         TgcBox suelo;
         List<TgcMesh> meshes;
         TgcMesh palmeraOriginal;
         TgcMesh pasto;
         TgcSkyBox skyBox;
+        TgcSkeletalMesh personaje;
+        string skeletalPath;
+        string[] animationsPath;
 
         public override string getCategory()
         {
@@ -38,8 +46,30 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void init()
         {
-            Device d3dDevice = GuiController.Instance.D3dDevice;
-            
+            TgcSceneLoader loader = new TgcSceneLoader();
+
+            //Path a recursos de humanos
+            skeletalPath = GuiController.Instance.ExamplesMediaDir + "SkeletalAnimations\\BasicHuman\\";
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+
+            //Cargar dinamicamente todas las animaciones que haya en el directorio "Animations"
+            DirectoryInfo dirAnim = new DirectoryInfo(skeletalPath + "Animations\\");
+            FileInfo[] animFiles = dirAnim.GetFiles("*-TgcSkeletalAnim.xml", SearchOption.TopDirectoryOnly);
+            string[] animationList = new string[animFiles.Length];
+            animationsPath = new string[animFiles.Length];
+            animationsPath = new string[animFiles.Length];
+            for (int i = 0; i < animFiles.Length; i++)
+            {
+                string name = animFiles[i].Name.Replace("-TgcSkeletalAnim.xml", "");
+                animationList[i] = name;
+                animationsPath[i] = animFiles[i].FullName;
+            }
+
+            //Creo el personaje
+            TgcSkeletalLoader skeletalLoader = new TgcSkeletalLoader();
+            personaje = skeletalLoader.loadMeshAndAnimationsFromFile(skeletalPath + "WomanJeans-TgcSkeletalMesh.xml", skeletalPath, animationsPath);
+            personaje.buildSkletonMesh();           
+
             //Crear SkyBox
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 500, 0);
@@ -58,8 +88,9 @@ namespace AlumnoEjemplos.NatusVincere
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\pasto.jpg");
             suelo = TgcBox.fromSize(new Vector3(980, 69, 1980), new Vector3(3000, 0, 4900), pisoTexture);
 
+            personaje.Position = suelo.Position + new Vector3(0, 1, 0);
+            
             //Cargar modelo de palmera original
-            TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
             palmeraOriginal = scene.Meshes[0];
 
@@ -126,16 +157,85 @@ namespace AlumnoEjemplos.NatusVincere
 
 
             //Camara en primera persona
-            GuiController.Instance.FpsCamera.Enable = true;
-            GuiController.Instance.FpsCamera.MovementSpeed = 400;
-            GuiController.Instance.FpsCamera.JumpSpeed = 400;
-            GuiController.Instance.FpsCamera.setCamera(new Vector3(-200, 140, -10), new Vector3(379.7143f, 100, 336.3295f));
+            GuiController.Instance.ThirdPersonCamera.Enable = true;
+            GuiController.Instance.ThirdPersonCamera.Target = personaje.Position;
 
         }
         
         public override void render(float elapsedTime)
         {
-            Device d3dDevice = GuiController.Instance.D3dDevice;
+            float velocidadCaminar = 10f;
+            float velocidadRotacion = 100f;
+
+
+            //Calcular proxima posicion de personaje segun Input
+            float moveForward = 0f;
+            float rotate = 0;
+            TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+            bool moving = false;
+            bool rotating = false;
+            float jump = 0;
+
+            String animation = "Walk";
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            TgcD3dInput input = GuiController.Instance.D3dInput;
+
+            //Adelante
+            if (d3dInput.keyDown(Key.W))
+            {
+                moveForward = -velocidadCaminar;
+                moving = true;
+            }
+
+            //Atras
+            if (d3dInput.keyDown(Key.S))
+            {
+                moveForward = velocidadCaminar;
+                moving = true;
+            }
+
+            //Derecha
+            if (d3dInput.keyDown(Key.D))
+            {
+                rotate = velocidadRotacion;
+                rotating = true;
+            }
+
+            //Izquierda
+            if (d3dInput.keyDown(Key.A))
+            {
+                rotate = -velocidadRotacion;
+                rotating = true;
+            }
+
+            //Jump
+            if (d3dInput.keyDown(Key.Space))
+            {
+                jump = 30;
+                moving = true;
+            }
+
+            //Si hubo rotacion
+            if (rotating)
+            {
+                //Rotar personaje y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
+                float rotAngle = Geometry.DegreeToRadian(rotate * elapsedTime);
+                personaje.rotateY(rotAngle);
+                GuiController.Instance.ThirdPersonCamera.rotateY(rotAngle);
+            }
+
+            //Vector de movimiento
+            Vector3 movementVector = Vector3.Empty;
+            if (moving)
+            {
+                //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
+                movementVector = new Vector3(
+                    FastMath.Sin(personaje.Rotation.Y) * moveForward,
+                    jump,
+                    FastMath.Cos(personaje.Rotation.Y) * moveForward
+                    );
+                personaje.move(movementVector);
+            }
 
             //Renderizar suelo
             suelo.render();
@@ -146,6 +246,12 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 mesh.render();
             }
+
+            personaje.playAnimation(animation, true);
+            personaje.updateAnimation();
+            personaje.render();
+            GuiController.Instance.ThirdPersonCamera.Target = personaje.Position;
+            GuiController.Instance.ThirdPersonCamera.setCamera(personaje.Position, 100, 100);
         }
 
         public override void close()
@@ -156,6 +262,7 @@ namespace AlumnoEjemplos.NatusVincere
             palmeraOriginal.dispose();
             pasto.dispose();
             skyBox.dispose();
+            personaje.dispose();
         }
     }
 }
