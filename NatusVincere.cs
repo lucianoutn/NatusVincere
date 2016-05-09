@@ -21,13 +21,13 @@ namespace AlumnoEjemplos.NatusVincere
     {
         const float MOVEMENT_SPEED = 200f;
         TgcBox suelo;
-        List<TgcMesh> meshes;
+        List<Crafteable> objects;
         TgcMesh palmeraOriginal;
         TgcMesh pasto;
         TgcSkyBox skyBox;
-        TgcSkeletalMesh personaje;
-        string skeletalPath;
-        string[] animationsPath;
+        Human personaje;
+
+        ObjectsFactory objectsFactory;
 
         public override string getCategory()
         {
@@ -46,30 +46,11 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void init()
         {
-            TgcSceneLoader loader = new TgcSceneLoader();
-
-            //Path a recursos de humanos
-            skeletalPath = GuiController.Instance.ExamplesMediaDir + "SkeletalAnimations\\BasicHuman\\";
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-
-            //Cargar dinamicamente todas las animaciones que haya en el directorio "Animations"
-            DirectoryInfo dirAnim = new DirectoryInfo(skeletalPath + "Animations\\");
-            FileInfo[] animFiles = dirAnim.GetFiles("*-TgcSkeletalAnim.xml", SearchOption.TopDirectoryOnly);
-            string[] animationList = new string[animFiles.Length];
-            animationsPath = new string[animFiles.Length];
-            animationsPath = new string[animFiles.Length];
-            for (int i = 0; i < animFiles.Length; i++)
-            {
-                string name = animFiles[i].Name.Replace("-TgcSkeletalAnim.xml", "");
-                animationList[i] = name;
-                animationsPath[i] = animFiles[i].FullName;
-            }
-
-            //Creo el personaje
-            TgcSkeletalLoader skeletalLoader = new TgcSkeletalLoader();
-            personaje = skeletalLoader.loadMeshAndAnimationsFromFile(skeletalPath + "WomanJeans-TgcSkeletalMesh.xml", skeletalPath, animationsPath);
-            personaje.buildSkletonMesh();           
-
+            TgcSceneLoader loader = new TgcSceneLoader();
+            objects = new List<Crafteable>();
+            objectsFactory = new ObjectsFactory(objects);
+            
             //Crear SkyBox
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 500, 0);
@@ -87,9 +68,7 @@ namespace AlumnoEjemplos.NatusVincere
             //TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\pasto.jpg");
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\pasto.jpg");
             suelo = TgcBox.fromSize(new Vector3(980, 69, 1980), new Vector3(3000, 0, 4900), pisoTexture);
-
-            personaje.Position = suelo.Position + new Vector3(0, 1, 0);
-            
+            personaje = objectsFactory.createHuman(suelo.Position + new Vector3(0, 1, 0), new Vector3(1, 1, 1));
             //Cargar modelo de palmera original
             TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
             palmeraOriginal = scene.Meshes[0];
@@ -98,76 +77,18 @@ namespace AlumnoEjemplos.NatusVincere
             scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Planta\Planta-TgcScene.xml");
             pasto = scene.Meshes[0];
 
-            //Crear varias instancias del modelo original, pero sin volver a cargar el modelo entero cada vez
-            int rows = 3;
-            int cols = 4;
-            float offset = 200;
-            meshes = new List<TgcMesh>();
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < cols; j++)
-                {
-                    if ((j % 2 != 0) && (i % 2 == 0))
-                    {
-                        offset = offset + 80;
-                    }
-                    else
-                    {
-                        offset = offset + 95;
-                    }
-                    //Crear instancia de modelo
-                    TgcMesh instance = palmeraOriginal.createMeshInstance(palmeraOriginal.Name + i + "_" + j);
-
-                    //Desplazarlo
-                    instance.move(i * offset - 190, 70, j * offset - 180);
-                    //Tamaño de os arboles
-                    instance.Scale = new Vector3(0.75f, 1.45f, 0.75f);
-
-                    meshes.Add(instance);
-
-                }
-            }
-
-            offset = 200;
-
-            for (int i = 0; i < 3; i++)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if ((j % 2 != 0) && (i % 2 == 0))
-                        {
-                            offset = offset + 80;
-                        }
-                        else
-                        {
-                            offset = offset + 95;
-                        }
-                        //Crear instancia de modelo
-                        TgcMesh instance = pasto.createMeshInstance(palmeraOriginal.Name + i + "_" + j);
-
-                        //Desplazarlo
-                        instance.move(i * 590, 70, j * 490);
-                        //Tamaño de os arboles
-                        instance.Scale = new Vector3(0.75f, 0.75f, 0.75f);
-
-                        meshes.Add(instance);
-
-                    }
-                }
-
-
             //Camara en primera persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.Target = personaje.Position;
-
+            GuiController.Instance.ThirdPersonCamera.setCamera(personaje.getPosition(), 200, 400);
+            objects.Add(objectsFactory.createArbol(suelo.Position + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+            objects.Add(objectsFactory.createHacha(suelo.Position + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
+            objects.Add(objectsFactory.createPiedra(suelo.Position + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
         }
         
         public override void render(float elapsedTime)
         {
-            float velocidadCaminar = 10f;
+            float velocidadCaminar = 5f;
             float velocidadRotacion = 100f;
-
-
             //Calcular proxima posicion de personaje segun Input
             float moveForward = 0f;
             float rotate = 0;
@@ -215,8 +136,27 @@ namespace AlumnoEjemplos.NatusVincere
                 moving = true;
             }
 
-            //Si hubo rotacion
-            if (rotating)
+
+
+            if (d3dInput.keyDown(Key.E))
+            {
+                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) crafteable.use(personaje); });
+            }
+
+            if (d3dInput.keyDown(Key.R))
+            {
+                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) personaje.store(crafteable); });
+
+            }
+
+            if (d3dInput.keyDown(Key.L))
+            {
+                personaje.leaveObject();
+            }
+
+
+                //Si hubo rotacion
+                if (rotating)
             {
                 //Rotar personaje y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
                 float rotAngle = Geometry.DegreeToRadian(rotate * elapsedTime);
@@ -230,39 +170,37 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
                 movementVector = new Vector3(
-                    FastMath.Sin(personaje.Rotation.Y) * moveForward,
+                    FastMath.Sin(personaje.getRotation().Y) * moveForward,
                     jump,
-                    FastMath.Cos(personaje.Rotation.Y) * moveForward
+                    FastMath.Cos(personaje.getRotation().Y) * moveForward
                     );
                 personaje.move(movementVector);
             }
 
+            GuiController.Instance.ThirdPersonCamera.Target = personaje.getPosition();
+
             //Renderizar suelo
             suelo.render();
+            personaje.inventory.update(elapsedTime);
+            personaje.inventory.render();
             skyBox.render();
-
-            //Renderizar instancias
-            foreach (TgcMesh mesh in meshes)
-            {
-                mesh.render();
-            }
 
             personaje.playAnimation(animation, true);
             personaje.updateAnimation();
             personaje.render();
-            GuiController.Instance.ThirdPersonCamera.Target = personaje.Position;
-            GuiController.Instance.ThirdPersonCamera.setCamera(personaje.Position, 100, 100);
+            objects.RemoveAll(crafteable => crafteable.getStatus() == 5);
+            objects.ForEach(crafteable => crafteable.render());
+            
         }
 
         public override void close()
         {
-            suelo.dispose();
-
             //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
             palmeraOriginal.dispose();
             pasto.dispose();
             skyBox.dispose();
             personaje.dispose();
+            objectsFactory.dispose();
         }
     }
 }
