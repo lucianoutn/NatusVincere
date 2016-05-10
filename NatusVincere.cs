@@ -94,23 +94,27 @@ namespace AlumnoEjemplos.NatusVincere
             scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Planta\Planta-TgcScene.xml");
             pasto = scene.Meshes[0];
 
+
+            //Modifier para la camara
+            GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", false);
+            GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", true);
+            GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
             //Camera en 3ra persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            targetCamara = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
-            GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara, 10f, 60f);// le sumo 20y a la camara para que se vea mjor
-            objects.Add(objectsFactory.createArbol(suelo.Position + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+            targetCamara = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
+            GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara, 10f, 60f);objects.Add(objectsFactory.createArbol(suelo.Position + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
             objects.Add(objectsFactory.createHacha(suelo.Position + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
             objects.Add(objectsFactory.createPiedra(suelo.Position + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
-
-            /*
+            //camara rotacional
+            GuiController.Instance.RotCamera.setCamera(targetCamara, 50f);
+            
             ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
             //Camara en primera persona, tipo videojuego FPS
             //Solo puede haber una camara habilitada a la vez. Al habilitar la camara FPS se deshabilita la camara rotacional
             //Por default la camara FPS viene desactivada
-            GuiController.Instance.FpsCamera.Enable = true;
             //Configurar posicion y hacia donde se mira
-            GuiController.Instance.FpsCamera.setCamera(new Vector3(0, 0, -20), new Vector3(0, 0, 0));
-            */
+            GuiController.Instance.FpsCamera.setCamera(personaje.getPosition(), new Vector3(2, 2, 2));
+            
         }
         
         public override void render(float elapsedTime)
@@ -122,6 +126,11 @@ namespace AlumnoEjemplos.NatusVincere
                 spriteLogo.render();
                 GuiController.Instance.Drawer2D.endDrawSprite();
             }
+
+            //Controlo los modificadores de la camara
+            GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
+            GuiController.Instance.FpsCamera.Enable = (bool)GuiController.Instance.Modifiers["FPS"];
+            GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
 
             float velocidadCaminar = 5f;
             float velocidadRotacion = 100f;
@@ -198,6 +207,7 @@ namespace AlumnoEjemplos.NatusVincere
                 float rotAngle = ((float)Math.PI / 180) * (rotate * elapsedTime);
                 personaje.rotateY(rotAngle);
                 GuiController.Instance.ThirdPersonCamera.rotateY(rotAngle);
+                //GuiController.Instance.FpsCamera.updateViewMatrix;
             }
 
             //Vector de movimiento
@@ -213,8 +223,13 @@ namespace AlumnoEjemplos.NatusVincere
                 personaje.move(movementVector);
             }
 
+            //actualizando camaras
             targetCamara = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara;
+            GuiController.Instance.RotCamera.setCamera(targetCamara, 50f);
+            GuiController.Instance.FpsCamera.setCamera(targetCamara, lookAt);
+            
+
 
             //Renderizar suelo
             suelo.render();
