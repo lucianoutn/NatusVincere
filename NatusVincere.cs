@@ -22,6 +22,7 @@ namespace AlumnoEjemplos.NatusVincere
     public class NatusVincere : TgcExample
     {
         TgcSprite spriteLogo;
+        TgcSprite hud;
         DateTime tiempoLogo;
        
         const float MOVEMENT_SPEED = 200f;
@@ -60,10 +61,14 @@ namespace AlumnoEjemplos.NatusVincere
             tiempoLogo = DateTime.Now;
             //Ubicarlo centrado en la pantalla
             Size screenSize = GuiController.Instance.Panel3d.Size;
-            Size textureSize = spriteLogo.Texture.Size;
-            spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSize.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSize.Height / 2, 0));
-
-
+            Size textureSizeLogo = spriteLogo.Texture.Size;
+            spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
+            //Hud
+            hud = new TgcSprite();
+            hud.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\Hud\\hud.png");
+            //ubico el hud abajo a la izq
+            Size textureSizeHud = hud.Texture.Size;
+            hud.Position = new Vector2(FastMath.Max(screenSize.Width /6 - textureSizeHud.Width / 2, 0), (FastMath.Max(screenSize.Height - textureSizeHud.Height*(1.5f), 0)));
                         
             TgcSceneLoader loader = new TgcSceneLoader();
             objects = new List<Crafteable>();
@@ -121,13 +126,21 @@ namespace AlumnoEjemplos.NatusVincere
         
         public override void render(float elapsedTime)
         {
-            //Renderizo el logo del inicio
+            //Renderizo el logo del inicio y el hud
             if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
             {
                 GuiController.Instance.Drawer2D.beginDrawSprite();
                 spriteLogo.render();
                 GuiController.Instance.Drawer2D.endDrawSprite();
             }
+            else //render del hud
+            {
+                GuiController.Instance.Drawer2D.beginDrawSprite();
+                hud.render();
+                GuiController.Instance.Drawer2D.endDrawSprite();
+            }
+
+            
 
             //Controlo los modificadores de la camara
             GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
@@ -265,6 +278,7 @@ namespace AlumnoEjemplos.NatusVincere
             personaje.dispose();
             objectsFactory.dispose();
             spriteLogo.dispose();
+            hud.dispose();
         }
     }
 }
