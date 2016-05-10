@@ -15,6 +15,7 @@ using TgcViewer.Utils._2D;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSkeletalAnimation;
 using System.IO;
+using System.Windows.Forms;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -114,7 +115,8 @@ namespace AlumnoEjemplos.NatusVincere
             //Por default la camara FPS viene desactivada
             //Configurar posicion y hacia donde se mira
             GuiController.Instance.FpsCamera.setCamera(personaje.getPosition(), new Vector3(2, 2, 2));
-            
+            Vector3 eye = new Vector3();
+            Vector3 target = new Vector3();
         }
         
         public override void render(float elapsedTime)
@@ -129,8 +131,17 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Controlo los modificadores de la camara
             GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
-            GuiController.Instance.FpsCamera.Enable = (bool)GuiController.Instance.Modifiers["FPS"];
             GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
+            if (GuiController.Instance.FpsCamera.Enable = (bool)GuiController.Instance.Modifiers["FPS"])
+            {
+                Control focusWindows = GuiController.Instance.D3dDevice.CreationParameters.FocusWindow;
+                Cursor.Position = focusWindows.PointToScreen(
+                new Point(
+                    focusWindows.Width / 2,
+                    focusWindows.Height / 2)
+                    );;
+                Cursor.Hide(); 
+            }
 
             float velocidadCaminar = 5f;
             float velocidadRotacion = 100f;
@@ -227,7 +238,7 @@ namespace AlumnoEjemplos.NatusVincere
             targetCamara = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara;
             GuiController.Instance.RotCamera.setCamera(targetCamara, 50f);
-            GuiController.Instance.FpsCamera.setCamera(targetCamara, lookAt);
+           //GuiController.Instance.FpsCamera.setCamera(targetCamara, lookAt);
             
 
 
