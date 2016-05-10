@@ -11,6 +11,7 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.Input;
+using TgcViewer.Utils._2D;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSkeletalAnimation;
 using System.IO;
@@ -19,6 +20,9 @@ namespace AlumnoEjemplos.NatusVincere
 {
     public class NatusVincere : TgcExample
     {
+        TgcSprite spriteLogo;
+        DateTime tiempoLogo;
+       
         const float MOVEMENT_SPEED = 200f;
         TgcBox suelo;
         List<Crafteable> objects;
@@ -26,6 +30,7 @@ namespace AlumnoEjemplos.NatusVincere
         TgcMesh pasto;
         TgcSkyBox skyBox;
         Human personaje;
+        Vector3 targetCamara;
 
         ObjectsFactory objectsFactory;
 
@@ -46,7 +51,19 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void init()
         {
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice; 
+            
+            //Creo un sprite de logo inicial
+            spriteLogo = new TgcSprite();
+            spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
+            tiempoLogo = DateTime.Now;
+            //Ubicarlo centrado en la pantalla
+            Size screenSize = GuiController.Instance.Panel3d.Size;
+            Size textureSize = spriteLogo.Texture.Size;
+            spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSize.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSize.Height / 2, 0));
+
+
+                        
             TgcSceneLoader loader = new TgcSceneLoader();
             objects = new List<Crafteable>();
             objectsFactory = new ObjectsFactory(objects);
@@ -67,7 +84,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Crear suelo
             //TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\pasto.jpg");
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\pasto.jpg");
-            suelo = TgcBox.fromSize(new Vector3(980, 69, 1980), new Vector3(3000, 0, 4900), pisoTexture);
+            suelo = TgcBox.fromSize(new Vector3(0, 0, 0), new Vector3(3000, 0, 4900), pisoTexture);
             personaje = objectsFactory.createHuman(suelo.Position + new Vector3(0, 1, 0), new Vector3(1, 1, 1));
             //Cargar modelo de palmera original
             TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
@@ -77,16 +94,35 @@ namespace AlumnoEjemplos.NatusVincere
             scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Planta\Planta-TgcScene.xml");
             pasto = scene.Meshes[0];
 
-            //Camara en primera persona
+            //Camera en 3ra persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(personaje.getPosition(), 200, 400);
+            targetCamara = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
+            GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara, 10f, 60f);// le sumo 20y a la camara para que se vea mjor
             objects.Add(objectsFactory.createArbol(suelo.Position + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
             objects.Add(objectsFactory.createHacha(suelo.Position + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
             objects.Add(objectsFactory.createPiedra(suelo.Position + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+
+            /*
+            ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
+            //Camara en primera persona, tipo videojuego FPS
+            //Solo puede haber una camara habilitada a la vez. Al habilitar la camara FPS se deshabilita la camara rotacional
+            //Por default la camara FPS viene desactivada
+            GuiController.Instance.FpsCamera.Enable = true;
+            //Configurar posicion y hacia donde se mira
+            GuiController.Instance.FpsCamera.setCamera(new Vector3(0, 0, -20), new Vector3(0, 0, 0));
+            */
         }
         
         public override void render(float elapsedTime)
         {
+            //Renderizo el logo del inicio
+            if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
+            {
+                GuiController.Instance.Drawer2D.beginDrawSprite();
+                spriteLogo.render();
+                GuiController.Instance.Drawer2D.endDrawSprite();
+            }
+
             float velocidadCaminar = 5f;
             float velocidadRotacion = 100f;
             //Calcular proxima posicion de personaje segun Input
@@ -177,7 +213,8 @@ namespace AlumnoEjemplos.NatusVincere
                 personaje.move(movementVector);
             }
 
-            GuiController.Instance.ThirdPersonCamera.Target = personaje.getPosition();
+            targetCamara = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
+            GuiController.Instance.ThirdPersonCamera.Target = targetCamara;
 
             //Renderizar suelo
             suelo.render();
@@ -201,6 +238,7 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.dispose();
             personaje.dispose();
             objectsFactory.dispose();
+            spriteLogo.dispose();
         }
     }
 }
