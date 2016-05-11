@@ -3,7 +3,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    class Hacha : Crafteable
+    public class Hacha : Crafteable
     {
         public new int uses = 3;
         public new int type = 3;

@@ -22,13 +22,10 @@ namespace AlumnoEjemplos.NatusVincere
     public class NatusVincere : TgcExample
     {
         TgcSprite spriteLogo;
-        TgcSprite hud;  //hud
-        TgcText2d vida; //hud
-        TgcText2d agua; //hud
-        TgcText2d suenio; //hud
+        
        // TextCreator textCreator;
         DateTime tiempoLogo;
-        
+        Hud hud;
 
         const float MOVEMENT_SPEED = 200f;
         TgcBox suelo;
@@ -37,7 +34,10 @@ namespace AlumnoEjemplos.NatusVincere
         TgcMesh pasto;
         TgcSkyBox skyBox;
         Human personaje; 
-        Vector3 targetCamara;
+        Vector3 targetCamara3;
+        Vector3 eye; 
+        Vector3 targetFps;
+        Vector3 vNormal = new Vector3(0,1,0);
 
         ObjectsFactory objectsFactory;
 
@@ -64,7 +64,6 @@ namespace AlumnoEjemplos.NatusVincere
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
             tiempoLogo = DateTime.Now;
-            
             //Ubicarlo centrado en la pantalla
             Size screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
@@ -97,46 +96,11 @@ namespace AlumnoEjemplos.NatusVincere
 
 
             //creo el personaje
-            //personaje = new Human(null, null, null, 1);
             personaje = objectsFactory.createHuman(suelo.Position + new Vector3(1200, 1, 1200), new Vector3(1, 1, 1));
 
             //Hud
-            hud = new TgcSprite();
-            hud.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\Hud\\hud.png");
-            //textCreator = new TextCreator("ComicSands", 16, new Size(60, 60)); //hud
-         
-            //vida = textCreator.createText(personaje.health.ToString()); //hud
-            //agua = textCreator.createText(personaje.agua.ToString()); //hud
-            //suenio = textCreator.createText(personaje.suenio.ToString()); //hud
-            //vida = textCreator.createText("holaaaaaaaaaaaa");
-            vida = new TgcText2d(); //hud
-            agua = new TgcText2d(); //hud
-            suenio = new TgcText2d(); //hud
-            //vida.Align = TgcText2d.TextAlign.LEFT;    //hud
-            Size tamañoTextoHud = new Size(40, 60);   //hud
-            vida.Size = tamañoTextoHud;   //hud
-            vida.changeFont(new System.Drawing.Font("ComicSands", 16, FontStyle.Bold));
-            
-            vida.Color = Color.Crimson;    //hud
-            agua.Size = tamañoTextoHud;
-            agua.changeFont(new System.Drawing.Font("ComicSands", 16, FontStyle.Bold));
-            agua.Color = Color.Cyan;
-            suenio.Size = tamañoTextoHud;
-            suenio.changeFont(new System.Drawing.Font("ComicSands", 16, FontStyle.Bold));
-            suenio.Color = Color.DarkGray;
-            
-            
-            
-
-
-            //ubico el hud abajo a la izq
-            Size textureSizeHud = hud.Texture.Size; //hud
-            hud.Position = new Vector2(FastMath.Max(screenSize.Width / 6 - textureSizeHud.Width / 2, 0), (FastMath.Max(screenSize.Height - textureSizeHud.Height * (1.5f), 0)));
-            vida.Position = new Point(screenSize.Width * 1 / 12 - (int)vida.Size.Width / 2, (int)hud.Position.Y + (int)vida.Size.Height); //lo posiciono debajo del corazon
-            agua.Position = new Point(screenSize.Width * 2 / 12 - (int)agua.Size.Width/2, (int)hud.Position.Y + (int)agua.Size.Height); //lo posiciono debajo del vaso
-            suenio.Position = new Point(screenSize.Width * 3 / 12 - (int)suenio.Size.Width / 2, (int)hud.Position.Y + (int)suenio.Size.Height); //lo posiciono debajo del sofa
-            
-            
+            hud = new Hud();
+                        
             //Cargar modelo de palmera original
             TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
             palmeraOriginal = scene.Meshes[0];
@@ -152,21 +116,23 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
             //Camera en 3ra persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            targetCamara = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
-            GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara, 10f, 60f);objects.Add(objectsFactory.createArbol(suelo.Position + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
+            GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 10f, 60f);
+            objects.Add(objectsFactory.createArbol(suelo.Position + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
             objects.Add(objectsFactory.createHacha(suelo.Position + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
             objects.Add(objectsFactory.createPiedra(suelo.Position + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
             //camara rotacional
-            GuiController.Instance.RotCamera.setCamera(targetCamara, 50f);
+            GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
             
             ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
             //Camara en primera persona, tipo videojuego FPS
             //Solo puede haber una camara habilitada a la vez. Al habilitar la camara FPS se deshabilita la camara rotacional
             //Por default la camara FPS viene desactivada
             //Configurar posicion y hacia donde se mira
-            GuiController.Instance.FpsCamera.setCamera(personaje.getPosition(), new Vector3(2, 2, 2));
-            Vector3 eye = new Vector3();
-            Vector3 target = new Vector3();
+            eye = targetCamara3;
+            //Vector3 eye = new Vector3(2,2,2);
+            //Vector3 targetFps = personaje.getPosition();
+            GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
         }
         
         public override void render(float elapsedTime)
@@ -180,36 +146,23 @@ namespace AlumnoEjemplos.NatusVincere
             }
             else //render del hud
             {
-                GuiController.Instance.Drawer2D.beginDrawSprite();
-                vida.Text = personaje.health.ToString();  //hud tiene q ir en render
-                agua.Text = personaje.agua.ToString();  //hud tiene q ir en render
-                suenio.Text = personaje.suenio.ToString();  //hud tiene q ir en render
-                hud.render();
-                vida.render();
-                agua.render();
-                suenio.render();
-                GuiController.Instance.Drawer2D.endDrawSprite();
+                hud.renderizate(personaje);
             }
 
             
-
             //Controlo los modificadores de la camara
             GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
             GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
             if (GuiController.Instance.FpsCamera.Enable = (bool)GuiController.Instance.Modifiers["FPS"])
             {
                 Control focusWindows = GuiController.Instance.D3dDevice.CreationParameters.FocusWindow;
-                Cursor.Position = focusWindows.PointToScreen(
-                new Point(
-                    focusWindows.Width / 2,
-                    focusWindows.Height / 2)
-                    ); ;
+                Cursor.Position = focusWindows.PointToScreen(new Point(focusWindows.Width / 2, focusWindows.Height / 2));
                 Cursor.Hide();
             }
-            else
-            {
-                Cursor.Show();
-            }
+           // else
+            //{
+              //  Cursor.Show();
+            //}
 
             float velocidadCaminar = 5f;
             float velocidadRotacion = 100f;
@@ -303,10 +256,12 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             //actualizando camaras
-            targetCamara = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
-            GuiController.Instance.ThirdPersonCamera.Target = targetCamara;
-            GuiController.Instance.RotCamera.setCamera(targetCamara, 50f);
-           //GuiController.Instance.FpsCamera.setCamera(targetCamara, lookAt);
+            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
+            GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
+            GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
+            //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
+           //            -GuiController.Instance.D3dInput.YposRelative * velocidadRotacion);
+            //GuiController.Instance.FpsCamera.setCamera(targetCamara, targetCamara + new Vector3(1.0f, 0.0f, 0.0f));
             
             //recalculo la vida del jugador segun el tiempo transcurrido
             personaje.recalcularStats();
@@ -335,9 +290,7 @@ namespace AlumnoEjemplos.NatusVincere
             objectsFactory.dispose();
             spriteLogo.dispose();
             hud.dispose();
-            vida.dispose();
-            agua.dispose();
-            suenio.dispose();
+           
         }
     }
 }

@@ -6,7 +6,7 @@ using System;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    class Human
+    public class Human
     {
 
         public int type = 0; //For future

@@ -13,7 +13,7 @@ namespace AlumnoEjemplos.NatusVincere
 {
 
 
-    class Inventory
+    public class Inventory
     {
         Crafteable[] items;
         TgcText2d[] texts;

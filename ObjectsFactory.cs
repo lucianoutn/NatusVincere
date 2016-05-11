@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    class ObjectsFactory
+    public class ObjectsFactory
     {
         private TgcMesh arbolMesh;
         private TgcMesh piedraMesh;

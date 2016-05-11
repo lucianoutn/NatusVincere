@@ -3,7 +3,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    class Arbol : Crafteable
+    public class Arbol : Crafteable
     {
         public new int uses = 3;
         public new int type = 1;

@@ -4,7 +4,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    class Crafteable
+    public class Crafteable
     {
         public int type;
         public string description = "Crafteable Object Description ";
