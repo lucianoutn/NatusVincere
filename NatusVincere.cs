@@ -126,7 +126,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Crear SkyBox
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 500, 0);
-            skyBox.Size = new Vector3(10000, 10000, 10000);
+            skyBox.Size = new Vector3(40000, 40000, 40000);
             string texturesPath = System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\SkyBox1\";
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "phobos_up.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "phobos_dn.jpg");
@@ -175,9 +175,9 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.ThirdPersonCamera.Enable = true;
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
             GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 10f, 60f);
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
-            objects.Add(objectsFactory.createHacha(terrainPosition + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
-            objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+
+            agegarObjetos(terrainPosition);
+
             //camara rotacional
             GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
             
@@ -192,6 +192,18 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
         }
         
+        public void agegarObjetos(Vector3 terrainPosition)
+        {
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(30, 1, 0), new Vector3(0.75f, 1.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(230, 311, 1800), new Vector3(0.75f, 1.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(2030, 271, 800), new Vector3(0.75f, 1.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(230, -311, -3000), new Vector3(0.75f, 1.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(-430, -61, -410), new Vector3(0.75f, 1.75f, 0.75f)));
+
+            objects.Add(objectsFactory.createHacha(terrainPosition + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
+            objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+        }
+
         public override void render(float elapsedTime)
         {
             //Renderizo el logo del inicio y el hud
@@ -313,7 +325,7 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             //actualizando camaras
-            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
+            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 150f, 50));
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
             GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
             //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
