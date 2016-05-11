@@ -28,7 +28,6 @@ namespace AlumnoEjemplos.NatusVincere
         Hud hud;
 
         const float MOVEMENT_SPEED = 200f;
-        TgcBox suelo;
         List<Crafteable> objects;
         TgcMesh palmeraOriginal;
         TgcMesh pasto;
@@ -40,6 +39,15 @@ namespace AlumnoEjemplos.NatusVincere
         Vector3 vNormal = new Vector3(0,1,0);
 
         ObjectsFactory objectsFactory;
+
+        TgcSimpleTerrain terrain;
+        string currentHeightmap;
+        string currentTexture;
+        float currentScaleXZ;
+        float currentScaleY;
+        float currentX;
+        float currentZ;
+        float altura;
 
         public override string getCategory()
         {
@@ -56,6 +64,47 @@ namespace AlumnoEjemplos.NatusVincere
             return "Survival Craft – Supervivencia con creaciones.";
         }
 
+        public float CalcularAltura(float x, float z)
+        {
+            float largo = currentScaleXZ * 64;
+            float pos_i = 64f * (0.5f + x / largo);
+            float pos_j = 64f * (0.5f + z / largo);
+
+            int pi = (int)pos_i;
+            float fracc_i = pos_i - pi;
+            int pj = (int)pos_j;
+            float fracc_j = pos_j - pj;
+
+            if (pi < 0)
+                pi = 0;
+            else
+                if (pi > 63)
+                pi = 63;
+
+            if (pj < 0)
+                pj = 0;
+            else
+                if (pj > 63)
+                pj = 63;
+
+            int pi1 = pi + 1;
+            int pj1 = pj + 1;
+            if (pi1 > 63)
+                pi1 = 63;
+            if (pj1 > 63)
+                pj1 = 63;
+
+            // 2x2 percent closest filtering usual: 
+            float H0 = terrain.HeightmapData[pi, pj] * currentScaleY;
+            float H1 = terrain.HeightmapData[pi1, pj] * currentScaleY;
+            float H2 = terrain.HeightmapData[pi, pj1] * currentScaleY;
+            float H3 = terrain.HeightmapData[pi1, pj1] * currentScaleY;
+            float H = (H0 * (1 - fracc_i) + H1 * fracc_i) * (1 - fracc_j) +
+                      (H2 * (1 - fracc_i) + H3 * fracc_i) * fracc_j;
+
+            return H;
+        }
+
         public override void init()
         {
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice; 
@@ -69,8 +118,6 @@ namespace AlumnoEjemplos.NatusVincere
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
                        
-        
-            
             //creaion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
             objects = new List<Crafteable>();
@@ -89,27 +136,37 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "phobos_ft.jpg");
             skyBox.updateValues();
 
-            //Crear suelo
-            //TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\pasto.jpg");
-            TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\pasto.jpg");
-            suelo = TgcBox.fromSize(new Vector3(0, 0, 0), new Vector3(3000, 0, 4900), pisoTexture);
+            //Path de Heightmap default del terreno y Modifier para cambiarla
+            currentHeightmap = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "Heightmap2.jpg";
+            GuiController.Instance.Modifiers.addTexture("heightmap", currentHeightmap);
 
+            //Modifiers para variar escala del mapa
+            currentScaleXZ = 500f;
+            currentScaleY = 8f;
 
+            //Path de Textura default del terreno y Modifier para cambiarla
+            currentTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg";
+            GuiController.Instance.Modifiers.addTexture("texture", currentTexture);
+
+            //Cargar terreno: cargar heightmap y textura de color
+            terrain = new TgcSimpleTerrain();
+            terrain.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new Vector3(0, 0, 0));
+            terrain.loadTexture(currentTexture);
+
+            //Calculo altura del terreno para parar al personaje
+            altura = CalcularAltura(0, 0);
+
+            Vector3 terrainPosition = new Vector3(0, altura, 0);
             //creo el personaje
-            personaje = objectsFactory.createHuman(suelo.Position + new Vector3(1200, 1, 1200), new Vector3(1, 1, 1));
-
+            personaje = objectsFactory.createHuman(terrainPosition + new Vector3(-100, 1, 0), new Vector3(1, 1, 1));
+        
             //Hud
             hud = new Hud();
                         
             //Cargar modelo de palmera original
             TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
             palmeraOriginal = scene.Meshes[0];
-
-            //Cargar pasto
-            scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Planta\Planta-TgcScene.xml");
-            pasto = scene.Meshes[0];
-
-
+            
             //Modifier para la camara
             GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", false);
             GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", true);
@@ -118,9 +175,9 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.ThirdPersonCamera.Enable = true;
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
             GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 10f, 60f);
-            objects.Add(objectsFactory.createArbol(suelo.Position + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
-            objects.Add(objectsFactory.createHacha(suelo.Position + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
-            objects.Add(objectsFactory.createPiedra(suelo.Position + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+            objects.Add(objectsFactory.createHacha(terrainPosition + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
+            objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
             //camara rotacional
             GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
             
@@ -266,18 +323,26 @@ namespace AlumnoEjemplos.NatusVincere
             //recalculo la vida del jugador segun el tiempo transcurrido
             personaje.recalcularStats();
 
-            //Renderizar suelo
-            suelo.render();
+            //Actualizar personaje
             personaje.inventory.update(elapsedTime);
             personaje.inventory.render();
             skyBox.render();
+
+            //Calculo altura del terreno para parar al personaje
+            currentX = personaje.getPosition().X;
+            currentZ = personaje.getPosition().Z;
+            altura = CalcularAltura(currentX, currentZ);
+            personaje.setPosition(new Vector3(currentX, altura, currentZ));
+          
 
             personaje.playAnimation(animation, true);
             personaje.updateAnimation();
             personaje.render();
             objects.RemoveAll(crafteable => crafteable.getStatus() == 5);
             objects.ForEach(crafteable => crafteable.render());
-            
+
+            terrain.render();
+
         }
 
         public override void close()
