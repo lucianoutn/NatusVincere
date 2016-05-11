@@ -22,16 +22,21 @@ namespace AlumnoEjemplos.NatusVincere
     public class NatusVincere : TgcExample
     {
         TgcSprite spriteLogo;
-        TgcSprite hud;
+        TgcSprite hud;  //hud
+        TgcText2d vida; //hud
+        TgcText2d agua; //hud
+        TgcText2d suenio; //hud
+       // TextCreator textCreator;
         DateTime tiempoLogo;
-       
+        
+
         const float MOVEMENT_SPEED = 200f;
         TgcBox suelo;
         List<Crafteable> objects;
         TgcMesh palmeraOriginal;
         TgcMesh pasto;
         TgcSkyBox skyBox;
-        Human personaje;
+        Human personaje; 
         Vector3 targetCamara;
 
         ObjectsFactory objectsFactory;
@@ -59,17 +64,15 @@ namespace AlumnoEjemplos.NatusVincere
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
             tiempoLogo = DateTime.Now;
+            
             //Ubicarlo centrado en la pantalla
             Size screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
-            //Hud
-            hud = new TgcSprite();
-            hud.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\Hud\\hud.png");
-            //ubico el hud abajo a la izq
-            Size textureSizeHud = hud.Texture.Size;
-            hud.Position = new Vector2(FastMath.Max(screenSize.Width /6 - textureSizeHud.Width / 2, 0), (FastMath.Max(screenSize.Height - textureSizeHud.Height*(1.5f), 0)));
-                        
+                       
+        
+            
+            //creaion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
             objects = new List<Crafteable>();
             objectsFactory = new ObjectsFactory(objects);
@@ -91,7 +94,49 @@ namespace AlumnoEjemplos.NatusVincere
             //TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\pasto.jpg");
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\pasto.jpg");
             suelo = TgcBox.fromSize(new Vector3(0, 0, 0), new Vector3(3000, 0, 4900), pisoTexture);
-            personaje = objectsFactory.createHuman(suelo.Position + new Vector3(0, 1, 0), new Vector3(1, 1, 1));
+
+
+            //creo el personaje
+            //personaje = new Human(null, null, null, 1);
+            personaje = objectsFactory.createHuman(suelo.Position + new Vector3(1200, 1, 1200), new Vector3(1, 1, 1));
+
+            //Hud
+            hud = new TgcSprite();
+            hud.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\Hud\\hud.png");
+            //textCreator = new TextCreator("ComicSands", 16, new Size(60, 60)); //hud
+         
+            //vida = textCreator.createText(personaje.health.ToString()); //hud
+            //agua = textCreator.createText(personaje.agua.ToString()); //hud
+            //suenio = textCreator.createText(personaje.suenio.ToString()); //hud
+            //vida = textCreator.createText("holaaaaaaaaaaaa");
+            vida = new TgcText2d(); //hud
+            agua = new TgcText2d(); //hud
+            suenio = new TgcText2d(); //hud
+            //vida.Align = TgcText2d.TextAlign.LEFT;    //hud
+            Size tamañoTextoHud = new Size(40, 60);   //hud
+            vida.Size = tamañoTextoHud;   //hud
+            vida.changeFont(new System.Drawing.Font("ComicSands", 16, FontStyle.Bold));
+            
+            vida.Color = Color.Crimson;    //hud
+            agua.Size = tamañoTextoHud;
+            agua.changeFont(new System.Drawing.Font("ComicSands", 16, FontStyle.Bold));
+            agua.Color = Color.Cyan;
+            suenio.Size = tamañoTextoHud;
+            suenio.changeFont(new System.Drawing.Font("ComicSands", 16, FontStyle.Bold));
+            suenio.Color = Color.DarkGray;
+            
+            
+            
+
+
+            //ubico el hud abajo a la izq
+            Size textureSizeHud = hud.Texture.Size; //hud
+            hud.Position = new Vector2(FastMath.Max(screenSize.Width / 6 - textureSizeHud.Width / 2, 0), (FastMath.Max(screenSize.Height - textureSizeHud.Height * (1.5f), 0)));
+            vida.Position = new Point(screenSize.Width * 1 / 12 - (int)vida.Size.Width / 2, (int)hud.Position.Y + (int)vida.Size.Height); //lo posiciono debajo del corazon
+            agua.Position = new Point(screenSize.Width * 2 / 12 - (int)agua.Size.Width/2, (int)hud.Position.Y + (int)agua.Size.Height); //lo posiciono debajo del vaso
+            suenio.Position = new Point(screenSize.Width * 3 / 12 - (int)suenio.Size.Width / 2, (int)hud.Position.Y + (int)suenio.Size.Height); //lo posiciono debajo del sofa
+            
+            
             //Cargar modelo de palmera original
             TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
             palmeraOriginal = scene.Meshes[0];
@@ -136,7 +181,13 @@ namespace AlumnoEjemplos.NatusVincere
             else //render del hud
             {
                 GuiController.Instance.Drawer2D.beginDrawSprite();
+                vida.Text = personaje.health.ToString();  //hud tiene q ir en render
+                agua.Text = personaje.agua.ToString();  //hud tiene q ir en render
+                suenio.Text = personaje.suenio.ToString();  //hud tiene q ir en render
                 hud.render();
+                vida.render();
+                agua.render();
+                suenio.render();
                 GuiController.Instance.Drawer2D.endDrawSprite();
             }
 
@@ -152,8 +203,12 @@ namespace AlumnoEjemplos.NatusVincere
                 new Point(
                     focusWindows.Width / 2,
                     focusWindows.Height / 2)
-                    );;
-                Cursor.Hide(); 
+                    ); ;
+                Cursor.Hide();
+            }
+            else
+            {
+                Cursor.Show();
             }
 
             float velocidadCaminar = 5f;
@@ -253,7 +308,8 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.RotCamera.setCamera(targetCamara, 50f);
            //GuiController.Instance.FpsCamera.setCamera(targetCamara, lookAt);
             
-
+            //recalculo la vida del jugador segun el tiempo transcurrido
+            personaje.recalcularStats();
 
             //Renderizar suelo
             suelo.render();
@@ -279,6 +335,9 @@ namespace AlumnoEjemplos.NatusVincere
             objectsFactory.dispose();
             spriteLogo.dispose();
             hud.dispose();
+            vida.dispose();
+            agua.dispose();
+            suenio.dispose();
         }
     }
 }
