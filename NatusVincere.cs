@@ -127,15 +127,24 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 500, 0);
             skyBox.Size = new Vector3(40000, 40000, 40000);
-            string texturesPath = System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\SkyBox1\";
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "phobos_up.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "phobos_dn.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "phobos_lf.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "phobos_rt.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "phobos_bk.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "phobos_ft.jpg");
+            string texturesPath = System.Environment.CurrentDirectory + @"\Examples\Media\Texturas\Quake\SkyBox LostAtSeaDay\";
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "lostatseaday_lf.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "lostatseaday_rt.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "lostatseaday_bk.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
             skyBox.updateValues();
-
+            
+            //configurando el frustum
+            //Plane leftPlane = new Plane(0,0,0,1000);
+            //Plane rightPlane = new Plane(0, 0, 0, 1000);
+            //Plane topPlane = new Plane(0, 0, 0, 1000);
+            //Plane bottomPlane = new Plane(0, 0, 0, 1000);
+            //Plane nearPlane = new Plane(0, 0, 0, 1000);
+            //Plane farPlane = new Plane(0, 0, 0, 1000);
+            GuiController.Instance.Frustum.FrustumPlanes.Initialize();
+           
             //Path de Heightmap default del terreno y Modifier para cambiarla
             currentHeightmap = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "Heightmap2.jpg";
             GuiController.Instance.Modifiers.addTexture("heightmap", currentHeightmap);
@@ -361,7 +370,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
             palmeraOriginal.dispose();
-            pasto.dispose();
+            //pasto.dispose();
             skyBox.dispose();
             personaje.dispose();
             objectsFactory.dispose();
