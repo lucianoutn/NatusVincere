@@ -1,0 +1,66 @@
+<tgcScene>
+  <name>Fogata</name>
+  <texturesExport enabled="True" dir="Textures" />
+  <lightmapExport enabled="False" dir="LightMaps" />
+  <sceneBoundingBox min="[1.1045,0,-53.225]" max="[31.1962,31.6185,41.4396]" />
+  <materials count="1">
+    <m name="Standardmaterial" type="Standardmaterial">
+      <ambient>[0,0,0,0]</ambient>
+      <diffuse>[0,0,0,0]</diffuse>
+      <specular>[0,0,0,0]</specular>
+      <opacity>1</opacity>
+      <alphaBlendEnable>False</alphaBlendEnable>
+      <bitmap uvTiling="[1,1]" uvOffset="[1,1]">wood2.jpg</bitmap>
+    </m>
+  </materials>
+  <meshes count="3">
+    <mesh name="Madera" layer="Madera" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[18.5583,0,-53.225]" max="[31.1962,14.0924,35.8238]" />
+      <coordinatesIdx count="36">0 1 2 1 3 2 4 5 6 6 5 7 0 5 4 0 2 5 1 6 7 1 7 3 0 6 1 4 6 0 2 3 7 5 2 7 </coordinatesIdx>
+      <textCoordsIdx count="36">0 1 2 1 3 2 0 2 1 1 2 3 0 3 1 0 2 3 0 1 3 0 3 2 0 3 1 2 3 0 0 1 3 2 0 3 </textCoordsIdx>
+      <colorsIdx count="36">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="1">0 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="24">-8.583 14.0924 21.3453 -8.583 0 21.3453 1.0981 14.0924 29.4688 1.0981 0 29.4688 48.6564 14.0924 -46.87 58.3375 14.0924 -38.7465 48.6564 0 -46.87 58.3375 0 -38.7465 </vertices>
+      <normals count="24">0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 </normals>
+      <texCoords count="8">0 0 0 1 1 0 1 1 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+      <userProps count="0" />
+    </mesh>
+    <mesh name="Madera" layer="Madera" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[18.5583,0,-53.225]" max="[31.1962,14.0924,35.8238]" />
+      <coordinatesIdx count="36">0 1 2 1 3 2 4 5 6 6 5 7 0 5 4 0 2 5 1 6 7 1 7 3 0 6 1 4 6 0 2 3 7 5 2 7 </coordinatesIdx>
+      <textCoordsIdx count="36">0 1 2 1 3 2 0 2 1 1 2 3 0 3 1 0 2 3 0 1 3 0 3 2 0 3 1 2 3 0 0 1 3 2 0 3 </textCoordsIdx>
+      <colorsIdx count="36">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="1">0 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="24">-8.583 14.0924 21.3453 -8.583 0 21.3453 1.0981 14.0924 29.4688 1.0981 0 29.4688 48.6563 14.0924 -46.87 58.3375 14.0924 -38.7465 48.6563 0 -46.87 58.3375 0 -38.7465 </vertices>
+      <normals count="24">0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 </normals>
+      <texCoords count="8">0 0 0 1 1 0 1 1 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+      <userProps count="0" />
+    </mesh>
+    <mesh name="Madera" layer="Madera" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[1.1045,17.5261,-47.6091]" max="[13.7424,31.6185,41.4396]" />
+      <coordinatesIdx count="36">0 1 2 1 3 2 4 5 6 6 5 7 0 5 4 0 2 5 1 6 7 1 7 3 0 6 1 4 6 0 2 3 7 5 2 7 </coordinatesIdx>
+      <textCoordsIdx count="36">0 1 2 1 3 2 0 2 1 1 2 3 0 3 1 0 2 3 0 1 3 0 3 2 0 3 1 2 3 0 0 1 3 2 0 3 </textCoordsIdx>
+      <colorsIdx count="36">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="1">0 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="24">-17.2388 -10.5761 12.0268 -5.0504 -17.2773 9.761 -12.9338 -6.5226 23.1961 -0.7454 -13.2238 20.9303 15.5924 62.3683 -27.0998 19.8974 66.4218 -15.9305 27.7807 55.6672 -29.3657 32.0857 59.7207 -18.1964 </vertices>
+      <normals count="24">0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 </normals>
+      <texCoords count="8">0 0 0 1 1 0 1 1 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+      <userProps count="0" />
+    </mesh>
+  </meshes>
+</tgcScene>
