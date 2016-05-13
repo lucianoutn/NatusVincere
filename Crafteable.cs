@@ -13,13 +13,15 @@ namespace AlumnoEjemplos.NatusVincere
         public float minimumDistance = 100; //Default
         private Human owner;
         private TgcMesh mesh;
-        public int[] canCombineWith;
+        public bool storable;
+
 
         public Crafteable(TgcMesh mesh, Vector3 position, Vector3 scale)
         {
             this.mesh = mesh;
             this.mesh.Position = position;
             this.mesh.Scale = scale;
+            this.storable = true;
         }
 
        public void use(Human user)
@@ -33,6 +35,11 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 this.destroy();
             }
+        }
+
+        public bool isStorable()
+        {
+            return this.storable;
         }
 
         public void drop(Vector3 position)
@@ -65,10 +72,10 @@ namespace AlumnoEjemplos.NatusVincere
             return distance.Length() < this.getMinimumDistance();
         }
 
-        private void destroy()
+        public void destroy()
         {
             this.uses = 0;
-            this.status = 4;
+            this.status = 5;
         }
 
         public void render()
@@ -101,18 +108,6 @@ namespace AlumnoEjemplos.NatusVincere
         public virtual float getMinimumDistance()
         {
             return 100;
-        }
-
-        public bool checkIfCombine(Crafteable item)
-        {
-            int i = 0;
-            bool canCombine = false;
-            for (i = 0; i < this.canCombineWith.Length; i++)
-            {
-                canCombine |= item.getType() == this.canCombineWith[i];
-                
-            }
-            return canCombine;
         }
 
         public virtual int getType()

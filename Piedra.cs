@@ -13,9 +13,6 @@ namespace AlumnoEjemplos.NatusVincere
             this.type = 2;
             this.description = "Piedra";
             this.minimumDistance = 200;
-            this.canCombineWith = new int[20];
-            for (int i = 0; i < canCombineWith.Length; i++) this.canCombineWith[i] = 0;
-            this.canCombineWith[0] = 1;
         }
 
         public override void doAction(Human user)

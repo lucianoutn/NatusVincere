@@ -107,14 +107,15 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void init()
         {
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice; 
-            
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
             tiempoLogo = DateTime.Now;
             //Ubicarlo centrado en la pantalla
             Size screenSize = GuiController.Instance.Panel3d.Size;
+
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
                        
@@ -286,7 +287,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             if (d3dInput.keyDown(Key.E))
             {
-                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) crafteable.use(personaje); });
+                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) objectsFactory.transform(crafteable); });
             }
 
             if (d3dInput.keyDown(Key.R))
@@ -334,7 +335,6 @@ namespace AlumnoEjemplos.NatusVincere
             
             //recalculo la vida del jugador segun el tiempo transcurrido
             personaje.recalcularStats();
-
             //Actualizar personaje
             personaje.inventory.update(elapsedTime);
             personaje.inventory.render();

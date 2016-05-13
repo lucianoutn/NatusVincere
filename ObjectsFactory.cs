@@ -15,6 +15,8 @@ namespace AlumnoEjemplos.NatusVincere
         private TgcMesh arbolMesh;
         private TgcMesh piedraMesh;
         private TgcMesh hachaMesh;
+        private TgcMesh maderaMesh;
+        private TgcMesh fogataMesh;
         private List<Crafteable> objectList;
         int objectId = 0;
 
@@ -42,6 +44,12 @@ namespace AlumnoEjemplos.NatusVincere
 
             TgcScene hachaScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Hacha\Hacha-TgcScene.xml");
             this.hachaMesh = hachaScene.Meshes[0];
+
+            TgcScene maderaScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Madera\Madera-TgcScene.xml");
+            this.maderaMesh = maderaScene.Meshes[0];
+
+            TgcScene fogataScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Fogata\Fogata-TgcScene.xml");
+            this.fogataMesh = maderaScene.Meshes[0];
 
             dirAnim = new DirectoryInfo(skeletalPath + "Animations\\");
             animFiles = dirAnim.GetFiles("*-TgcSkeletalAnim.xml", SearchOption.TopDirectoryOnly);
@@ -90,6 +98,35 @@ namespace AlumnoEjemplos.NatusVincere
             Hacha hacha = new Hacha(meshInstance, position, scale);
             this.objectList.Add(hacha);
             return hacha;
+        }
+
+        public Madera createMadera(Vector3 position, Vector3 scale)
+        {
+            objectId++;
+            TgcMesh meshInstance = this.maderaMesh.createMeshInstance("madera_" + objectId);
+            Madera madera = new Madera(meshInstance, position, scale);
+            this.objectList.Add(madera);
+            return madera;
+        }
+
+        public Fogata createFogata(Vector3 position, Vector3 scale)
+        {
+            objectId++;
+            TgcMesh meshInstance = this.fogataMesh.createMeshInstance("fogata_" + objectId);
+            Fogata fogata = new Fogata(meshInstance, position, scale);
+            this.objectList.Add(fogata);
+            return fogata;
+        }
+
+        public void transform(Crafteable crafteable)
+        {
+            if (crafteable.getType() == 1 && crafteable.getStatus() == 1)
+            {
+                this.createMadera(crafteable.getPosition(), new Vector3(1, 1, 1));
+                crafteable.destroy();
+                return;
+            }
+
         }
 
         public void dispose()
