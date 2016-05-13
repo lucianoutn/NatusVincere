@@ -74,7 +74,6 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void store(Crafteable item) {
             this.inventory.addItem(item);
-            item.addToInventory();
         }
 
         public void move(Vector3 movement)
