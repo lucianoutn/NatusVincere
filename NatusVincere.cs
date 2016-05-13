@@ -11,23 +11,44 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.Input;
+using TgcViewer.Utils._2D;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSkeletalAnimation;
 using System.IO;
+using System.Windows.Forms;
 
 namespace AlumnoEjemplos.NatusVincere
 {
     public class NatusVincere : TgcExample
     {
+        TgcSprite spriteLogo;
+        
+       // TextCreator textCreator;
+        DateTime tiempoLogo;
+        Hud hud;
+
         const float MOVEMENT_SPEED = 200f;
-        TgcBox suelo;
         List<Crafteable> objects;
         TgcMesh palmeraOriginal;
         TgcMesh pasto;
         TgcSkyBox skyBox;
-        Human personaje;
+        Human personaje; 
+        Vector3 targetCamara3, targetCamara1;
+        Vector3 eye; 
+        Vector3 targetFps;
+        Vector3 vNormal = new Vector3(0,1,0);
+        TgcFrustum frustum;
 
         ObjectsFactory objectsFactory;
+
+        TgcSimpleTerrain terrain;
+        string currentHeightmap;
+        string currentTexture;
+        float currentScaleXZ;
+        float currentScaleY;
+        float currentX;
+        float currentZ;
+        float altura;
 
         public override string getCategory()
         {
@@ -44,9 +65,62 @@ namespace AlumnoEjemplos.NatusVincere
             return "Survival Craft – Supervivencia con creaciones.";
         }
 
+        public float CalcularAltura(float x, float z)
+        {
+            float largo = currentScaleXZ * 64;
+            float pos_i = 64f * (0.5f + x / largo);
+            float pos_j = 64f * (0.5f + z / largo);
+
+            int pi = (int)pos_i;
+            float fracc_i = pos_i - pi;
+            int pj = (int)pos_j;
+            float fracc_j = pos_j - pj;
+
+            if (pi < 0)
+                pi = 0;
+            else
+                if (pi > 63)
+                pi = 63;
+
+            if (pj < 0)
+                pj = 0;
+            else
+                if (pj > 63)
+                pj = 63;
+
+            int pi1 = pi + 1;
+            int pj1 = pj + 1;
+            if (pi1 > 63)
+                pi1 = 63;
+            if (pj1 > 63)
+                pj1 = 63;
+
+            // 2x2 percent closest filtering usual: 
+            float H0 = terrain.HeightmapData[pi, pj] * currentScaleY;
+            float H1 = terrain.HeightmapData[pi1, pj] * currentScaleY;
+            float H2 = terrain.HeightmapData[pi, pj1] * currentScaleY;
+            float H3 = terrain.HeightmapData[pi1, pj1] * currentScaleY;
+            float H = (H0 * (1 - fracc_i) + H1 * fracc_i) * (1 - fracc_j) +
+                      (H2 * (1 - fracc_i) + H3 * fracc_i) * fracc_j;
+
+            return H;
+        }
+
         public override void init()
         {
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+
+            //Creo un sprite de logo inicial
+            spriteLogo = new TgcSprite();
+            spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
+            tiempoLogo = DateTime.Now;
+            //Ubicarlo centrado en la pantalla
+            Size screenSize = GuiController.Instance.Panel3d.Size;
+
+            Size textureSizeLogo = spriteLogo.Texture.Size;
+            spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
+                       
+            //creaion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
             objects = new List<Crafteable>();
             objectsFactory = new ObjectsFactory(objects);
@@ -54,39 +128,115 @@ namespace AlumnoEjemplos.NatusVincere
             //Crear SkyBox
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 500, 0);
-            skyBox.Size = new Vector3(10000, 10000, 10000);
-            string texturesPath = System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\SkyBox1\";
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "phobos_up.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "phobos_dn.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "phobos_lf.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "phobos_rt.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "phobos_bk.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "phobos_ft.jpg");
+            skyBox.Size = new Vector3(40000, 40000, 40000);
+            string texturesPath = System.Environment.CurrentDirectory + @"\Examples\Media\Texturas\Quake\SkyBox LostAtSeaDay\";
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "lostatseaday_lf.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "lostatseaday_rt.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "lostatseaday_bk.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
             skyBox.updateValues();
+            
+            //configurando el frustum
+            //Plane leftPlane = new Plane(0,0,0,1000);
+            //Plane rightPlane = new Plane(0, 0, 0, 1000);
+            //Plane topPlane = new Plane(0, 0, 0, 1000);
+            //Plane bottomPlane = new Plane(0, 0, 0, 1000);
+            //Plane nearPlane = new Plane(0, 0, 0, 1000);
+            //Plane farPlane = new Plane(0, 0, 0, 1000);
+            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
+            frustum = new TgcFrustum();
 
-            //Crear suelo
-            //TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\pasto.jpg");
-            TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\pasto.jpg");
-            suelo = TgcBox.fromSize(new Vector3(980, 69, 1980), new Vector3(3000, 0, 4900), pisoTexture);
-            personaje = objectsFactory.createHuman(suelo.Position + new Vector3(0, 1, 0), new Vector3(1, 1, 1));
+            //Path de Heightmap default del terreno
+            currentHeightmap = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "Heightmap2.jpg";
+
+            //Path de Textura default del terreno 
+            currentTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg";
+
+            //*****MODIFICADORES*****
+            //Modifier para la camara
+            GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", false);
+            GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", true);
+            GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
+            //Modifier para cambiar el heightmap
+            GuiController.Instance.Modifiers.addTexture("heightmap", currentHeightmap);
+            //Modifier para cambiar la textura del terreno
+            GuiController.Instance.Modifiers.addTexture("texture", currentTexture);
+            //Modifiers para variar escala del mapa
+            currentScaleXZ = 500f;
+            currentScaleY = 8f;
+
+                 
+
+            //Cargar terreno: cargar heightmap y textura de color
+            terrain = new TgcSimpleTerrain();
+            terrain.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new Vector3(0, 0, 0));
+            terrain.loadTexture(currentTexture);
+
+            //Calculo altura del terreno para parar al personaje
+            altura = CalcularAltura(0, 0);
+            Vector3 terrainPosition = new Vector3(0, altura, 0);
+            
+            //creo el personaje
+            personaje = objectsFactory.createHuman(terrainPosition + new Vector3(-100, 1, 0), new Vector3(1, 1, 1));
+        
+            //Hud
+            hud = new Hud();
+                        
             //Cargar modelo de palmera original
             TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
             palmeraOriginal = scene.Meshes[0];
-
-            //Cargar pasto
-            scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Planta\Planta-TgcScene.xml");
-            pasto = scene.Meshes[0];
-
-            //Camara en primera persona
+            
+                       
+            //Camera en 3ra persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(personaje.getPosition(), 200, 400);
-            objects.Add(objectsFactory.createArbol(suelo.Position + new Vector3(30, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
-            objects.Add(objectsFactory.createHacha(suelo.Position + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
-            objects.Add(objectsFactory.createPiedra(suelo.Position + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
+            GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 10f, 60f);
+
+            agegarObjetos(terrainPosition);
+
+            //camara rotacional
+            GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
+            
+            ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
+            //Camara en primera persona, tipo videojuego FPS
+            //Solo puede haber una camara habilitada a la vez. Al habilitar la camara FPS se deshabilita la camara rotacional
+            //Por default la camara FPS viene desactivada
+            //Configurar posicion y hacia donde se mira
+            eye = targetCamara3;
+            //Vector3 eye = new Vector3(2,2,2);
+            //Vector3 targetFps = personaje.getPosition();
+            //GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
         }
         
+        public void agegarObjetos(Vector3 terrainPosition)
+        {
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(30, 1, 0), new Vector3(0.75f, 1.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(230, 311, 1800), new Vector3(0.75f, 1.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(2030, 271, 800), new Vector3(0.75f, 1.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(230, -311, -3000), new Vector3(0.75f, 1.75f, 0.75f)));
+            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(-430, -61, -410), new Vector3(0.75f, 1.75f, 0.75f)));
+
+            objects.Add(objectsFactory.createHacha(terrainPosition + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
+            objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
+        }
+
         public override void render(float elapsedTime)
         {
+            //Renderizo el logo del inicio y el hud
+            if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
+            {
+                GuiController.Instance.Drawer2D.beginDrawSprite();
+                spriteLogo.render();
+                GuiController.Instance.Drawer2D.endDrawSprite();
+            }
+            else //render del hud
+            {
+                hud.renderizate(personaje);
+            }
+
+            
             float velocidadCaminar = 5f;
             float velocidadRotacion = 100f;
             //Calcular proxima posicion de personaje segun Input
@@ -140,7 +290,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             if (d3dInput.keyDown(Key.E))
             {
-                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) crafteable.use(personaje); });
+                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) objectsFactory.transform(crafteable); });
             }
 
             if (d3dInput.keyDown(Key.R))
@@ -162,6 +312,7 @@ namespace AlumnoEjemplos.NatusVincere
                 float rotAngle = ((float)Math.PI / 180) * (rotate * elapsedTime);
                 personaje.rotateY(rotAngle);
                 GuiController.Instance.ThirdPersonCamera.rotateY(rotAngle);
+                //GuiController.Instance.FpsCamera.updateViewMatrix;
             }
 
             //Vector de movimiento
@@ -177,30 +328,75 @@ namespace AlumnoEjemplos.NatusVincere
                 personaje.move(movementVector);
             }
 
-            GuiController.Instance.ThirdPersonCamera.Target = personaje.getPosition();
+            //actualizando camaras
+            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
+            targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
+            d3dDevice.Transform.Projection.Scale(4f, 4f, 4f);
+            frustum.updateVolume(d3dDevice.Transform.View, d3dDevice.Transform.Projection);
 
-            //Renderizar suelo
-            suelo.render();
+
+            //Controlo los modificadores de la camara
+            GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
+            GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
+            if (GuiController.Instance.FpsCamera.Enable = (bool)GuiController.Instance.Modifiers["FPS"])
+            {
+                //habilitar luego cuando este la camara fps mejorada
+                //Control focusWindows = GuiController.Instance.D3dDevice.CreationParameters.FocusWindow;
+                //Cursor.Position = focusWindows.PointToScreen(new Point(focusWindows.Width / 2, focusWindows.Height / 2));
+                //Cursor.Hide();
+                GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara1, 0f, 10f);//provisorio
+                GuiController.Instance.ThirdPersonCamera.Enable = true; //provisorio
+                targetCamara3 = targetCamara1;//provisorio
+            }
+            else
+            {
+                //  Cursor.Show();
+                personaje.render();
+            }
+                        
+            GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
+            GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
+            //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
+            //           -GuiController.Instance.D3dInput.YposRelative * velocidadRotacion);
+            //GuiController.Instance.FpsCamera.setCamera(eye, targetCamara + new Vector3(1.0f, 0.0f, 0.0f));
+            
+
+            
+            //recalculo la vida del jugador segun el tiempo transcurrido
+            personaje.recalcularStats();
+            //Actualizar personaje
             personaje.inventory.update(elapsedTime);
             personaje.inventory.render();
             skyBox.render();
 
+            //Calculo altura del terreno para parar al personaje
+            currentX = personaje.getPosition().X;
+            currentZ = personaje.getPosition().Z;
+            altura = CalcularAltura(currentX, currentZ);
+            personaje.setPosition(new Vector3(currentX, altura, currentZ));
+          
+
             personaje.playAnimation(animation, true);
             personaje.updateAnimation();
-            personaje.render();
+            
             objects.RemoveAll(crafteable => crafteable.getStatus() == 5);
             objects.ForEach(crafteable => crafteable.render());
-            
+
+            terrain.render();
+
         }
 
         public override void close()
         {
             //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
             palmeraOriginal.dispose();
-            pasto.dispose();
+            //pasto.dispose();
             skyBox.dispose();
             personaje.dispose();
             objectsFactory.dispose();
+            spriteLogo.dispose();
+            hud.dispose();
+           
         }
     }
 }

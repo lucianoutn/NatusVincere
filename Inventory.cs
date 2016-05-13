@@ -13,7 +13,7 @@ namespace AlumnoEjemplos.NatusVincere
 {
 
 
-    class Inventory
+    public class Inventory
     {
         Crafteable[] items;
         TgcText2d[] texts;
@@ -39,11 +39,12 @@ namespace AlumnoEjemplos.NatusVincere
         {
             int freeIndex = this.findFreeIndex();
             
-            if (freeIndex != -1 && item.status != 3)
+            if (item.isStorable() && freeIndex != -1 && item.status != 3)
             {
                 this.items[freeIndex] = item;
-                this.texts[freeIndex] = textCreator.createText((freeIndex+1) + " - " + item.description + item.getType());
+                this.texts[freeIndex] = textCreator.createText((freeIndex+1) + " - " + item.description);
                 this.selections[freeIndex] = false;
+                item.addToInventory();
             }
         }
 
@@ -125,9 +126,10 @@ namespace AlumnoEjemplos.NatusVincere
         
         private void selectItem(int index)
         {
-            Vector2 selectedIndexes = getSelectedIndexes();
+            int[] selectedIndexes = new int[2];
+            selectedIndexes = this.getSelectedIndexes();
 
-            if (this.items[index] != null && selectedIndexes.Y == -1) { 
+            if (this.items[index] != null && selectedIndexes[1] == -1) { 
                 this.selections[index] = true;
                 this.texts[index].Color = Color.Blue;
                 this.togglePossibleCombinationText();
@@ -156,10 +158,9 @@ namespace AlumnoEjemplos.NatusVincere
             int i = 0;
             int j = 0;
 
-            Crafteable itemSelected;
-            bool combinationPosible = false;
-
-            for (i = 0; i < this.selections.Length; i++)
+            int[] selected = new int[2];
+            selected = getSelectedIndexes();
+            /*for (i = 0; i < this.selections.Length; i++)
             {
                 if (this.selections[i])
                 {
@@ -172,9 +173,19 @@ namespace AlumnoEjemplos.NatusVincere
                         }
                     }
                 }
+            }*/
+
+            if (selected[0] != -1 && selected[1] != -1)
+            {
+                Crafteable firstItem = items[selected[0]];
+                Crafteable secondItem = items[selected[1]];
+
+                return firstItem.getType() == 2 && secondItem.getType() == 5 ||
+                    firstItem.getType() == 5 && secondItem.getType() == 2 ||
+                    firstItem.getType() == 5 && secondItem.getType() == 5;
             }
 
-            return combinationPosible;
+            return false;
         }
 
         private void togglePossibleCombinationText()
@@ -194,11 +205,17 @@ namespace AlumnoEjemplos.NatusVincere
             Crafteable firstItem = this.items[firstIndex];
             Crafteable secondItem = this.items[secondIndex];
             Crafteable newObject = null;
-            //TODO: REFACTOR.
+            
+            //TODO: REFACTOR URGENTE: Crear un COMBINADOR de objetos perteneciente al humano.
 
-            if (firstItem.getType() == 1 && secondItem.getType() == 2)
+            if (firstItem.getType() == 5 && secondItem.getType() == 2 || firstItem.getType() == 2 && secondItem.getType() == 5)
             {
                 newObject = this.objectsFactory.createHacha(new Vector3(0, 0, 200), new Vector3(1, 1, 1));
+            }
+
+            if (firstItem.getType() == 5 && secondItem.getType() == 5)
+            {
+                newObject = this.objectsFactory.createFogata(new Vector3(0, 0, 200), new Vector3(1, 1, 1));
             }
 
             if (newObject != null)
@@ -208,15 +225,21 @@ namespace AlumnoEjemplos.NatusVincere
                 firstItem.dispose();
                 secondItem.dispose();
                 this.addItem(newObject);
-                newObject.addToInventory(); 
+                newObject.addToInventory();
             }
             
         }
 
         private void doCombine()
         {
-            Vector2 indexes = this.getSelectedIndexes();
-            this.combine((int)indexes.X, (int)indexes.Y);
+            int[] indexes = new int[2];
+            indexes = this.getSelectedIndexes();
+            int firstIndex = indexes[0];
+            int secondIndex = indexes[1];
+
+            if (firstIndex >= 0 && secondIndex >= 0) {
+                this.combine(firstIndex, secondIndex);
+            }
 
         }
 
@@ -229,9 +252,10 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void leaveObject(Vector3 position)
         {
-            Vector2 indexes = this.getSelectedIndexes();
-            int firstIndex = (int)indexes.X;
-            int secondIndex = (int)indexes.Y;
+            int[] indexes = new int[2]; 
+            indexes = this.getSelectedIndexes();
+            int firstIndex = indexes[0];
+            int secondIndex = indexes[1];
             
             if (secondIndex != -1) unselect(secondIndex); //Prevengo que deje los dos objetos
 
@@ -242,7 +266,7 @@ namespace AlumnoEjemplos.NatusVincere
             }
         }
 
-        public Vector2 getSelectedIndexes()
+        public int[] getSelectedIndexes()
         {
             int firstIndex = -1;
             int secondIndex = -1;
@@ -257,7 +281,12 @@ namespace AlumnoEjemplos.NatusVincere
                     secondIndex = i;
                 }
             }
-            return new Vector2(firstIndex, secondIndex);
+
+            int[] indexes = new int[2];
+
+            indexes[0] = firstIndex;
+            indexes[1] = secondIndex;
+            return indexes;
         }
 
         public int findFreeIndex()

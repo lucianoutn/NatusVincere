@@ -3,24 +3,22 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    public class Arbol : Crafteable
+    public class Fogata : Crafteable
     {
-        public new int uses = 3;
-        public new int type = 1;
+        public new int uses = 20;
+        public new int type = 6;
 
-        public Arbol(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
+        public Fogata(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
-            this.type = 1;
-            this.description = "Arbol";
+            this.type = 6;
+            this.description = "Fogata";
             this.minimumDistance = 200;
-            this.storable = false;
+            this.storable = true;
         }
 
         public override void doAction(Human user)
         {
-            Vector3 direction = this.getPosition() - user.getPosition();
-            direction.Normalize();
-            this.move(direction);
+            user.health++;
         }
 
         public override float getMinimumDistance()

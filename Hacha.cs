@@ -3,7 +3,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    class Hacha : Crafteable
+    public class Hacha : Crafteable
     {
         public new int uses = 3;
         public new int type = 3;
@@ -13,10 +13,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.type = 1;
             this.description = "Hacha";
             this.minimumDistance = 200;
-            this.canCombineWith = new int[20];
             this.status = 1;
-            for (int i = 0; i < canCombineWith.Length; i++) this.canCombineWith[i] = 0;
-            this.canCombineWith[0] = 4;
         }
 
         public override void doAction(Human user)

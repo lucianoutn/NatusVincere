@@ -3,17 +3,17 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    public class Arbol : Crafteable
+    public class Madera : Crafteable
     {
         public new int uses = 3;
-        public new int type = 1;
+        public new int type = 3;
 
-        public Arbol(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
+        public Madera(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
-            this.type = 1;
-            this.description = "Arbol";
+            this.type = 5;
+            this.description = "Madera";
             this.minimumDistance = 200;
-            this.storable = false;
+            this.status = 1;
         }
 
         public override void doAction(Human user)
