@@ -37,6 +37,7 @@ namespace AlumnoEjemplos.NatusVincere
         Vector3 eye; 
         Vector3 targetFps;
         Vector3 vNormal = new Vector3(0,1,0);
+        TgcFrustum frustum;
 
         ObjectsFactory objectsFactory;
 
@@ -144,7 +145,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Plane nearPlane = new Plane(0, 0, 0, 1000);
             //Plane farPlane = new Plane(0, 0, 0, 1000);
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
-
+            frustum = new TgcFrustum();
 
             //Path de Heightmap default del terreno
             currentHeightmap = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "Heightmap2.jpg";
@@ -329,6 +330,9 @@ namespace AlumnoEjemplos.NatusVincere
             //actualizando camaras
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
             targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
+            d3dDevice.Transform.Projection.Scale(4f, 4f, 4f);
+            frustum.updateVolume(d3dDevice.Transform.View, d3dDevice.Transform.Projection);
+
 
             //Controlo los modificadores de la camara
             GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
