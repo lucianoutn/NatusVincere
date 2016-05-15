@@ -110,6 +110,12 @@ namespace AlumnoEjemplos.NatusVincere
         {
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
+            //FullScreen
+            GuiController.Instance.FullScreenEnable = this.FullScreen();
+            GuiController.Instance.FullScreenPanel.ControlBox = false;
+            GuiController.Instance.FullScreenPanel.Text = null; //"NatusVincere";
+         
+
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
@@ -224,6 +230,8 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void render(float elapsedTime)
         {
+                            
+            
             //Renderizo el logo del inicio y el hud
             if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
             {
@@ -384,6 +392,13 @@ namespace AlumnoEjemplos.NatusVincere
 
             terrain.render();
 
+        }
+
+
+        private bool FullScreen()
+        {
+            DialogResult result = MessageBox.Show("Che, ¿queres mejor en fullscreen?", "Confirmación", MessageBoxButtons.YesNo);
+            return result == DialogResult.Yes;
         }
 
         public override void close()
