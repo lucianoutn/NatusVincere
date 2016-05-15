@@ -13,6 +13,7 @@ namespace AlumnoEjemplos.NatusVincere
     public class ObjectsFactory
     {
         private TgcMesh arbolMesh;
+        private TgcMesh pinoMesh;
         private TgcMesh piedraMesh;
         private TgcMesh hachaMesh;
         private TgcMesh maderaMesh;
@@ -38,6 +39,9 @@ namespace AlumnoEjemplos.NatusVincere
 
             TgcScene arbolScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
             this.arbolMesh = arbolScene.Meshes[0];
+
+            TgcScene pinoScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Pino\Pino-TgcScene.xml");
+            this.pinoMesh = pinoScene.Meshes[0];
 
             TgcScene piedraScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Roca\Roca-TgcScene.xml");
             this.piedraMesh = piedraScene.Meshes[0];
@@ -80,6 +84,15 @@ namespace AlumnoEjemplos.NatusVincere
             Arbol arbol = new Arbol(meshInstance, position, scale);
             this.objectList.Add(arbol);
             return arbol;
+        }
+
+        public Pino createPino(Vector3 position, Vector3 scale)
+        {
+            objectId++;
+            TgcMesh meshInstance = this.pinoMesh.createMeshInstance("pino_" + objectId);
+            Pino pino = new Pino(meshInstance, position, scale);
+            this.objectList.Add(pino);
+            return pino;
         }
 
         public Piedra createPiedra(Vector3 position, Vector3 scale)
@@ -134,6 +147,6 @@ namespace AlumnoEjemplos.NatusVincere
             arbolMesh.dispose();
             piedraMesh.dispose();
             hachaMesh.dispose();
-        }
+            pinoMesh.dispose();        }
     }
 }
