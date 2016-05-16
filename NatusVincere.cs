@@ -30,7 +30,6 @@ namespace AlumnoEjemplos.NatusVincere
         const float MOVEMENT_SPEED = 200f;
         List<Crafteable> objects;
         TgcMesh palmeraOriginal;
-        TgcMesh pasto;
         TgcSkyBox skyBox;
         Human personaje; 
         Vector3 targetCamara3, targetCamara1;
@@ -189,12 +188,7 @@ namespace AlumnoEjemplos.NatusVincere
         
             //Hud
             hud = new Hud();
-                        
-            //Cargar modelo de palmera original
-            TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
-            palmeraOriginal = scene.Meshes[0];
-            
-                       
+                                   
             //Camera en 3ra persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
@@ -302,7 +296,7 @@ namespace AlumnoEjemplos.NatusVincere
 
 
                 //Si hubo rotacion
-                if (rotating)
+            if (rotating)
             {
                 //Rotar personaje y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
                 float rotAngle = ((float)Math.PI / 180) * (rotate * elapsedTime);
@@ -393,10 +387,11 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 for (j = 0; j < col; j++)
                 {
-                    x = j * 530 + 900;
+                    x = j * 530 - 2000;
                     z = i * 530 - 4000;
 
                     objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(x, CalcularAltura(x, z) - 800, z), new Vector3(0.75f, 1.75f, 0.75f)));
+                    objects.Add(objectsFactory.createArbusto(terrainPosition + new Vector3(x-100, CalcularAltura(x-100, z-100) - 740, z-100), new Vector3(0.75f, 0.75f, 0.75f)));
                 }
             }
 
@@ -408,6 +403,10 @@ namespace AlumnoEjemplos.NatusVincere
                     z = i * 530 + 2000;
 
                     objects.Add(objectsFactory.createPino(terrainPosition + new Vector3(x, CalcularAltura(x, z) - 790, z), new Vector3(5.75f, 8.75f, 5.75f)));
+                    if( (i==2 && j==3) || (i==4 && j==1) || (i==0 && j==0) )
+                        objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(x + 100, CalcularAltura(x + 100, z + 100) - 740, z + 100), new Vector3(0.75f, 0.75f, 0.75f)));
+                    if(i == 4 && j == 4)
+                        objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(x, CalcularAltura(x, z + 50) - 740, z + 50), new Vector3(0.75f, 0.75f, 0.75f)));
                 }
             }
         }
@@ -422,7 +421,6 @@ namespace AlumnoEjemplos.NatusVincere
         {
             //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
             palmeraOriginal.dispose();
-            //pasto.dispose();
             skyBox.dispose();
             personaje.dispose();
             objectsFactory.dispose();

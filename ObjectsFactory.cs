@@ -14,6 +14,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         private TgcMesh arbolMesh;
         private TgcMesh pinoMesh;
+        private TgcMesh arbustoMesh;
         private TgcMesh piedraMesh;
         private TgcMesh hachaMesh;
         private TgcMesh maderaMesh;
@@ -42,6 +43,9 @@ namespace AlumnoEjemplos.NatusVincere
 
             TgcScene pinoScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Pino\Pino-TgcScene.xml");
             this.pinoMesh = pinoScene.Meshes[0];
+
+            TgcScene arbustoScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Planta\Planta-TgcScene.xml");
+            this.arbustoMesh = arbustoScene.Meshes[0];
 
             TgcScene piedraScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\Roca\Roca-TgcScene.xml");
             this.piedraMesh = piedraScene.Meshes[0];
@@ -85,6 +89,16 @@ namespace AlumnoEjemplos.NatusVincere
             this.objectList.Add(arbol);
             return arbol;
         }
+
+        public Arbusto createArbusto(Vector3 position, Vector3 scale)
+        {
+            objectId++;
+            TgcMesh meshInstance = this.arbustoMesh.createMeshInstance("arbusto_" + objectId);
+            Arbusto arbusto = new Arbusto(meshInstance, position, scale);
+            this.objectList.Add(arbusto);
+            return arbusto;
+        }
+
 
         public Pino createPino(Vector3 position, Vector3 scale)
         {
