@@ -393,6 +393,38 @@ namespace AlumnoEjemplos.NatusVincere
             terrain.render();
 
         }
+<<<<<<< HEAD
+=======
+        
+        public void agegarObjetos(Vector3 terrainPosition)
+        {
+            int col = 5;
+            int x = 0;
+            int z = 0;
+            int i, j;
+
+            for (i = 0; i<col; i++)
+            {
+                for(j = 0; j< col; j++)
+                {
+                    x = j * 530 + 900;
+                    z = i * 530 - 4000;
+
+                    objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(x , CalcularAltura(x, z) - 800, z), new Vector3(0.75f, 1.75f, 0.75f)));
+                }
+            }
+
+            for (i = 0; i < col; i++)
+            {
+                for (j = 0; j < col; j++)
+                {
+                    x = j * 530 - 1700;
+                    z = i * 530 + 2000;
+
+                    objects.Add(objectsFactory.createPino(terrainPosition + new Vector3(x, CalcularAltura(x, z)-790, z), new Vector3(5.75f, 8.75f, 5.75f)));
+                }
+            }
+>>>>>>> 13c1ef223f146c1c354ecc1fa36cbf233e56c299
 
 
         private bool FullScreen()
