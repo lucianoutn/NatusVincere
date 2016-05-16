@@ -215,18 +215,6 @@ namespace AlumnoEjemplos.NatusVincere
             //Vector3 targetFps = personaje.getPosition();
             //GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
         }
-        
-        public void agegarObjetos(Vector3 terrainPosition)
-        {
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(30, 1, 0), new Vector3(0.75f, 1.75f, 0.75f)));
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(230, 311, 1800), new Vector3(0.75f, 1.75f, 0.75f)));
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(2030, 271, 800), new Vector3(0.75f, 1.75f, 0.75f)));
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(230, -311, -3000), new Vector3(0.75f, 1.75f, 0.75f)));
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(-430, -61, -410), new Vector3(0.75f, 1.75f, 0.75f)));
-
-            objects.Add(objectsFactory.createHacha(terrainPosition + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
-            objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
-        }
 
         public override void render(float elapsedTime)
         {
@@ -393,9 +381,7 @@ namespace AlumnoEjemplos.NatusVincere
             terrain.render();
 
         }
-<<<<<<< HEAD
-=======
-        
+
         public void agegarObjetos(Vector3 terrainPosition)
         {
             int col = 5;
@@ -403,14 +389,14 @@ namespace AlumnoEjemplos.NatusVincere
             int z = 0;
             int i, j;
 
-            for (i = 0; i<col; i++)
+            for (i = 0; i < col; i++)
             {
-                for(j = 0; j< col; j++)
+                for (j = 0; j < col; j++)
                 {
                     x = j * 530 + 900;
                     z = i * 530 - 4000;
 
-                    objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(x , CalcularAltura(x, z) - 800, z), new Vector3(0.75f, 1.75f, 0.75f)));
+                    objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(x, CalcularAltura(x, z) - 800, z), new Vector3(0.75f, 1.75f, 0.75f)));
                 }
             }
 
@@ -421,11 +407,10 @@ namespace AlumnoEjemplos.NatusVincere
                     x = j * 530 - 1700;
                     z = i * 530 + 2000;
 
-                    objects.Add(objectsFactory.createPino(terrainPosition + new Vector3(x, CalcularAltura(x, z)-790, z), new Vector3(5.75f, 8.75f, 5.75f)));
+                    objects.Add(objectsFactory.createPino(terrainPosition + new Vector3(x, CalcularAltura(x, z) - 790, z), new Vector3(5.75f, 8.75f, 5.75f)));
                 }
             }
->>>>>>> 13c1ef223f146c1c354ecc1fa36cbf233e56c299
-
+        }
 
         private bool FullScreen()
         {
