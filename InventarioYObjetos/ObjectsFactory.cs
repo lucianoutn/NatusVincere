@@ -4,7 +4,6 @@ using TgcViewer.Utils.TgcSkeletalAnimation;
 using TgcViewer;
 using System.IO;
 using System.Collections.Generic;
-using AlumnoEjemplos.NatusVincere.InventarioYObjetos.Pino;
 
 namespace AlumnoEjemplos.NatusVincere
 {

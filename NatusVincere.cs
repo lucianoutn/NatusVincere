@@ -1,20 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
 using TgcViewer;
 using TgcViewer.Example;
-using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.Input;
 using TgcViewer.Utils._2D;
 using Microsoft.DirectX.DirectInput;
-using TgcViewer.Utils.TgcSkeletalAnimation;
-using System.IO;
 using System.Windows.Forms;
 
 namespace AlumnoEjemplos.NatusVincere
