@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
@@ -10,14 +11,15 @@ namespace AlumnoEjemplos.NatusVincere
     public class Arbusto : Crafteable
     {
         public new int uses = 3;
-        public new int type = 1;
+        public new int type = 2;
+        TgcBoundingSphere arbustoBB;
 
         public Arbusto(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
-            this.type = 1;
+            this.type = 2;
             this.description = "Arbusto";
             this.minimumDistance = 200;
-            this.storable = false;
+            this.arbustoBB = new TgcBoundingSphere(position, 0.75f);
         }
 
         public override void doAction(Human user)
@@ -36,5 +38,9 @@ namespace AlumnoEjemplos.NatusVincere
             return this.type;
         }
 
+        public override TgcBoundingSphere getBB()
+        {
+            return this.arbustoBB;
+        }
     }
 }

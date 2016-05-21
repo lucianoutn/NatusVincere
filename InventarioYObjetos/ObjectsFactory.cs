@@ -4,6 +4,7 @@ using TgcViewer.Utils.TgcSkeletalAnimation;
 using TgcViewer;
 using System.IO;
 using System.Collections.Generic;
+using TgcViewer.Utils.TgcGeometry;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -53,8 +54,8 @@ namespace AlumnoEjemplos.NatusVincere
             TgcScene maderaScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Madera\Madera-TgcScene.xml");
             this.maderaMesh = maderaScene.Meshes[0];
 
-            TgcScene fogataScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Fogata\Fogata-TgcScene.xml");
-            this.fogataMesh = maderaScene.Meshes[0];
+            TgcScene fogataScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Fogata\wood+fire-TgcScene.xml");
+            this.fogataMesh = fogataScene.Meshes[0];
 
             dirAnim = new DirectoryInfo(skeletalPath + "Animations\\");
             animFiles = dirAnim.GetFiles("*-TgcSkeletalAnim.xml", SearchOption.TopDirectoryOnly);

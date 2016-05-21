@@ -1,4 +1,5 @@
 ﻿using Microsoft.DirectX;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
@@ -7,6 +8,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 3;
+        private TgcBoundingSphere tronco;
 
         public Madera(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
@@ -14,6 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Madera";
             this.minimumDistance = 200;
             this.status = 1;
+            this.tronco = new TgcBoundingSphere(position, 1.75f);
         }
 
         public override void doAction(Human user)
@@ -30,6 +33,11 @@ namespace AlumnoEjemplos.NatusVincere
         public override int getType()
         {
             return this.type;
+        }
+
+        public override TgcBoundingSphere getBB()
+        {
+            return this.tronco;
         }
 
     }

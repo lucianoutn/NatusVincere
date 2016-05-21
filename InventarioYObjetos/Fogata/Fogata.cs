@@ -1,4 +1,5 @@
 ﻿using Microsoft.DirectX;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
@@ -7,6 +8,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 20;
         public new int type = 6;
+        private TgcBoundingSphere fogataBB;
 
         public Fogata(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
@@ -14,6 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Fogata";
             this.minimumDistance = 200;
             this.storable = true;
+            this.fogataBB = new TgcBoundingSphere(position, 0.75f);
         }
 
         public override void doAction(Human user)
@@ -30,5 +33,9 @@ namespace AlumnoEjemplos.NatusVincere
             return this.type;
         }
 
+        public override TgcBoundingSphere getBB()
+        {
+            return fogataBB;
+        }
     }
 }

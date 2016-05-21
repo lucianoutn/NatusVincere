@@ -23,7 +23,7 @@ namespace AlumnoEjemplos.NatusVincere
         private TimeSpan tTranscurridoVida = TimeSpan.Zero;
         private TimeSpan tTranscurridoAgua = TimeSpan.Zero;
         private TimeSpan tTranscurridoSuenio = TimeSpan.Zero;
-
+        private TgcBoundingSphere BB;
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -34,6 +34,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.health = 101;
             this.agua = 101;
             this.suenio = -1;
+            this.BB = new TgcBoundingSphere(position, 1.75f);
         }
 
         public void recalcularStats()
@@ -120,6 +121,12 @@ namespace AlumnoEjemplos.NatusVincere
         {
             return this.mesh.Rotation;
         }
+
+        public TgcSkeletalMesh getMesh()
+        {
+            return this.mesh;
+        }
+
         public void playAnimation(string animation, bool playLoop)
         {
             this.mesh.playAnimation(animation, playLoop);
@@ -131,6 +138,16 @@ namespace AlumnoEjemplos.NatusVincere
         public void dispose()
         {
             this.mesh.dispose();
+        }
+
+        public TgcBoundingSphere getBB()
+        {
+            return BB;
+        }
+
+        public void setBB(Vector3 position)
+        {
+            BB = new TgcBoundingSphere(position, 1.75f);
         }
     }
 }

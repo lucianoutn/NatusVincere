@@ -138,13 +138,7 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
             skyBox.updateValues();
             
-            //configurando el frustum
-            //Plane leftPlane = new Plane(0,0,0,1000);
-            //Plane rightPlane = new Plane(0, 0, 0, 1000);
-            //Plane topPlane = new Plane(0, 0, 0, 1000);
-            //Plane bottomPlane = new Plane(0, 0, 0, 1000);
-            //Plane nearPlane = new Plane(0, 0, 0, 1000);
-            //Plane farPlane = new Plane(0, 0, 0, 1000);
+            //configurando el frustum  Plane leftPlane = new Plane(0,0,0,1000);  Plane rightPlane = new Plane(0, 0, 0, 1000);  Plane topPlane = new Plane(0, 0, 0, 1000);  Plane bottomPlane = new Plane(0, 0, 0, 1000);  Plane nearPlane = new Plane(0, 0, 0, 1000);  Plane farPlane = new Plane(0, 0, 0, 1000);
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
             frustum = new TgcFrustum();
 
@@ -310,7 +304,20 @@ namespace AlumnoEjemplos.NatusVincere
                     jump,
                     FastMath.Cos(personaje.getRotation().Y) * moveForward
                     );
-                personaje.move(movementVector);
+                
+                bool collide = false;
+
+                foreach (Crafteable objeto in objects)
+                {
+                    //collide = TgcCollisionUtils.testAABBAABB(personaje.getMesh().BoundingBox,objeto.getMesh().BoundingBox);
+                    objeto.getBB().render();
+                };
+
+                if (!collide)
+                {
+                    personaje.move(movementVector);
+                }
+                personaje.getMesh().BoundingBox.render();
             }
 
             //actualizando camaras
@@ -359,7 +366,8 @@ namespace AlumnoEjemplos.NatusVincere
             currentZ = personaje.getPosition().Z;
             altura = CalcularAltura(currentX, currentZ);
             personaje.setPosition(new Vector3(currentX, altura, currentZ));
-          
+            personaje.setBB(new Vector3(currentX, altura, currentZ));
+
 
             personaje.playAnimation(animation, true);
             personaje.updateAnimation();
@@ -415,7 +423,6 @@ namespace AlumnoEjemplos.NatusVincere
         public override void close()
         {
             //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
-            palmeraOriginal.dispose();
             skyBox.dispose();
             personaje.dispose();
             objectsFactory.dispose();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.DirectX;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
@@ -7,12 +8,14 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 2;
+        private TgcBoundingSphere piedraBB;
 
         public Piedra(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
             this.type = 2;
             this.description = "Piedra";
             this.minimumDistance = 200;
+            this.piedraBB = new TgcBoundingSphere(position, 0.75f);
         }
 
         public override void doAction(Human user)
@@ -31,5 +34,9 @@ namespace AlumnoEjemplos.NatusVincere
             return this.type;
         }
 
+        public override TgcBoundingSphere getBB()
+        {
+            return this.piedraBB;
+        }
     }
 }

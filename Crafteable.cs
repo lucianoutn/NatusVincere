@@ -14,6 +14,7 @@ namespace AlumnoEjemplos.NatusVincere
         private Human owner;
         private TgcMesh mesh;
         public bool storable;
+        public TgcBoundingSphere BB;
 
 
         public Crafteable(TgcMesh mesh, Vector3 position, Vector3 scale)
@@ -22,6 +23,8 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.Position = position;
             this.mesh.Scale = scale;
             this.storable = true;
+
+            this.BB = new TgcBoundingSphere(getMesh().BoundingBox.calculateBoxCenter(), getMesh().BoundingBox.calculateBoxRadius());
         }
 
        public void use(Human user)
@@ -118,6 +121,16 @@ namespace AlumnoEjemplos.NatusVincere
         public virtual int getStatus()
         {
             return this.status;
+        }
+
+        public TgcMesh getMesh()
+        {
+            return this.mesh;
+        }
+
+        public virtual TgcBoundingSphere getBB()
+        {
+            return this.BB;
         }
 
         public void dispose()

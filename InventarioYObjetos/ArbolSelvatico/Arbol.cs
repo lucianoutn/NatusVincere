@@ -1,4 +1,5 @@
 ﻿using Microsoft.DirectX;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
@@ -7,6 +8,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 1;
+        private TgcBoundingSphere tronco;
 
         public Arbol(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
@@ -14,6 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Arbol";
             this.minimumDistance = 200;
             this.storable = false;
+            this.tronco = new TgcBoundingSphere(position, 10.75f);
         }
 
         public override void doAction(Human user)
@@ -30,6 +33,11 @@ namespace AlumnoEjemplos.NatusVincere
         public override int getType()
         {
             return this.type;
+        }
+
+        public override TgcBoundingSphere getBB()
+        {
+            return this.tronco;
         }
 
     }
