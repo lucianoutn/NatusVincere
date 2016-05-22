@@ -307,11 +307,7 @@ namespace AlumnoEjemplos.NatusVincere
                 
                 bool collide = false;
 
-                foreach (Crafteable objeto in objects)
-                {
-                    //collide = TgcCollisionUtils.testAABBAABB(personaje.getMesh().BoundingBox,objeto.getMesh().BoundingBox);
-                    objeto.getBB().render();
-                };
+                
 
                 if (!collide)
                 {
@@ -319,7 +315,11 @@ namespace AlumnoEjemplos.NatusVincere
                 }
                 personaje.getMesh().BoundingBox.render();
             }
-
+            for (int i = 0; i < objects.Count; i++)
+            {
+                //collide = TgcCollisionUtils.testAABBAABB(personaje.getMesh().BoundingBox,objeto.getMesh().BoundingBox);
+                objects[i].Render();
+            };
             //actualizando camaras
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
             targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));

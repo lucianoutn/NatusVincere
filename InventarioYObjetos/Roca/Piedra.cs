@@ -15,7 +15,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.type = 2;
             this.description = "Piedra";
             this.minimumDistance = 200;
-            this.piedraBB = new TgcBoundingSphere(position, 0.75f);
+            this.piedraBB = new TgcBoundingSphere(new Vector3(position.X, position.Y + 14, position.Z), 12.75f);
         }
 
         public override void doAction(Human user)
@@ -37,6 +37,11 @@ namespace AlumnoEjemplos.NatusVincere
         public override TgcBoundingSphere getBB()
         {
             return this.piedraBB;
+        }
+
+        public override void Render()
+        {
+            piedraBB.render();
         }
     }
 }

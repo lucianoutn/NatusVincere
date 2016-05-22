@@ -19,7 +19,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.type = 2;
             this.description = "Arbusto";
             this.minimumDistance = 200;
-            this.arbustoBB = new TgcBoundingSphere(position, 0.75f);
+            this.arbustoBB = new TgcBoundingSphere(new Vector3(position.X, position.Y + 8, position.Z), 10.75f);
         }
 
         public override void doAction(Human user)
@@ -41,6 +41,10 @@ namespace AlumnoEjemplos.NatusVincere
         public override TgcBoundingSphere getBB()
         {
             return this.arbustoBB;
+        }
+        public override void Render()
+        {
+            arbustoBB.render();
         }
     }
 }

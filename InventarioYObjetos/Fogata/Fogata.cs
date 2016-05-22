@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Fogata";
             this.minimumDistance = 200;
             this.storable = true;
-            this.fogataBB = new TgcBoundingSphere(position, 0.75f);
+            this.fogataBB = new TgcBoundingSphere(new Vector3(position.X, position.Y + 14, position.Z), 12.75f);
         }
 
         public override void doAction(Human user)
@@ -36,6 +36,11 @@ namespace AlumnoEjemplos.NatusVincere
         public override TgcBoundingSphere getBB()
         {
             return fogataBB;
+        }
+
+        public override void Render()
+        {
+            fogataBB.render();
         }
     }
 }
