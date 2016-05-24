@@ -22,10 +22,11 @@ namespace AlumnoEjemplos.NatusVincere
     public class NatusVincere : TgcExample
     {
         TgcSprite spriteLogo;
-        
+            
        // TextCreator textCreator;
         DateTime tiempoLogo;
         Hud hud;
+    
 
         const float MOVEMENT_SPEED = 200f;
         List<Crafteable> objects;
@@ -49,6 +50,8 @@ namespace AlumnoEjemplos.NatusVincere
         float currentX;
         float currentZ;
         float altura;
+
+        //GrillaRegular grilla;
 
         public override string getCategory()
         {
@@ -114,7 +117,7 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.FullScreenEnable = this.FullScreen();
             GuiController.Instance.FullScreenPanel.ControlBox = false;
             GuiController.Instance.FullScreenPanel.Text = null; //"NatusVincere";
-         
+            
 
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
@@ -126,15 +129,17 @@ namespace AlumnoEjemplos.NatusVincere
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
                        
-            //creaion de la escena
+            //creacion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
             objects = new List<Crafteable>();
             objectsFactory = new ObjectsFactory(objects);
             
             //Crear SkyBox
+            
             skyBox = new TgcSkyBox();
+            skyBox.Color = Color.Blue; //cambiarlo
             skyBox.Center = new Vector3(0, 500, 0);
-            skyBox.Size = new Vector3(40000, 40000, 40000);
+            skyBox.Size = new Vector3(12000, 12000, 12000);
             string texturesPath = System.Environment.CurrentDirectory + @"\Examples\Media\Texturas\Quake\SkyBox LostAtSeaDay\";
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
@@ -142,6 +147,8 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "lostatseaday_rt.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "lostatseaday_bk.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
+           
+            skyBox.SkyEpsilon =50f;
             skyBox.updateValues();
             
             //configurando el frustum
@@ -153,7 +160,10 @@ namespace AlumnoEjemplos.NatusVincere
             //Plane farPlane = new Plane(0, 0, 0, 1000);
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
             frustum = new TgcFrustum();
-
+            
+         
+            TgcViewer.Utils.TgcD3dDevice.zFarPlaneDistance = 1f;
+            
             //Path de Heightmap default del terreno
             currentHeightmap = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "Heightmap2.jpg";
 
@@ -180,6 +190,9 @@ namespace AlumnoEjemplos.NatusVincere
             terrain.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new Vector3(0, 0, 0));
             terrain.loadTexture(currentTexture);
 
+
+            //grilla = new GrillaRegular();
+            
             //Calculo altura del terreno para parar al personaje
             altura = CalcularAltura(0, 0);
             Vector3 terrainPosition = new Vector3(0, altura, 0);
@@ -243,6 +256,7 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 hud.renderizate(personaje);
             }
+            //fin logo y hud
 
             
             float velocidadCaminar = 5f;
@@ -340,7 +354,7 @@ namespace AlumnoEjemplos.NatusVincere
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
             targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
             d3dDevice.Transform.Projection.Scale(4f, 4f, 4f);
-            frustum.updateVolume(d3dDevice.Transform.View, d3dDevice.Transform.Projection);
+            //frustum.updateVolume(d3dDevice.Transform.View, d3dDevice.Transform.Projection);
 
 
             //Controlo los modificadores de la camara
@@ -367,7 +381,15 @@ namespace AlumnoEjemplos.NatusVincere
             //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
             //           -GuiController.Instance.D3dInput.YposRelative * velocidadRotacion);
             //GuiController.Instance.FpsCamera.setCamera(eye, targetCamara + new Vector3(1.0f, 0.0f, 0.0f));
-            
+
+            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
+            //GuiController.Instance.Frustum.updateMesh(personaje.getPosition(),targetCamara1);
+            GuiController.Instance.BackgroundColor = Color.Empty; //Color.Navy;
+            frustum.render();
+            skyBox.Center = personaje.getPosition();
+            skyBox.updateValues();
+            //GuiController.Instance.Frustum.render();
+            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
 
             
             //recalculo la vida del jugador segun el tiempo transcurrido
