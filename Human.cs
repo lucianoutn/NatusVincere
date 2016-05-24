@@ -24,6 +24,7 @@ namespace AlumnoEjemplos.NatusVincere
         private TimeSpan tTranscurridoAgua = TimeSpan.Zero;
         private TimeSpan tTranscurridoSuenio = TimeSpan.Zero;
         private TgcBoundingSphere BB;
+        private TgcBoundingCylinder BC;
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -34,7 +35,13 @@ namespace AlumnoEjemplos.NatusVincere
             this.health = 101;
             this.agua = 101;
             this.suenio = -1;
-            this.BB = new TgcBoundingSphere(position, 1.75f);
+            //this.BB = new TgcBoundingSphere(positionBS(position), 5.75f);
+            this.BC = new TgcBoundingCylinder(positionBS(position), 5.75f, 15f);
+        }
+
+        private Vector3 positionBS(Vector3 position)
+        {
+            return new Vector3(position.X, position.Y + 20, position.Z);
         }
 
         public void recalcularStats()
@@ -43,15 +50,15 @@ namespace AlumnoEjemplos.NatusVincere
             tTranscurridoVida = tTranscurridoVida + tActual.Subtract(this.tAnterior);
             tTranscurridoAgua = tTranscurridoAgua + tActual.Subtract(this.tAnterior);
             tTranscurridoSuenio = tTranscurridoSuenio + tActual.Subtract(this.tAnterior);
-         
-            if (tTranscurridoVida.TotalSeconds > 30 )
+
+            if (tTranscurridoVida.TotalSeconds > 30)
             {
                 this.health = health - 1;
                 tTranscurridoVida = TimeSpan.Zero;
             }
             if (tTranscurridoAgua.TotalMinutes > 1)
             {
-                this.agua = this.agua-1;
+                this.agua = this.agua - 1;
                 tTranscurridoAgua = TimeSpan.Zero;
             }
             if (tTranscurridoSuenio.TotalMinutes > 2)
@@ -59,7 +66,7 @@ namespace AlumnoEjemplos.NatusVincere
                 this.suenio = this.suenio + 1;
                 tTranscurridoSuenio = TimeSpan.Zero;
             }
-           
+
             this.tAnterior = this.tActual;
         }
 
@@ -140,14 +147,23 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.dispose();
         }
 
-        public TgcBoundingSphere getBB()
+        //public TgcBoundingSphere getBB()
+        public TgcBoundingCylinder getBB()
         {
-            return BB;
+            //return BB;
+            return BC;
+        }
+
+        public void Render()
+        {
+            //BB.render();
+            BC.render();
         }
 
         public void setBB(Vector3 position)
         {
-            BB = new TgcBoundingSphere(position, 1.75f);
+            //BB = new TgcBoundingSphere(positionBS(position), 5.75f);
+            this.BC = new TgcBoundingCylinder(positionBS(position), 5.75f, 15f);
         }
     }
 }

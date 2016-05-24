@@ -24,7 +24,6 @@ namespace AlumnoEjemplos.NatusVincere
 
         const float MOVEMENT_SPEED = 200f;
         List<Crafteable> objects;
-        TgcMesh palmeraOriginal;
         TgcSkyBox skyBox;
         Human personaje; 
         Vector3 targetCamara3, targetCamara1;
@@ -174,13 +173,13 @@ namespace AlumnoEjemplos.NatusVincere
             
             //creo el personaje
             personaje = objectsFactory.createHuman(terrainPosition + new Vector3(-100, 1, 0), new Vector3(1, 1, 1));
-        
+            personaje.setBB(terrainPosition + new Vector3(-100, 1, 0));
             //Hud
             hud = new Hud();
                                    
             //Camera en 3ra persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
+            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));// le sumo 50y a la camara para que se vea mjor
             GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 10f, 60f);
 
             agegarObjetos(terrainPosition);
@@ -201,8 +200,6 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void render(float elapsedTime)
         {
-                            
-            
             //Renderizo el logo del inicio y el hud
             if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
             {
@@ -295,33 +292,41 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             //Vector de movimiento
-            Vector3 movementVector = Vector3.Empty;
+         
             if (moving)
             {
+                Vector3 movementVector;
+                Vector3 movementVectorAnterior = GuiController.Instance.ThirdPersonCamera.Position;
+
                 //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
                 movementVector = new Vector3(
                     FastMath.Sin(personaje.getRotation().Y) * moveForward,
                     jump,
                     FastMath.Cos(personaje.getRotation().Y) * moveForward
                     );
-                
-                bool collide = false;
 
+               ;
                 
-
-                if (!collide)
+                if (!hayColision())
                 {
                     personaje.move(movementVector);
+                    personaje.setBB(movementVector);
                 }
-                personaje.getMesh().BoundingBox.render();
+                else
+                {
+                    personaje.setPosition(movementVectorAnterior);
+                }
             }
+
+            //Mostrar Bounding Sphere
             for (int i = 0; i < objects.Count; i++)
             {
-                //collide = TgcCollisionUtils.testAABBAABB(personaje.getMesh().BoundingBox,objeto.getMesh().BoundingBox);
                 objects[i].Render();
             };
+            personaje.Render();
+
             //actualizando camaras
-            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
+            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
             targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
             d3dDevice.Transform.Projection.Scale(4f, 4f, 4f);
             frustum.updateVolume(d3dDevice.Transform.View, d3dDevice.Transform.Projection);
@@ -377,6 +382,21 @@ namespace AlumnoEjemplos.NatusVincere
 
             terrain.render();
 
+        }
+
+        private bool hayColision()
+        {
+            for (int i = 0; i < objects.Count; i++)
+            {
+                //if (TgcCollisionUtils.testSphereSphere(objects[i].getBB(), personaje.getBB()))
+                if(TgcCollisionUtils.testSphereCylinder(objects[i].getBB(), personaje.getBB()))
+                {
+                    return true;
+                }
+
+            };
+
+            return false;
         }
 
         public void agegarObjetos(Vector3 terrainPosition)

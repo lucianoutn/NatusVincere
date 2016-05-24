@@ -8,7 +8,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 20;
         public new int type = 6;
-        private TgcBoundingSphere fogataBB;
+        TgcBoundingSphere fogataBB;
 
         public Fogata(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Fogata";
             this.minimumDistance = 200;
             this.storable = true;
-            this.fogataBB = new TgcBoundingSphere(new Vector3(position.X, position.Y + 14, position.Z), 12.75f);
+            this.fogataBB = new TgcBoundingSphere(new Vector3(position.X, position.Y, position.Z), 12.75f);
         }
 
         public override void doAction(Human user)

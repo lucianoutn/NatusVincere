@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Arbol";
             this.minimumDistance = 200;
             this.storable = false;
-            this.tronco = new TgcBoundingSphere(new Vector3(position.X, position.Y, position.Z), 40.75f);
+            this.tronco = new TgcBoundingSphere(new Vector3(position.X, position.Y, position.Z), 15.75f);
         }
 
         public override void doAction(Human user)
