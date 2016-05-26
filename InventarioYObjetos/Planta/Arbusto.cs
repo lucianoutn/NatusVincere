@@ -45,5 +45,16 @@ namespace AlumnoEjemplos.NatusVincere
         {
             arbustoBB.render();
         }
+
+        public override void borrarBB()
+        {
+            this.arbustoBB.dispose();
+            this.arbustoBB = new TgcBoundingSphere(new Vector3(0f, 0f, 0f), radioBB);
+        }
+
+        public override void setBB(Vector3 position)
+        {
+            this.arbustoBB = new TgcBoundingSphere(new Vector3(position.X, position.Y + 8, position.Z), radioBB);
+        }
     }
 }

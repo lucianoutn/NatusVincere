@@ -8,6 +8,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 2;
+        private float piedraRadio = 12.75f;
         private TgcBoundingSphere piedraBB;
 
         public Piedra(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
@@ -15,7 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.type = 2;
             this.description = "Piedra";
             this.minimumDistance = 200;
-            this.piedraBB = new TgcBoundingSphere(new Vector3(position.X, position.Y + 14, position.Z), 12.75f);
+            this.piedraBB = new TgcBoundingSphere(new Vector3(position.X, position.Y + 14, position.Z), piedraRadio);
         }
 
         public override void doAction(Human user)
@@ -42,6 +43,17 @@ namespace AlumnoEjemplos.NatusVincere
         public override void Render()
         {
             piedraBB.render();
+        }
+
+        public override void borrarBB()
+        {
+            this.piedraBB.dispose();
+            this.piedraBB = new TgcBoundingSphere(new Vector3(0f, 0f, 0f), piedraRadio);
+        }
+
+        public override void setBB(Vector3 position)
+        {
+            this.piedraBB = new TgcBoundingSphere(new Vector3(position.X, position.Y + 8, position.Z), piedraRadio);
         }
     }
 }

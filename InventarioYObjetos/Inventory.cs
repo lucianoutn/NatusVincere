@@ -266,6 +266,7 @@ namespace AlumnoEjemplos.NatusVincere
                 Crafteable firstItem = this.items[firstIndex];
                 dropObject(firstIndex);
                 firstItem.drop(position);
+                firstItem.setBB(position);
             }
         }
 

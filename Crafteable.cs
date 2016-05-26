@@ -1,4 +1,5 @@
-﻿using Microsoft.DirectX;
+﻿using System;
+using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
@@ -134,6 +135,14 @@ namespace AlumnoEjemplos.NatusVincere
             return this.BB;
         }
 
+        public virtual void borrarBB()
+        {
+        }
+
+        public virtual void setBB(Vector3 position)
+        {
+            System.Console.WriteLine("Algo");
+        }
         public void dispose()
         {
             this.status = 5;
@@ -144,5 +153,6 @@ namespace AlumnoEjemplos.NatusVincere
         {
             this.getBB().render();
         }
+
     }
 }

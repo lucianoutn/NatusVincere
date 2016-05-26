@@ -8,7 +8,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 1;
-        private float radioBC = 98f;
+        private float radioBC = 48f;
         TgcBoundingSphere BC;
 
         public Arbol(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
@@ -16,8 +16,8 @@ namespace AlumnoEjemplos.NatusVincere
             this.type = 1;
             this.description = "Arbol";
             this.minimumDistance = 130;
-            this.storable = false;
-            this.BC = new TgcBoundingSphere(new Vector3(position.X, position.Y + 187, position.Z), radioBC);
+            storable = false;
+            setBB(position);
         }
 
         public override void doAction(Human user)
@@ -46,5 +46,15 @@ namespace AlumnoEjemplos.NatusVincere
             BC.render();
         }
 
+        public override void borrarBB()
+        {
+            this.BC.dispose();
+            this.BC = new TgcBoundingSphere(new Vector3(0f,0f,0f), radioBC);
+        }
+
+        public override void setBB(Vector3 position)
+        {
+            this.BC = new TgcBoundingSphere(new Vector3(position.X + 8, position.Y + 45, position.Z), radioBC);
+        }
     }
 }

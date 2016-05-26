@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.type = 1;
             this.description = "Pino";
             this.minimumDistance = 200;
-            this.storable = false;
+            this.storable = true;
             this.tronco = new TgcBoundingSphere(new Vector3(position.X, position.Y + 90, position.Z), pinoBB);
         }
         public override void doAction(Human user)
@@ -43,6 +43,17 @@ namespace AlumnoEjemplos.NatusVincere
         public override void Render()
         {
             tronco.render();
+        }
+
+        public override void borrarBB()
+        {
+            this.tronco.dispose();
+            this.tronco = new TgcBoundingSphere(new Vector3(0f, 0f, 0f), pinoBB);
+        }
+
+        public override void setBB(Vector3 position)
+        {
+            this.tronco = new TgcBoundingSphere(new Vector3(position.X, position.Y + 45, position.Z), pinoBB);
         }
     }
 }

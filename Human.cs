@@ -72,7 +72,9 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void leaveObject()
         {
-            this.inventory.leaveObject(this.getPosition());
+            Vector3 posicionActual = new Vector3(getPosition().X + 55, this.getPosition().Y, this.getPosition().Z);
+
+            this.inventory.leaveObject(posicionActual);
         }
 
         public void render()
@@ -81,6 +83,7 @@ namespace AlumnoEjemplos.NatusVincere
         }
 
         public void store(Crafteable item) {
+            item.borrarBB();
             this.inventory.addItem(item);
         }
 
