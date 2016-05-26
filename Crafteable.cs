@@ -48,6 +48,7 @@ namespace AlumnoEjemplos.NatusVincere
         public void drop(Vector3 position)
         {
             this.setPosition(position);
+
             this.status = 1;
         }
 

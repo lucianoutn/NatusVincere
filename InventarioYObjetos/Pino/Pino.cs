@@ -8,6 +8,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 1;
+        private float pinoBB = 20;
         private TgcBoundingSphere tronco;
 
         public Pino(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
@@ -16,7 +17,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Pino";
             this.minimumDistance = 200;
             this.storable = false;
-            this.tronco = new TgcBoundingSphere(new Vector3(position.X, position.Y + 4, position.Z), 10.75f);
+            this.tronco = new TgcBoundingSphere(new Vector3(position.X, position.Y + 90, position.Z), pinoBB);
         }
         public override void doAction(Human user)
         {
