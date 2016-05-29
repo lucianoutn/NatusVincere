@@ -147,9 +147,13 @@ namespace AlumnoEjemplos.NatusVincere
         {
             if (crafteable.getType() == 1 && crafteable.getStatus() == 1)
             {
-                this.createMadera(crafteable.getPosition(), new Vector3(1, 1, 1));
+                Vector3 crafteablePos = crafteable.getPosition();
+
+                Madera madera = this.createMadera(new Vector3(crafteablePos.X, crafteablePos.Y + 60, crafteablePos.Z), new Vector3(1f, 1f, 1f));
+                madera.setBB(new Vector3(crafteablePos.X, crafteablePos.Y + 65, crafteablePos.Z));
+
+                
                 crafteable.destroy();
-                return;
             }
 
         }
@@ -159,6 +163,7 @@ namespace AlumnoEjemplos.NatusVincere
             arbolMesh.dispose();
             piedraMesh.dispose();
             hachaMesh.dispose();
-            pinoMesh.dispose();        }
+            pinoMesh.dispose();
+        }
     }
 }
