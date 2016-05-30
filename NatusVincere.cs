@@ -17,38 +17,42 @@ using TgcViewer.Utils.TgcSkeletalAnimation;
 using System.IO;
 using System.Windows.Forms;
 using AlumnoEjemplos.NatusVincere.NVSkyBoxes;
+using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.NatusVincere
 {
     public class NatusVincere : TgcExample
     {
+              
         TgcSprite spriteLogo;
-            
-       // TextCreator textCreator;
         DateTime tiempoLogo;
+        DateTime tiempoPresentacion;
         Hud hud;
-    
-
-        const float MOVEMENT_SPEED = 200f;
         List<Crafteable> objects;
         TgcMesh palmeraOriginal;
         //TgcMesh pasto;
         NVSkyBox skyBox;
         Human personaje;
-        CamaraFps cam;
-        TgcFpsCamera camera;
+        NVCamaraFps cam;
+        //TgcFpsCamera cam;
         Vector3 targetCamara3, targetCamara1;
-        Vector3 eye; 
-        Vector3 targetFps;
+        //Vector3 eye; 
+        //Vector3 targetFps;
         Vector3 vNormal = new Vector3(0,1,0);
-        TgcFrustum frustum;
+        //TgcFrustum frustum;
         TgcD3dInput input;
         Microsoft.DirectX.Direct3D.Device d3dDevice;
         ObjectsFactory objectsFactory;
-        String animationCaminar = "Walk";
-
-
         TgcSimpleTerrain terrain;
+        //GrillaRegular grilla;
+        //static Timer temporizador;
+        TgcViewer.Utils.Logger log; 
+        Vector3 lookfrom = new Vector3(-1500, 2000, 1000);
+        Vector3 lookAt = new Vector3(0, 0, 0);
+        
+
+        //string animationCaminar = "Walk";
+        const float MOVEMENT_SPEED = 200f;
         string currentHeightmap;
         string currentTexture;
         float currentScaleXZ;
@@ -56,9 +60,11 @@ namespace AlumnoEjemplos.NatusVincere
         float currentX;
         float currentZ;
         float altura;
+        float currentXCam;
+        float currentZCam;
+        float alturaCam;
 
-        //GrillaRegular grilla;
-
+        
         public override string getCategory()
         {
             return "AlumnoEjemplos";
@@ -117,6 +123,8 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void init()
         {
+            //Inicializaciones
+            input = GuiController.Instance.D3dInput; 
             d3dDevice = GuiController.Instance.D3dDevice;
 
             //FullScreen
@@ -124,16 +132,13 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.FullScreenPanel.ControlBox = false;
             GuiController.Instance.FullScreenPanel.Text = null; //"NatusVincere";
             
-            //Inicializaciones
-            input = GuiController.Instance.D3dInput; 
-
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
             tiempoLogo = DateTime.Now;
+            tiempoPresentacion = DateTime.Now;
             //Ubicarlo centrado en la pantalla
             Size screenSize = GuiController.Instance.Panel3d.Size;
-
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
                        
@@ -143,20 +148,17 @@ namespace AlumnoEjemplos.NatusVincere
             objectsFactory = new ObjectsFactory(objects);
             
             //Crear SkyBox
-            
             skyBox = new NVSkyBox();
             skyBox.horario("maniana"); //cambiarlo "maniana" "dia" "tarde" "noche"
-            //skyBox.Center = new Vector3(0, 1200, 0); //ajustando altura
-            skyBox.Size = new Vector3(8000, 8000, 8000);
-            string texturesPath = System.Environment.CurrentDirectory + @"\Examples\Media\Texturas\Quake\SkyBox LostAtSeaDay\";
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "lostatseaday_lf.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "lostatseaday_rt.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "lostatseaday_bk.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
-            skyBox.SkyEpsilon =1f;
-            skyBox.updateValues();
+            skyBox.init();
+            /*
+            temporizador = new Timer();
+            temporizador.Interval = 200;
+            temporizador.Enabled = true;
+            temporizador.Start();
+            temporizador.Tick += new EventHandler(cambioHorario);
+            */
+
             
             //configurando el frustum
             //Plane leftPlane = new Plane(0,0,0,1000);
@@ -166,7 +168,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Plane nearPlane = new Plane(0, 0, 0, 1000);
             //Plane farPlane = new Plane(0, 0, 0, 1000);
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
-            frustum = new TgcFrustum();
+            //frustum = new TgcFrustum();
             
          
             //TgcViewer.Utils.TgcD3dDevice.zFarPlaneDistance = 1f;
@@ -179,8 +181,8 @@ namespace AlumnoEjemplos.NatusVincere
 
             //*****MODIFICADORES*****
             //Modifier para la camara
-            GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", false);
-            GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", true);
+            GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", true);
+            GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", false);
             GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
             //Modifier para cambiar el heightmap
             GuiController.Instance.Modifiers.addTexture("heightmap", currentHeightmap);
@@ -216,26 +218,35 @@ namespace AlumnoEjemplos.NatusVincere
             
                        
             //Camera en 3ra persona
-            GuiController.Instance.ThirdPersonCamera.Enable = true;
+            //GuiController.Instance.ThirdPersonCamera.Enable = true;
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
             GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 10f, 60f);
 
             agegarObjetos(terrainPosition);
 
             //camara rotacional
-            GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
+            GuiController.Instance.RotCamera.setCamera(targetCamara3, 500f);
             
             ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
             //Camara en primera persona, tipo videojuego FPS
             //Solo puede haber una camara habilitada a la vez. Al habilitar la camara FPS se deshabilita la camara rotacional
             //Por default la camara FPS viene desactivada
             //Configurar posicion y hacia donde se mira
-            eye = targetCamara3;
+            //eye = targetCamara3;
             //Vector3 eye = new Vector3(2,2,2);
             //Vector3 targetFps = personaje.getPosition();
-            camera = new TgcFpsCamera(); 
-            //GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
-            camera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
+            //cam = new TgcFpsCamera(); 
+            //cam.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
+            log = GuiController.Instance.Logger;
+            log.clear();
+            cam = new NVCamaraFps(personaje);
+            cam.alturaPreseteada =50;
+            cam.setCamera(personaje.getPosition(), personaje.getPosition() + new Vector3(50f,0,0));
+            input.EnableMouseSmooth = true;
+            //d3dDevice.Transform.View = Matrix.LookAtLH(lookfrom, lookAt, new Vector3(0, 1, 0));
+            
+            
+            log.log("Inicio Juego", Color.Brown);
         }
         
         public void agegarObjetos(Vector3 terrainPosition)
@@ -250,24 +261,67 @@ namespace AlumnoEjemplos.NatusVincere
             objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
         }
 
+        
+        
+
         public override void render(float elapsedTime)
         {
                             
             
             //Renderizo el logo del inicio y el hud
-            if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
+            if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)10)))
             {
-                GuiController.Instance.Drawer2D.beginDrawSprite();
-                spriteLogo.render();
-                GuiController.Instance.Drawer2D.endDrawSprite();
+                //animacion
+                //GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", true);
+                //personaje.render();
+                //personaje.updateAnimation();
+               
+                //GuiController.Instance.ThirdPersonCamera.rotateY(0.5f * elapsedTime);
+                //lookfrom.Z -= elapsedTime * 500;
+               // lookfrom.Scale(2*elapsedTime);
+                if (lookfrom.Y > targetCamara3.Y) lookfrom.Y += (elapsedTime * -100f);
+                if (lookfrom.X < targetCamara3.X) lookfrom.X += (elapsedTime * 100f);
+                //if (lookfrom.Z > targetCamara3.Z) 
+                lookfrom.Z += (elapsedTime * -100f);
+                lookAt = personaje.getPosition();
+                //lookfrom.Scale(-0.2f/elapsedTime);
+               Matrix lookAtM = Matrix.LookAtLH(lookfrom, lookAt, new Vector3(0, 1, 0));
+               //Matrix rotM = Matrix.RotationY(2f * elapsedTime);
+               //Matrix scaleM = Matrix.Scaling(0.2f*elapsedTime,0.2f*elapsedTime,0.2f*elapsedTime);
+               Matrix result = lookAtM;
+               d3dDevice.Transform.View = result;
+               //d3dDevice.Transform.View.RotateAxis(new Vector3(0,1,0), 222f*elapsedTime);
+               //d3dDevice.Transform.View.Invert();
+                //d3dDevice.Transform.View.RotateY(20f * elapsedTime);
+                //d3dDevice.Transform.View.RotateY(20f * elapsedTime);
+
+                
+                if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
+                {
+                    GuiController.Instance.Drawer2D.beginDrawSprite();
+                    spriteLogo.render();
+                    GuiController.Instance.Drawer2D.endDrawSprite();
+                }
+                //GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", true);
+                
             }
             else //render del hud
             {
+                
                 hud.renderizate(personaje);
+               // GuiController.Instance.CurrentCamera = cam;
+                //GuiController.Instance.ThirdPersonCamera.
+                //GuiController.Instance.FpsCamera.Enable = true;
+
+               // cam.Enable = true;
+                
+                
             }
             //fin logo y hud
 
-            
+            #region borrar dsp
+            /*
+           
             float velocidadCaminar = 5f;
             float velocidadRotacion = 100f;
             //Calcular proxima posicion de personaje segun Input
@@ -276,7 +330,7 @@ namespace AlumnoEjemplos.NatusVincere
             bool moving = false;
             bool rotating = false;
             float jump = 0;
-
+            */
             
            
             
@@ -284,10 +338,10 @@ namespace AlumnoEjemplos.NatusVincere
             //Adelante
             if (input.keyDown(Key.W))
             {
-                moveForward = -velocidadCaminar;
-                moving = true;
+                Key key = Key.W;
+                personaje.movete(key, 0, elapsedTime);
             }
-
+            /*
             //Atras
             if (input.keyDown(Key.S))
             {
@@ -317,6 +371,8 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
 
+            */
+     #region crafteo
 
             if (input.keyDown(Key.E))
             {
@@ -334,6 +390,10 @@ namespace AlumnoEjemplos.NatusVincere
                 personaje.leaveObject();
             }
 
+            #endregion crafteo
+            
+            /*
+            //cam.getMovementDirection(input);
 
             //Si hubo rotacion
             if (rotating)
@@ -363,46 +423,43 @@ namespace AlumnoEjemplos.NatusVincere
                 personaje.updateAnimation();
             }
 
+            */
+            #endregion borrar dsp
+
             //actualizando camaras
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
             targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
-            Vector3 mirarA = camera.getLookAt();
-            d3dDevice.Transform.Projection.Scale(400f, 400f, 400f);
+            //Vector3 mirarA = cam.getLookAt();
+            //d3dDevice.Transform.Projection.Scale(400f, 400f, 400f);
             //frustum.updateVolume(d3dDevice.Transform.View, d3dDevice.Transform.Projection);
 
-
+            //Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             //Controlo los modificadores de la camara
-            GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
-            GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
-            if (camera.Enable = (bool)GuiController.Instance.Modifiers["FPS"])
+            if ((bool)GuiController.Instance.Modifiers["3ra"])
             {
-               
-                //habilitar luego cuando este la camara fps mejorada
-                Control focusWindows = d3dDevice.CreationParameters.FocusWindow;
-                Cursor.Position = focusWindows.PointToScreen(new Point(focusWindows.Width / 2, focusWindows.Height / 2));
-                //GuiController.Instance.FpsCamera.updateViewMatrix(d3dDevice);
-               float xpos = GuiController.Instance.D3dInput.XposRelative;
-                float ypos = GuiController.Instance.D3dInput.YposRelative;
-                mirarA = new Vector3(xpos, ypos, 0);
-                camera.setCamera(targetCamara1, mirarA);
-                //camera.updateViewMatrix(d3dDevice);
-                camera.updateCamera();
-                // personaje.render(); //para test
-                
-                
+                GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
+                personaje.render();
+                //GuiController.Instance.D3dInput
+            }
+            GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
+            if ((bool)GuiController.Instance.Modifiers["FPS"])
+            {
+                cam.Enable = true;
+                personaje.render(); //para test
                 Cursor.Hide();
-               // GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara1, 0f, 10f);//provisorio
+               //GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara1, 0f, 10f);//provisorio
                 //GuiController.Instance.ThirdPersonCamera.Enable = true; //provisorio
                 //targetCamara3 = targetCamara1;//provisorio
             }
             else
             {
-                //  Cursor.Show();
+                Cursor.Show();
                 personaje.render();
             }
                         
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
-            GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
+            //GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 100f, 200);
+            //GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
             //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
             //           -GuiController.Instance.D3dInput.YposRelative * velocidadRotacion);
             //GuiController.Instance.FpsCamera.setCamera(eye, targetCamara + new Vector3(1.0f, 0.0f, 0.0f));
@@ -410,7 +467,7 @@ namespace AlumnoEjemplos.NatusVincere
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
             //GuiController.Instance.Frustum.updateMesh(personaje.getPosition(),targetCamara1);
             GuiController.Instance.BackgroundColor = Color.AntiqueWhite;
-            frustum.render();
+            //frustum.render();
             
             //GuiController.Instance.Frustum.render();
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
@@ -423,28 +480,47 @@ namespace AlumnoEjemplos.NatusVincere
             personaje.inventory.render();
             
             //Actualizar Skybox
-            //skyBox.render();
-            //skyBox.Center = personaje.getPosition();
-            //movementVector
-            //skyBox.updateYRender(movementVector);
-            skyBox.updateYRender(personaje.getPosition());
+            skyBox.updateYRender(personaje.getPosition()); //lo dibuja y lo mueve con centro en el personaje
+            /*
+            temporizador.Tick += new EventHandler(cambioHorario);
+            temporizador.Interval = 200;
+            temporizador.Enabled = true;
+            temporizador.Start();
             //skyBox.updateValues();
+            */
+
 
             //Calculo altura del terreno para parar al personaje
-            currentX = personaje.getPosition().X;
-            currentZ = personaje.getPosition().Z;
-            altura = CalcularAltura(currentX, currentZ);
-            personaje.setPosition(new Vector3(currentX, altura, currentZ));
+            //currentX = personaje.getPosition().X;
+            //currentZ = personaje.getPosition().Z;
+            //altura = CalcularAltura(currentX, currentZ);
+            
+            currentXCam = cam.getPosition().X;
+            currentZCam = cam.getPosition().Z;
+            alturaCam = CalcularAltura(currentXCam, currentZCam);
+            cam.setPosition(new Vector3(currentXCam, alturaCam+cam.alturaPreseteada, currentZCam));
+            personaje.setPosition(new Vector3(currentXCam, alturaCam, currentZCam));
           
 
                        
             objects.RemoveAll(crafteable => crafteable.getStatus() == 5);
             objects.ForEach(crafteable => crafteable.render());
-
+            
             terrain.render();
 
         }
 
+        /*
+        private void cambioHorario(Object myObject, EventArgs myEventArgs)
+        {
+            //skyBox.dispose();
+            //skyBox = new NVSkyBox();
+            skyBox.cambiarHorario();
+            temporizador.Stop();
+            temporizador.Enabled = false;
+            skyBox = new NVSkyBox();
+        }
+        */
 
         private bool FullScreen()
         {
@@ -462,6 +538,8 @@ namespace AlumnoEjemplos.NatusVincere
             objectsFactory.dispose();
             spriteLogo.dispose();
             hud.dispose();
+            cam.Enable = false; //para q deje de capturar el mouse
+            
            
         }
     }

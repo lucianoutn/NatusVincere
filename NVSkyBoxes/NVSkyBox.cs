@@ -7,23 +7,28 @@ using TgcViewer.Utils;
 using System.Drawing;
 using TgcViewer.Utils.TgcSceneLoader;
 using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace AlumnoEjemplos.NatusVincere.NVSkyBoxes
 {
     public class NVSkyBox : TgcSkyBox
     {
-        /*public NVSkyBox()
+        public void init()
         {
-           new TgcSkyBox();
-           // faces = new TgcMesh[6];
-            //faceTextures = new string[6];
-            //skyEpsilon = 5f;
-            //color = Color.White;
-            //center = new Vector3(0,0,0);
-            //size = new Vector3(1000, 1000, 1000);
-            //alphaBlendEnable = false;
+            
+            Size = new Vector3(8000, 8000, 8000);
+            string texturesPath = System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\NVSkyBoxes\";
+            setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
+            setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
+            setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "lostatseaday_lf.jpg");
+            setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "lostatseaday_rt.jpg");
+            setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "lostatseaday_bk.jpg");
+            setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
+            SkyEpsilon = 1f;
+            updateValues();
+            
         } 
-        */
+        
 
         //public TgcMesh[] faces;
 
@@ -38,20 +43,31 @@ namespace AlumnoEjemplos.NatusVincere.NVSkyBoxes
             }
         }
 
-       /* public void updateSkyboxEnRender(Vector3 pos)
-        {
-            foreach (TgcMesh face in faces)
-            {
-                face.Transform = Matrix.Translation(pos.X, pos.Y, pos.Z);
-                face.render();
-            }
-        
-        }*/
 
+        public void cambiarHorario()
+        {
+            this.Color = Color.Red;
+            //this.updateValues();
+                 
+            string horarioActual = Color.ToString();
+            
+            switch (horarioActual)
+            {
+                case "Coral": this.horario("dia"); break;
+                case "Transparent": this.horario("tarde"); break;
+                case "DarkGoldenrod": this.horario("noche"); break;
+                case "DarkBlue": this.horario("maniana"); break;
+            }
+            
+            
+        }
+
+   
         public void updateYRender(Vector3 pos)
         {
             foreach (TgcMesh face in base.Faces)
             {
+               
                 face.AutoTransformEnable = false;
                 face.Transform = Matrix.Translation(pos.X, pos.Y, pos.Z);
                 //face.move(pos.X, pos.Y, pos.Z);
