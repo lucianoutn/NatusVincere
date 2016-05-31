@@ -62,14 +62,18 @@ namespace AlumnoEjemplos.NatusVincere
             this.tAnterior = this.tActual;
         }
 
-        public void leaveObject()
+        public void leaveObject(World world)
         {
-            this.inventory.leaveObject(this.getPosition());
+            Crafteable crafteable = this.inventory.leaveObject(this.getPosition());
+            world.addObject(crafteable);
         }
 
-        public void render()
+        public void render(bool renderMesh)
         {
-            this.mesh.render();
+            if (renderMesh) { 
+                this.mesh.render();
+            }
+            this.inventory.render();
         }
 
         public void store(Crafteable item) {
@@ -131,6 +135,25 @@ namespace AlumnoEjemplos.NatusVincere
         public void dispose()
         {
             this.mesh.dispose();
+        }
+
+        public void refresh(World currentWorld) {
+            String animation = "Walk";
+            this.playAnimation(animation, true);
+            this.recalcularStats();
+            this.inventory.update();
+            Vector3 position = new Vector3(this.mesh.Position.X, currentWorld.calcularAltura(this.mesh.Position.X, this.mesh.Position.Z), this.mesh.Position.Z);
+            this.setPosition(position);
+        }
+
+        public void pickObject(World world)
+        {
+            world.objects.ForEach(crafteable => {
+                if (crafteable.isNear(this))
+                {
+                    this.store(crafteable);
+                }
+            });
         }
     }
 }

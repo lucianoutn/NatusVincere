@@ -13,7 +13,6 @@ using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.Input;
 using TgcViewer.Utils._2D;
 using Microsoft.DirectX.DirectInput;
-using TgcViewer.Utils.TgcSkeletalAnimation;
 using System.IO;
 using System.Windows.Forms;
 
@@ -29,26 +28,16 @@ namespace AlumnoEjemplos.NatusVincere
 
         const float MOVEMENT_SPEED = 200f;
         List<Crafteable> objects;
-        TgcMesh palmeraOriginal;
-        TgcMesh pasto;
         TgcSkyBox skyBox;
         Human personaje; 
         Vector3 targetCamara3, targetCamara1;
         Vector3 eye; 
-        Vector3 targetFps;
         Vector3 vNormal = new Vector3(0,1,0);
         TgcFrustum frustum;
-
+        World currentWorld;
+        World[][] worlds;
         ObjectsFactory objectsFactory;
-
-        TgcSimpleTerrain terrain;
-        string currentHeightmap;
-        string currentTexture;
-        float currentScaleXZ;
-        float currentScaleY;
-        float currentX;
-        float currentZ;
-        float altura;
+        int flag = 0;
 
         public override string getCategory()
         {
@@ -65,56 +54,34 @@ namespace AlumnoEjemplos.NatusVincere
             return "Survival Craft – Supervivencia con creaciones.";
         }
 
-        public float CalcularAltura(float x, float z)
-        {
-            float largo = currentScaleXZ * 64;
-            float pos_i = 64f * (0.5f + x / largo);
-            float pos_j = 64f * (0.5f + z / largo);
-
-            int pi = (int)pos_i;
-            float fracc_i = pos_i - pi;
-            int pj = (int)pos_j;
-            float fracc_j = pos_j - pj;
-
-            if (pi < 0)
-                pi = 0;
-            else
-                if (pi > 63)
-                pi = 63;
-
-            if (pj < 0)
-                pj = 0;
-            else
-                if (pj > 63)
-                pj = 63;
-
-            int pi1 = pi + 1;
-            int pj1 = pj + 1;
-            if (pi1 > 63)
-                pi1 = 63;
-            if (pj1 > 63)
-                pj1 = 63;
-
-            // 2x2 percent closest filtering usual: 
-            float H0 = terrain.HeightmapData[pi, pj] * currentScaleY;
-            float H1 = terrain.HeightmapData[pi1, pj] * currentScaleY;
-            float H2 = terrain.HeightmapData[pi, pj1] * currentScaleY;
-            float H3 = terrain.HeightmapData[pi1, pj1] * currentScaleY;
-            float H = (H0 * (1 - fracc_i) + H1 * fracc_i) * (1 - fracc_j) +
-                      (H2 * (1 - fracc_i) + H3 * fracc_i) * fracc_j;
-
-            return H;
-        }
 
         public override void init()
         {
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            objects = new List<Crafteable>();
+            objectsFactory = new ObjectsFactory(objects);
 
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            int size = 7000;
+            worlds = new World[3][];
+            worlds[0] = new World[3];
+            worlds[1] = new World[3];
+            worlds[2] = new World[3];
+            worlds[0][0] = new World(new Vector3(-size, 0, size), size);
+            worlds[0][1] = new World(new Vector3(0, 0, size), size);
+            worlds[0][2] = new World(new Vector3(size, 0, size), size);
+            worlds[1][1] = new World(new Vector3(0, 0, 0), size);
+            worlds[1][0] = new World(new Vector3(-size, 0, 0), size);
+            worlds[1][2] = new World(new Vector3(size, 0, 0), size);
+            worlds[2][0] = new World(new Vector3(-size, 0, -size), size);
+            worlds[2][1] = new World(new Vector3(0, 0, -size), size);
+            worlds[2][2] = new World(new Vector3(size, 0, -size), size);
+
+            currentWorld = worlds[1][1];
             //FullScreen
             GuiController.Instance.FullScreenEnable = this.FullScreen();
             GuiController.Instance.FullScreenPanel.ControlBox = false;
             GuiController.Instance.FullScreenPanel.Text = null; //"NatusVincere";
-         
+
 
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
@@ -125,16 +92,14 @@ namespace AlumnoEjemplos.NatusVincere
 
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
-                       
+
             //creaion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
-            objects = new List<Crafteable>();
-            objectsFactory = new ObjectsFactory(objects);
-            
+
             //Crear SkyBox
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 500, 0);
-            skyBox.Size = new Vector3(40000, 40000, 40000);
+            skyBox.Size = new Vector3(10000, 10000, 10000);
             string texturesPath = System.Environment.CurrentDirectory + @"\Examples\Media\Texturas\Quake\SkyBox LostAtSeaDay\";
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
@@ -143,7 +108,7 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "lostatseaday_bk.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
             skyBox.updateValues();
-            
+
             //configurando el frustum
             //Plane leftPlane = new Plane(0,0,0,1000);
             //Plane rightPlane = new Plane(0, 0, 0, 1000);
@@ -154,57 +119,28 @@ namespace AlumnoEjemplos.NatusVincere
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
             frustum = new TgcFrustum();
 
-            //Path de Heightmap default del terreno
-            currentHeightmap = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "Heightmap2.jpg";
-
-            //Path de Textura default del terreno 
-            currentTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg";
-
             //*****MODIFICADORES*****
             //Modifier para la camara
             GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", false);
             GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", true);
             GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
-            //Modifier para cambiar el heightmap
-            GuiController.Instance.Modifiers.addTexture("heightmap", currentHeightmap);
-            //Modifier para cambiar la textura del terreno
-            GuiController.Instance.Modifiers.addTexture("texture", currentTexture);
-            //Modifiers para variar escala del mapa
-            currentScaleXZ = 500f;
-            currentScaleY = 8f;
 
-                 
 
-            //Cargar terreno: cargar heightmap y textura de color
-            terrain = new TgcSimpleTerrain();
-            terrain.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new Vector3(0, 0, 0));
-            terrain.loadTexture(currentTexture);
+            Vector3 posicionPersonaje = new Vector3(0, currentWorld.calcularAltura(0, 0), 0);
+            personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(0.5f, 0.5f, 0.5f));
 
-            //Calculo altura del terreno para parar al personaje
-            altura = CalcularAltura(0, 0);
-            Vector3 terrainPosition = new Vector3(0, altura, 0);
-            
-            //creo el personaje
-            personaje = objectsFactory.createHuman(terrainPosition + new Vector3(-100, 1, 0), new Vector3(1, 1, 1));
-        
             //Hud
             hud = new Hud();
-                        
-            //Cargar modelo de palmera original
-            TgcScene scene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
-            palmeraOriginal = scene.Meshes[0];
-            
-                       
+
             //Camera en 3ra persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
             GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 10f, 60f);
 
-            agegarObjetos(terrainPosition);
 
             //camara rotacional
             GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
-            
+
             ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
             //Camara en primera persona, tipo videojuego FPS
             //Solo puede haber una camara habilitada a la vez. Al habilitar la camara FPS se deshabilita la camara rotacional
@@ -215,23 +151,15 @@ namespace AlumnoEjemplos.NatusVincere
             //Vector3 targetFps = personaje.getPosition();
             //GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
         }
-        
-        public void agegarObjetos(Vector3 terrainPosition)
-        {
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(30, 1, 0), new Vector3(0.75f, 1.75f, 0.75f)));
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(230, 311, 1800), new Vector3(0.75f, 1.75f, 0.75f)));
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(2030, 271, 800), new Vector3(0.75f, 1.75f, 0.75f)));
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(230, -311, -3000), new Vector3(0.75f, 1.75f, 0.75f)));
-            objects.Add(objectsFactory.createArbol(terrainPosition + new Vector3(-430, -61, -410), new Vector3(0.75f, 1.75f, 0.75f)));
-
-            objects.Add(objectsFactory.createHacha(terrainPosition + new Vector3(200, 1, 0), new Vector3(10, 10, 10)));
-            objects.Add(objectsFactory.createPiedra(terrainPosition + new Vector3(100, 1, 0), new Vector3(0.75f, 0.75f, 0.75f)));
-        }
 
         public override void render(float elapsedTime)
         {
-                            
-            
+
+
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            TgcD3dInput input = GuiController.Instance.D3dInput;
+
+
             //Renderizo el logo del inicio y el hud
             if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
             {
@@ -254,10 +182,6 @@ namespace AlumnoEjemplos.NatusVincere
             bool moving = false;
             bool rotating = false;
             float jump = 0;
-
-            String animation = "Walk";
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            TgcD3dInput input = GuiController.Instance.D3dInput;
 
             //Adelante
             if (d3dInput.keyDown(Key.W))
@@ -298,18 +222,17 @@ namespace AlumnoEjemplos.NatusVincere
 
             if (d3dInput.keyDown(Key.E))
             {
-                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) objectsFactory.transform(crafteable); });
+                currentWorld.transform(personaje);
             }
 
             if (d3dInput.keyDown(Key.R))
             {
-                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) personaje.store(crafteable); });
-
+                personaje.pickObject(currentWorld);
             }
 
             if (d3dInput.keyDown(Key.L))
             {
-                personaje.leaveObject();
+                personaje.leaveObject(currentWorld);
             }
 
 
@@ -355,11 +278,12 @@ namespace AlumnoEjemplos.NatusVincere
                 GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara1, 0f, 10f);//provisorio
                 GuiController.Instance.ThirdPersonCamera.Enable = true; //provisorio
                 targetCamara3 = targetCamara1;//provisorio
+                personaje.render(false);
             }
             else
             {
                 //  Cursor.Show();
-                personaje.render();
+                personaje.render(true);
             }
                         
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
@@ -367,31 +291,23 @@ namespace AlumnoEjemplos.NatusVincere
             //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
             //           -GuiController.Instance.D3dInput.YposRelative * velocidadRotacion);
             //GuiController.Instance.FpsCamera.setCamera(eye, targetCamara + new Vector3(1.0f, 0.0f, 0.0f));
-            
 
-            
-            //recalculo la vida del jugador segun el tiempo transcurrido
-            personaje.recalcularStats();
-            //Actualizar personaje
-            personaje.inventory.update(elapsedTime);
-            personaje.inventory.render();
+            refreshWorlds();
+            personaje.refresh(currentWorld);
+            currentWorld.render();
+
+            Vector3 position = personaje.getPosition();
+            skyBox.Center = new Vector3(position.X, position.Y, position.Z);
+            skyBox.updateValues();
             skyBox.render();
+            for (int i = 0; i <= 2; i++)
+            {
+                for (int j = 0; j <= 2; j++)
+                {
+                    worlds[i][j].render();
 
-            //Calculo altura del terreno para parar al personaje
-            currentX = personaje.getPosition().X;
-            currentZ = personaje.getPosition().Z;
-            altura = CalcularAltura(currentX, currentZ);
-            personaje.setPosition(new Vector3(currentX, altura, currentZ));
-          
-
-            personaje.playAnimation(animation, true);
-            personaje.updateAnimation();
-            
-            objects.RemoveAll(crafteable => crafteable.getStatus() == 5);
-            objects.ForEach(crafteable => crafteable.render());
-
-            terrain.render();
-
+                }
+            }
         }
 
 
@@ -404,7 +320,6 @@ namespace AlumnoEjemplos.NatusVincere
         public override void close()
         {
             //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
-            palmeraOriginal.dispose();
             //pasto.dispose();
             skyBox.dispose();
             personaje.dispose();
@@ -412,6 +327,142 @@ namespace AlumnoEjemplos.NatusVincere
             spriteLogo.dispose();
             hud.dispose();
            
+        }
+
+        public void refreshWorlds()
+        {
+            if (true)
+            {
+                Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
+                showAsText(logicPosition.X, 100, 300);
+                showAsText(logicPosition.Z, 100, 350);
+                showAsText(logicPosition.Y, 100, 400);
+                int size = 7000 / 2;
+                if (logicPosition.X > size)
+                {
+                    Vector3 newPosition = personaje.getPosition();
+                    newPosition.X = -size;
+                    personaje.setPosition(newPosition);
+                    /*
+                    flag = 1;
+                    for (int i = 0; i <= 2; i++)
+                    {
+                        for (int j = 0; j <= 2; j++)
+                        {
+
+                            if (j == 2)
+                            {
+                                worlds[i][j] = new World(new Vector3(worlds[i][j].position.X + (size * 2), worlds[i][j].position.Y, worlds[i][j].position.Z));
+                            }
+                            if (j == 0)
+                            {
+                                worlds[i][j].dispose();
+                                worlds[i][j] = worlds[i][j + 1];
+                            }
+                            if (j == 1)
+                            {
+                                worlds[i][j] = worlds[i][j + 1];
+                            }
+                        }
+                    }*/
+                }
+                if (logicPosition.X < -size)
+                {
+                    flag = 1;
+                    Vector3 newPosition = personaje.getPosition();
+                    newPosition.X = size;
+                    personaje.setPosition(newPosition);/*
+                    for (int i = 0; i <= 2; i++)
+                    {
+                        for (int j = 0; j <= 2; j++)
+                        {
+                            if (j == 0)
+                            {
+                                worlds[i][j] = new World(new Vector3(worlds[i][j].position.X - (size * 2), worlds[i][j].position.Y, worlds[i][j].position.Z));
+                            }
+
+                            if (j == 2)
+                            {
+                                worlds[i][j].dispose();
+                                worlds[i][j] = worlds[i][j - 1];
+                            }
+
+                            if (j == 1)
+                            {
+                                worlds[i][j] = worlds[i][j - 1];
+                            }
+                        }
+                    }*/
+                }
+                if (logicPosition.Z > size)
+                {
+                    flag = 1;
+                    Vector3 newPosition = personaje.getPosition();
+                    newPosition.Z = -size;
+                    personaje.setPosition(newPosition);/*
+                    for (int i = 0; i <= 2; i++)
+                    {
+                        for (int j = 0; j <= 2; j++)
+                        {
+
+                            if (i == 0)
+                            {
+                                worlds[i][j] = new World(new Vector3(worlds[i][j].position.X, worlds[i][j].position.Y, worlds[i][j].position.Z + (size * 2)));
+                            }
+                            if (i == 2)
+                            {
+                                worlds[i][j].dispose();
+                                worlds[i][j] = worlds[i - 1][j];
+                            }
+                            if (i == 1)
+                            {
+                                worlds[i][j] = worlds[i - 1][j];
+                            }
+                        }
+                    }*/
+                }
+                if (logicPosition.Z < -size)
+                {
+                    flag = 1;
+                    flag = 1;
+                    Vector3 newPosition = personaje.getPosition();
+                    newPosition.Z = size;
+                    personaje.setPosition(newPosition);
+                    /*for (int i = 0; i <= 2; i++)
+                    {
+                        for (int j = 0; j <= 2; j++)
+                        {
+
+                            if (i == 2)
+                            {
+                                worlds[i][j] = new World(new Vector3(worlds[i][j].position.X, worlds[i][j].position.Y, worlds[i][j].position.Z - (size * 2)));
+                            }
+                            if (i == 0)
+                            {
+                                worlds[i][j].dispose();
+                                worlds[i][j] = worlds[i + 1][j];
+                            }
+                            if (i == 1)
+                            {
+                                worlds[i][j] = worlds[i + 1][j];
+                            }
+
+                        }
+                    }*/
+                }
+            }
+            currentWorld = worlds[1][1];
+            currentWorld.refresh();
+        }
+
+
+        public void showAsText(float unNumero, int positionX, int positionY)
+        {
+            TextCreator textCreator = new TextCreator("Arial", 16, new Size(200, 200));
+            TgcText2d text = textCreator.createText(unNumero.ToString() + "POSICIONES");
+            text.Position = new Point(positionX, positionY);
+
+            text.render();
         }
     }
 }

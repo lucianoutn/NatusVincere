@@ -71,7 +71,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.position = new Point(x, y);
         }
 
-        public void update(float elapsedTime) {
+        public void update() {
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             TgcD3dInput input = GuiController.Instance.D3dInput;
 
@@ -250,8 +250,9 @@ namespace AlumnoEjemplos.NatusVincere
             this.selections[index] = false;
          }
 
-        public void leaveObject(Vector3 position)
+        public Crafteable leaveObject(Vector3 position)
         {
+            Crafteable leftObject = null;
             int[] indexes = new int[2]; 
             indexes = this.getSelectedIndexes();
             int firstIndex = indexes[0];
@@ -259,11 +260,12 @@ namespace AlumnoEjemplos.NatusVincere
             
             if (secondIndex != -1) unselect(secondIndex); //Prevengo que deje los dos objetos
 
-            if (firstIndex >= 0) { 
-                Crafteable firstItem = this.items[firstIndex];
+            if (firstIndex >= 0) {
+                leftObject = this.items[firstIndex];
                 dropObject(firstIndex);
-                firstItem.drop(position);
+                leftObject.drop(position);
             }
+            return leftObject;
         }
 
         public int[] getSelectedIndexes()
