@@ -1,4 +1,5 @@
-﻿using Microsoft.DirectX;
+﻿using System;
+using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
@@ -14,7 +15,7 @@ namespace AlumnoEjemplos.NatusVincere
         private Human owner;
         private TgcMesh mesh;
         public bool storable;
-
+        private TgcBoundingSphere BB;
 
         public Crafteable(TgcMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -22,6 +23,9 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.Position = position;
             this.mesh.Scale = scale;
             this.storable = true;
+            Vector3 centro = getMesh().BoundingBox.calculateBoxCenter();
+
+            this.BB = new TgcBoundingSphere(new Vector3(centro.X, centro.Y - 4, centro.Z), getMesh().BoundingBox.calculateBoxRadius()/2);
         }
 
        public void use(Human user)
@@ -45,6 +49,7 @@ namespace AlumnoEjemplos.NatusVincere
         public void drop(Vector3 position)
         {
             this.setPosition(position);
+            this.setBB(position);
             this.status = 1;
         }
 
@@ -60,6 +65,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void addToInventory()
         {
+            this.borrarBB();
             this.status = 3;
         }
 
@@ -120,10 +126,34 @@ namespace AlumnoEjemplos.NatusVincere
             return this.status;
         }
 
+        public TgcMesh getMesh()
+        {
+            return this.mesh;
+        }
+
+        public virtual TgcBoundingSphere getBB()
+        {
+            return this.BB;
+        }
+
+        public virtual void borrarBB()
+        {
+        }
+
+        public virtual void setBB(Vector3 position)
+        {
+
+        }
         public void dispose()
         {
             this.status = 5;
             this.mesh.dispose();
         }
+
+        public virtual void Render()
+        {
+            this.getBB().render();
+        }
+
     }
 }

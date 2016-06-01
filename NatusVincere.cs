@@ -37,8 +37,8 @@ namespace AlumnoEjemplos.NatusVincere
         World currentWorld;
         World[][] worlds;
         ObjectsFactory objectsFactory;
-        int flag = 0;
 
+        int flag = 0;
         public override string getCategory()
         {
             return "AlumnoEjemplos";
@@ -54,12 +54,10 @@ namespace AlumnoEjemplos.NatusVincere
             return "Survival Craft – Supervivencia con creaciones.";
         }
 
-
         public override void init()
         {
             objects = new List<Crafteable>();
             objectsFactory = new ObjectsFactory(objects);
-
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             int size = 7000;
             worlds = new World[3][];
@@ -82,7 +80,6 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.FullScreenPanel.ControlBox = false;
             GuiController.Instance.FullScreenPanel.Text = null; //"NatusVincere";
 
-
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
@@ -100,6 +97,7 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 500, 0);
             skyBox.Size = new Vector3(10000, 10000, 10000);
+
             string texturesPath = System.Environment.CurrentDirectory + @"\Examples\Media\Texturas\Quake\SkyBox LostAtSeaDay\";
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
@@ -109,14 +107,6 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
             skyBox.updateValues();
 
-            //configurando el frustum
-            //Plane leftPlane = new Plane(0,0,0,1000);
-            //Plane rightPlane = new Plane(0, 0, 0, 1000);
-            //Plane topPlane = new Plane(0, 0, 0, 1000);
-            //Plane bottomPlane = new Plane(0, 0, 0, 1000);
-            //Plane nearPlane = new Plane(0, 0, 0, 1000);
-            //Plane farPlane = new Plane(0, 0, 0, 1000);
-            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
             frustum = new TgcFrustum();
 
             //*****MODIFICADORES*****
@@ -124,7 +114,6 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", false);
             GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", true);
             GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
-
 
             Vector3 posicionPersonaje = new Vector3(0, currentWorld.calcularAltura(0, 0), 0);
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(0.5f, 0.5f, 0.5f));
@@ -150,6 +139,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Vector3 eye = new Vector3(2,2,2);
             //Vector3 targetFps = personaje.getPosition();
             //GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
+
         }
 
         public override void render(float elapsedTime)
@@ -172,7 +162,7 @@ namespace AlumnoEjemplos.NatusVincere
                 hud.renderizate(personaje);
             }
 
-            
+
             float velocidadCaminar = 5f;
             float velocidadRotacion = 100f;
             //Calcular proxima posicion de personaje segun Input
@@ -236,8 +226,8 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
 
-                //Si hubo rotacion
-                if (rotating)
+            //Si hubo rotacion
+            if (rotating)
             {
                 //Rotar personaje y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
                 float rotAngle = ((float)Math.PI / 180) * (rotate * elapsedTime);
@@ -247,16 +237,28 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             //Vector de movimiento
-            Vector3 movementVector = Vector3.Empty;
+
             if (moving)
             {
+                Vector3 movementVector;
+                Vector3 movementVectorAnterior = GuiController.Instance.ThirdPersonCamera.Position;
+
                 //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
                 movementVector = new Vector3(
                     FastMath.Sin(personaje.getRotation().Y) * moveForward,
                     jump,
                     FastMath.Cos(personaje.getRotation().Y) * moveForward
-                    );
-                personaje.move(movementVector);
+                );
+
+                if (!hayColision(currentWorld))
+                {
+                    personaje.move(movementVector);
+                    personaje.setBB(movementVector);
+                }
+                else
+                {
+                    personaje.setPosition(movementVectorAnterior);
+                }
             }
 
             //actualizando camaras
@@ -285,7 +287,7 @@ namespace AlumnoEjemplos.NatusVincere
                 //  Cursor.Show();
                 personaje.render(true);
             }
-                        
+
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
             GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
             //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
@@ -311,6 +313,22 @@ namespace AlumnoEjemplos.NatusVincere
         }
 
 
+        private bool hayColision(World currentWorld)
+        {
+            for (int i = 0; i < currentWorld.objects.Count; i++)
+            {
+                //if (TgcCollisionUtils.testSphereSphere(objects[i].getBB(), personaje.getBB()))
+                if(TgcCollisionUtils.testSphereCylinder(currentWorld.objects[i].getBB(), personaje.getBB()))
+                {
+                    return true;
+                }
+
+            };
+
+            return false;
+        }
+
+
         private bool FullScreen()
         {
             DialogResult result = MessageBox.Show("Che, ¿queres mejor en fullscreen?", "Confirmación", MessageBoxButtons.YesNo);
@@ -323,7 +341,7 @@ namespace AlumnoEjemplos.NatusVincere
             //pasto.dispose();
             skyBox.dispose();
             personaje.dispose();
-            objectsFactory.dispose();
+            currentWorld.dispose();
             spriteLogo.dispose();
             hud.dispose();
            

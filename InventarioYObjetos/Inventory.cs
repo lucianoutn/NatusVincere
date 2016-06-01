@@ -212,11 +212,14 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 newObject = this.objectsFactory.createHacha(new Vector3(0, 0, 200), new Vector3(1, 1, 1));
             }
-
-            if (firstItem.getType() == 5 && secondItem.getType() == 5)
+            else
             {
-                newObject = this.objectsFactory.createFogata(new Vector3(0, 0, 200), new Vector3(1, 1, 1));
+                if (firstItem.getType() == 5 && secondItem.getType() == 5)
+                {
+                    newObject = this.objectsFactory.createFogata(new Vector3(0, 0, 200), new Vector3(0.25f, 0.25f, 0.25f));
+                }
             }
+            
 
             if (newObject != null)
             {
