@@ -1,8 +1,13 @@
 ﻿using Microsoft.DirectX;
+using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.TgcSkeletalAnimation;
 using System;
+using TgcViewer.Utils.Input;
+using System.Collections.Generic;
+using TgcViewer;
+
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -18,6 +23,7 @@ namespace AlumnoEjemplos.NatusVincere
         public float minimumDistance = 100; //Default
         private TgcSkeletalMesh mesh;
         public Inventory inventory;
+        List<Crafteable> objects;
         private DateTime tActual;
         private DateTime tAnterior;
         private TimeSpan tTranscurridoVida = TimeSpan.Zero;
@@ -25,6 +31,8 @@ namespace AlumnoEjemplos.NatusVincere
         private TimeSpan tTranscurridoSuenio = TimeSpan.Zero;
         private TgcBoundingSphere BB;
         private TgcBoundingCylinder BC;
+        private TgcD3dInput input = GuiController.Instance.D3dInput;
+        private String animation = "Walk";
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -43,6 +51,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             return new Vector3(position.X, position.Y + 20, position.Z);
         }
+
 
         public void recalcularStats()
         {
@@ -92,6 +101,9 @@ namespace AlumnoEjemplos.NatusVincere
         public void move(Vector3 movement)
         {
             this.mesh.move(movement);
+            this.playAnimation(animation, true);
+            this.updateAnimation();
+
         }
 
         public void scale(Vector3 scale)
@@ -152,9 +164,52 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.dispose();
         }
 
-        public void refresh(World currentWorld) {
-            String animation = "Walk";
-            this.playAnimation(animation, true);
+        public void refresh(World currentWorld, Vector3 direction, float elapsedTime) {
+
+            float velocidadCaminar = 5f;
+            //Calcular proxima posicion de personaje segun Input
+            float moveForward = 0f;
+            TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+            bool moving = false;
+            float jump = 0;
+
+
+            TgcD3dInput input = GuiController.Instance.D3dInput;
+
+            if (d3dInput.keyDown(Key.W))
+            {
+                moveForward = velocidadCaminar;
+                moving = true;
+                //cam.getMovementDirection(input);
+            }
+
+            //Atras
+            if (d3dInput.keyDown(Key.W))
+            {
+                moveForward = -velocidadCaminar;
+                moving = true;
+            }
+
+            if (d3dInput.keyDown(Key.Space))
+            {
+                jump = 30;
+                moving = true;
+            }
+            Vector3 movementVector = Vector3.Empty;
+            if (moving)
+            {
+                //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
+                direction.Normalize();
+                
+                movementVector = new Vector3(direction.X * moveForward,
+                    jump,
+                    direction.Z * moveForward);
+
+                this.move(movementVector);
+                this.updateAnimation();
+                moving = false;
+            }
+
             this.recalcularStats();
             this.inventory.update();
             Vector3 position = new Vector3(this.mesh.Position.X, currentWorld.calcularAltura(this.mesh.Position.X, this.mesh.Position.Z), this.mesh.Position.Z);
