@@ -58,7 +58,7 @@ namespace AlumnoEjemplos.NatusVincere
         TgcD3dInput input;
         ObjectsFactory objectsFactory;
         string animationCaminar = "Walk";
-        float velocidadCaminar = 1f;
+        float velocidadCaminar = 150f;
         //float velocidadRotacion = 100f;
         //Calcular proxima posicion de personaje segun Input
         float moveForward = 0f;
@@ -150,14 +150,13 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
                 movementVector = new Vector3(
-                    FastMath.Sin(this.getRotation().Y) * moveForward,
+                    FastMath.Sin(this.getRotation().Y) * moveForward ,
                     jump,
-                    FastMath.Cos(this.getRotation().Y) * moveForward
-                    );
+                    FastMath.Cos(this.getRotation().Y) * moveForward );
                 this.move(movementVector);
 
-                this.playAnimation(animationCaminar, true);
-                this.updateAnimation();
+                //this.playAnimation(animationCaminar, true);
+                //this.updateAnimation();
                 moving = false;
             }
 
@@ -210,8 +209,8 @@ namespace AlumnoEjemplos.NatusVincere
         public void move(Vector3 movement)
         {
             this.mesh.move(movement);
-            this.playAnimation(animation, true);
-            this.updateAnimation();
+            //this.playAnimation(animation, true);
+            //this.updateAnimation();
 
         }
 
@@ -272,18 +271,18 @@ namespace AlumnoEjemplos.NatusVincere
         {
             this.mesh.dispose();
         }
-
-        public void refresh(World currentWorld, Vector3 direction, float elapsedTime) {
+        
+        /* public void refresh(World currentWorld, Vector3 direction, float elapsedTime) {
 
             float velocidadCaminar = 5f;
             //Calcular proxima posicion de personaje segun Input
             float moveForward = 0f;
-            TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+            
             bool moving = false;
             float jump = 0;
 
 
-            TgcD3dInput input = GuiController.Instance.D3dInput;
+            
 
             if (d3dInput.keyDown(Key.W))
             {
@@ -325,7 +324,8 @@ namespace AlumnoEjemplos.NatusVincere
             this.setPosition(position);
             this.setBB(position);
         }
-
+        */
+       
         public void pickObject(World world)
         {
             world.objects.ForEach(crafteable => {
@@ -343,11 +343,11 @@ namespace AlumnoEjemplos.NatusVincere
             return BC;
         }
 
-        public void Render()
+       /* public void Render()
         {
             //BB.render();
             BC.render();
-        }
+        } */
 
         public void setBB(Vector3 position)
         {

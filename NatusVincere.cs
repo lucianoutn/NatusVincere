@@ -39,7 +39,7 @@ namespace AlumnoEjemplos.NatusVincere
         TgcD3dInput input;
         Microsoft.DirectX.Direct3D.Device d3dDevice;
         TgcViewer.Utils.Logger log; 
-        Vector3 lookfrom = new Vector3(-1500, 2000, 1000);
+        Vector3 lookfrom = new Vector3(-2500, 3400, 2000);
         Vector3 lookAt = new Vector3(0, 0, 0);
         
 
@@ -180,10 +180,10 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", true);
             GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", false);
             GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
-
+            
             //creo el personaje con su altura en el mapa
-            Vector3 posicionPersonaje = new Vector3(0, currentWorld.calcularAltura(0, 0), 0);
-            personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(1, 1, 1));
+            Vector3 posicionPersonaje = new Vector3(1000, currentWorld.calcularAltura(1000, 1000), 1000);
+            personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
 
             //Hud
             hud = new Hud();
@@ -224,29 +224,18 @@ namespace AlumnoEjemplos.NatusVincere
             if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)10)))
             {
                 //animacion
-                //GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", true);
-                //personaje.render();
-                //personaje.updateAnimation();
-
-                //GuiController.Instance.ThirdPersonCamera.rotateY(0.5f * elapsedTime);
-                //lookfrom.Z -= elapsedTime * 500;
-                // lookfrom.Scale(2*elapsedTime);
-                if (lookfrom.Y > targetCamara3.Y) lookfrom.Y += (elapsedTime * -100f);
-                if (lookfrom.X < targetCamara3.X) lookfrom.X += (elapsedTime * 100f);
-                //if (lookfrom.Z > targetCamara3.Z) 
-                lookfrom.Z += (elapsedTime * -100f);
+                
+                if (lookfrom.Y -250f > currentWorld.calcularAltura(lookfrom.X, lookfrom.Z)) lookfrom.Y += (elapsedTime * -150f);
+                if (lookfrom.X < targetCamara3.X) lookfrom.X += (elapsedTime * 150f);
+                if (lookfrom.Z > targetCamara3.Z) lookfrom.Z += (elapsedTime * -100f);
+                
                 lookAt = personaje.getPosition();
-                //lookfrom.Scale(-0.2f/elapsedTime);
-                Matrix lookAtM = Matrix.LookAtLH(lookfrom, lookAt, new Vector3(0, 1, 0));
-                //Matrix rotM = Matrix.RotationY(2f * elapsedTime);
-                //Matrix scaleM = Matrix.Scaling(0.2f*elapsedTime,0.2f*elapsedTime,0.2f*elapsedTime);
-                Matrix result = lookAtM;
-                d3dDevice.Transform.View = result;
-                //d3dDevice.Transform.View.RotateAxis(new Vector3(0,1,0), 222f*elapsedTime);
-                //d3dDevice.Transform.View.Invert();
-                //d3dDevice.Transform.View.RotateY(20f * elapsedTime);
-                //d3dDevice.Transform.View.RotateY(20f * elapsedTime);
-
+                 Matrix lookAtM = Matrix.LookAtLH(lookfrom, lookAt, vNormal);
+                 Matrix result = lookAtM;
+                 d3dDevice.Transform.View = result;
+                 personaje.rotateY(elapsedTime* .3f);
+                 personaje.render();
+                 personaje.move(lookfrom-lookAt);
 
                 if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
                 {
@@ -378,7 +367,8 @@ namespace AlumnoEjemplos.NatusVincere
 
             */
             #endregion borrar dsp
-            
+           
+            /* 
             //actualizando camaras
             targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
             targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
@@ -394,7 +384,7 @@ namespace AlumnoEjemplos.NatusVincere
             if ((bool)GuiController.Instance.Modifiers["FPS"])
             {
                 cam.Enable = true;
-                personaje.render(); //para test
+                //personaje.render(); //para test
                 Cursor.Hide();
                 //GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara1, 0f, 10f);//provisorio
                 //GuiController.Instance.ThirdPersonCamera.Enable = true; //provisorio
@@ -403,7 +393,7 @@ namespace AlumnoEjemplos.NatusVincere
             else
             {
                 Cursor.Show();
-                personaje.render();
+                //personaje.render();
             }
 
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
@@ -416,7 +406,8 @@ namespace AlumnoEjemplos.NatusVincere
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
             //GuiController.Instance.Frustum.updateMesh(personaje.getPosition(),targetCamara1);
             GuiController.Instance.BackgroundColor = Color.AntiqueWhite;
-           
+           */
+
             //frustum.render();
             //GuiController.Instance.Frustum.render();
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
@@ -430,14 +421,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Actualizar Skybox
             skyBox.updateYRender(personaje.getPosition()); //lo dibuja y lo mueve con centro en el personaje
-            /*
-            temporizador.Tick += new EventHandler(cambioHorario);
-            temporizador.Interval = 200;
-            temporizador.Enabled = true;
-            temporizador.Start();
-            //skyBox.updateValues();
-            */
-
+            
 
             currentXCam = cam.getPosition().X;
             currentZCam = cam.getPosition().Z;
@@ -447,11 +431,12 @@ namespace AlumnoEjemplos.NatusVincere
 
             
             refreshWorlds();
-            personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
+            //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
             skyBox.updateYRender(personaje.getPosition());
             refreshCamera(); //Necesita que se actualice primero el personaje
 
-            personaje.render();
+            
+            //personaje.render();
             for (int i = 0; i <= 2; i++)
             {
                 for (int j = 0; j <= 2; j++)
@@ -512,7 +497,7 @@ namespace AlumnoEjemplos.NatusVincere
             if ((bool)GuiController.Instance.Modifiers["FPS"])
             {
                 cam.Enable = true;
-                personaje.render(); //para test
+                //personaje.render(); //para test
                 Cursor.Hide();
                 //GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara1, 0f, 10f);//provisorio
                 //GuiController.Instance.ThirdPersonCamera.Enable = true; //provisorio
@@ -544,15 +529,15 @@ namespace AlumnoEjemplos.NatusVincere
             if (true)
             {
                 Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
-                showAsText(logicPosition.X, 100, 300);
-                showAsText(logicPosition.Z, 100, 350);
-                showAsText(logicPosition.Y, 100, 400);
+                //showAsText(logicPosition.X, 100, 300);
+                //showAsText(logicPosition.Z, 100, 350);
+                //showAsText(logicPosition.Y, 100, 400);
                 int size = 7000 / 2;
                 if (logicPosition.X > size)
                 {
                     Vector3 newPosition = personaje.getPosition();
                     newPosition.X = -size;
-                    personaje.setPosition(newPosition);
+                    //personaje.setPosition(newPosition);
                     /*
                     flag = 1;
                     for (int i = 0; i <= 2; i++)
@@ -581,7 +566,8 @@ namespace AlumnoEjemplos.NatusVincere
                     flag = 1;
                     Vector3 newPosition = personaje.getPosition();
                     newPosition.X = size;
-                    personaje.setPosition(newPosition);/*
+                    //personaje.setPosition(newPosition);
+                    /*
                     for (int i = 0; i <= 2; i++)
                     {
                         for (int j = 0; j <= 2; j++)
@@ -609,7 +595,8 @@ namespace AlumnoEjemplos.NatusVincere
                     flag = 1;
                     Vector3 newPosition = personaje.getPosition();
                     newPosition.Z = -size;
-                    personaje.setPosition(newPosition);/*
+                    //personaje.setPosition(newPosition);
+                    /*
                     for (int i = 0; i <= 2; i++)
                     {
                         for (int j = 0; j <= 2; j++)
@@ -637,7 +624,7 @@ namespace AlumnoEjemplos.NatusVincere
                     flag = 1;
                     Vector3 newPosition = personaje.getPosition();
                     newPosition.Z = size;
-                    personaje.setPosition(newPosition);
+                    //personaje.setPosition(newPosition);
                     /*for (int i = 0; i <= 2; i++)
                     {
                         for (int j = 0; j <= 2; j++)
