@@ -7,7 +7,7 @@ using Microsoft.DirectX.Direct3D;
 //using Microsoft.DirectX.Direct3DX;
 using TgcViewer;
 using TgcViewer.Utils.Input;
-using TgcViewer.Utils.TgcGeometry;
+//using TgcViewer.Utils.TgcGeometry;
 using Microsoft.DirectX.DirectInput;
 using System.Drawing;
 using System.Windows.Forms;
@@ -326,7 +326,7 @@ namespace AlumnoEjemplos.NatusVincere
             viewMatrix.M43 = -Vector3.Dot(zAxis, eye);
             
             // Extract the pitch angle from the view matrix.
-            accumPitchDegrees = Geometry.RadianToDegree((float)-Math.Asin((double)viewMatrix.M23));
+            accumPitchDegrees = (float)((-Math.Asin((double)viewMatrix.M23)) * Math.PI / 180);
            
         }
 
@@ -577,8 +577,8 @@ namespace AlumnoEjemplos.NatusVincere
                 accumPitchDegrees = -90.0f;
             }
 
-            float heading = Geometry.DegreeToRadian(headingDegrees);
-            float pitch = Geometry.DegreeToRadian(pitchDegrees);
+            float heading = (float)((headingDegrees) * Math.PI / 180);
+            float pitch = (float)((pitchDegrees) * Math.PI / 180);
 
             Matrix rotMtx;
             Vector4 result;
