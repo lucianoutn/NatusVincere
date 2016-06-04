@@ -38,11 +38,12 @@ namespace AlumnoEjemplos.NatusVincere
         ObjectsFactory objectsFactory;
         TgcD3dInput input;
         Microsoft.DirectX.Direct3D.Device d3dDevice;
+        //TgcViewer.Utils.TgcD3dDevice d3dDevice;
         TgcViewer.Utils.Logger log; 
         Vector3 lookfrom = new Vector3(-2500, 3400, 2000);
         Vector3 lookAt = new Vector3(0, 0, 0);
+        Size screenSize;
         
-
         //bool showPersonajeMesh = true;
         int flag = 0;
         //string animationCaminar = "Walk";
@@ -121,7 +122,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Inicializaciones
             input = GuiController.Instance.D3dInput;
             d3dDevice = GuiController.Instance.D3dDevice;
-
+           
             //worlds
             int size = 7000;
             worlds = new World[3][];
@@ -151,7 +152,7 @@ namespace AlumnoEjemplos.NatusVincere
             tiempoLogo = DateTime.Now;
             tiempoPresentacion = DateTime.Now;
             //Ubicarlo centrado en la pantalla
-            Size screenSize = GuiController.Instance.Panel3d.Size;
+            screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
 
@@ -408,7 +409,10 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.BackgroundColor = Color.AntiqueWhite;
            */
 
-            //frustum.render();
+            //Frustum values FAR PLANE
+            d3dDevice.Transform.Projection =
+                Matrix.PerspectiveFovLH(((float)((45.0f)* Math.PI / 180)),
+                (screenSize.Width/screenSize.Height), 1f, 99999999f);
             //GuiController.Instance.Frustum.render();
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
 

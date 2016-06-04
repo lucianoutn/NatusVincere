@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.NatusVincere.NVSkyBoxes
         public void init()
         {
             
-            Size = new Vector3(8000, 8000, 8000);
+            Size = new Vector3(18000, 18000, 18000);
             string texturesPath = System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\NVSkyBoxes\";
             setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
             setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
