@@ -12,8 +12,7 @@ using Microsoft.DirectX.DirectInput;
 using System.Drawing;
 using System.Windows.Forms;
 using TgcViewer.Utils.TgcSceneLoader;
-
-
+using TgcViewer.Utils.TgcGeometry;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -482,9 +481,30 @@ namespace AlumnoEjemplos.NatusVincere
                 moveDownPressed = false;
             }
             //personaje.movete(direction);
+
+            if(hayColision(personaje.getWorld()))
+            {
+                direction.X = GuiController.Instance.ThirdPersonCamera.Position.X -5;
+                direction.Z = GuiController.Instance.ThirdPersonCamera.Position.Z - 5;
+            }
+
             return direction;
         }
+        
+        private bool hayColision(World currentWorld)
+        {
+            for (int i = 0; i < currentWorld.objects.Count; i++)
+            {
+                //if (TgcCollisionUtils.testSphereSphere(objects[i].getBB(), personaje.getBB()))
+                if (TgcCollisionUtils.testSphereCylinder(currentWorld.objects[i].getBB(), personaje.getBB()))
+                {
+                    return true;
+                }
 
+            };
+
+            return false;
+        }
 
         private void rotate(float headingDegrees, float pitchDegrees, float rollDegrees)
         {

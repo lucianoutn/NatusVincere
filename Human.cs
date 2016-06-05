@@ -32,6 +32,7 @@ namespace AlumnoEjemplos.NatusVincere
         private TgcBoundingSphere BB;
         private TgcBoundingCylinder BC;
         private String animation = "Walk";
+        private World currentWorld;
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -343,16 +344,25 @@ namespace AlumnoEjemplos.NatusVincere
             return BC;
         }
 
-       /* public void Render()
+        public void setWorld(World world)
         {
-            //BB.render();
-            BC.render();
-        } */
+            currentWorld = world;
+        }
+        public World getWorld()
+        {
+            return currentWorld;
+        }
 
         public void setBB(Vector3 position)
         {
             //BB = new TgcBoundingSphere(positionBS(position), 5.75f);
             this.BC = new TgcBoundingCylinder(positionBS(position), 5.75f, 15f);
+        }
+
+        public void Render()
+        {
+            this.BC.render();
+
         }
     }
 }

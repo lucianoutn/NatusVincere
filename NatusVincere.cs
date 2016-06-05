@@ -417,6 +417,8 @@ namespace AlumnoEjemplos.NatusVincere
             //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
 
 
+            personaje.setWorld(currentWorld);
+
             //recalculo la vida del jugador segun el tiempo transcurrido
             personaje.recalcularStats();
             //Actualizar personaje
@@ -432,14 +434,15 @@ namespace AlumnoEjemplos.NatusVincere
             alturaCam = currentWorld.calcularAltura(currentXCam, currentZCam);
             cam.setPosition(new Vector3(currentXCam, alturaCam + cam.alturaPreseteada, currentZCam));
             personaje.setPosition(new Vector3(currentXCam, alturaCam, currentZCam));
-
+            
             
             refreshWorlds();
             //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
             skyBox.updateYRender(personaje.getPosition());
             refreshCamera(); //Necesita que se actualice primero el personaje
 
-            
+
+            personaje.setBB(personaje.getPosition());
             //personaje.render();
             for (int i = 0; i <= 2; i++)
             {
@@ -449,23 +452,11 @@ namespace AlumnoEjemplos.NatusVincere
 
                 }
             }
+
+            personaje.Render();
         }
 
 
-        private bool hayColision(World currentWorld)
-        {
-            for (int i = 0; i < currentWorld.objects.Count; i++)
-            {
-                //if (TgcCollisionUtils.testSphereSphere(objects[i].getBB(), personaje.getBB()))
-                if(TgcCollisionUtils.testSphereCylinder(currentWorld.objects[i].getBB(), personaje.getBB()))
-                {
-                    return true;
-                }
-
-            };
-
-            return false;
-        }
 
         private bool FullScreen()
         {
