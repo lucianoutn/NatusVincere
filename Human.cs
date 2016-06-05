@@ -30,7 +30,7 @@ namespace AlumnoEjemplos.NatusVincere
         private TimeSpan tTranscurridoAgua = TimeSpan.Zero;
         private TimeSpan tTranscurridoSuenio = TimeSpan.Zero;
         private TgcBoundingSphere BB;
-        private TgcBoundingCylinder BC;
+        private TgcFixedYBoundingCylinder BC;
         private String animation = "Walk";
         private World currentWorld;
 
@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.agua = 101;
             this.suenio = -1;
             //this.BB = new TgcBoundingSphere(positionBS(position), 5.75f);
-            this.BC = new TgcBoundingCylinder(positionBS(position), 5.75f, 15f);
+            this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
             this.playAnimation(animationCaminar, false);
         }
 
@@ -338,7 +338,7 @@ namespace AlumnoEjemplos.NatusVincere
         }
 
         //public TgcBoundingSphere getBB()
-        public TgcBoundingCylinder getBB()
+        public TgcFixedYBoundingCylinder getBB()
         {
             //return BB;
             return BC;
@@ -356,7 +356,7 @@ namespace AlumnoEjemplos.NatusVincere
         public void setBB(Vector3 position)
         {
             //BB = new TgcBoundingSphere(positionBS(position), 5.75f);
-            this.BC = new TgcBoundingCylinder(positionBS(position), 5.75f, 15f);
+            this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
         }
 
         public void Render()

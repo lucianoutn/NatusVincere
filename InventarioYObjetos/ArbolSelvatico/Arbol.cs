@@ -9,7 +9,7 @@ namespace AlumnoEjemplos.NatusVincere
         public new int uses = 3;
         public new int type = 1;
         private float radioBC = 48f;
-        TgcBoundingSphere BC;
+        TgcBoundingBox BC;
 
         public Arbol(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
@@ -36,7 +36,7 @@ namespace AlumnoEjemplos.NatusVincere
             return this.type;
         }
 
-        public override TgcBoundingSphere getBB()
+        public override TgcBoundingBox getBB()
         {
             return this.BC;
         }
@@ -49,12 +49,12 @@ namespace AlumnoEjemplos.NatusVincere
         public override void borrarBB()
         {
             this.BC.dispose();
-            this.BC = new TgcBoundingSphere(new Vector3(0f,0f,0f), radioBC);
+            this.BC = new TgcBoundingBox(new Vector3(0f,0f,0f), new Vector3(0f, 0f, 0f));
         }
 
         public override void setBB(Vector3 position)
         {
-            this.BC = new TgcBoundingSphere(new Vector3(position.X + 8, position.Y + 45, position.Z), radioBC);
+            this.BC = new TgcBoundingBox(new Vector3(position.X- 90, position.Y, position.Z - 75), new Vector3(position.X + 70, position.Y + 225, position.Z + 70));
         }
     }
 }

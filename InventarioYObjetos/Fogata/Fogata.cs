@@ -9,7 +9,7 @@ namespace AlumnoEjemplos.NatusVincere
         public new int uses = 20;
         public new int type = 6;
         private float fogataR = 12.75f;
-        TgcBoundingSphere fogataBB;
+        TgcBoundingBox fogataBB;
 
         public Fogata(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
@@ -17,7 +17,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Fogata";
             this.minimumDistance = 200;
             this.storable = true;
-            this.fogataBB = new TgcBoundingSphere(new Vector3(position.X+10, position.Y+ 10, position.Z+10), fogataR);
+            this.fogataBB = new TgcBoundingBox(new Vector3(position.X+10, position.Y+ 10, position.Z+10), new Vector3(position.X + 10, position.Y + 10, position.Z + 10));
         }
 
         public override void doAction(Human user)
@@ -34,7 +34,7 @@ namespace AlumnoEjemplos.NatusVincere
             return this.type;
         }
 
-        public override TgcBoundingSphere getBB()
+        public override TgcBoundingBox getBB()
         {
             return fogataBB;
         }
@@ -48,12 +48,12 @@ namespace AlumnoEjemplos.NatusVincere
         public override void borrarBB()
         {
             this.fogataBB.dispose();
-            this.fogataBB = new TgcBoundingSphere(new Vector3(0f, 0f, 0f), fogataR);
+            this.fogataBB = new TgcBoundingBox(new Vector3(0f, 0f, 0f), new Vector3(10, 10, 10));
         }
 
         public override void setBB(Vector3 position)
         {
-            this.fogataBB = new TgcBoundingSphere(new Vector3(position.X+10, position.Y + 10, position.Z + 10), fogataR);
+            this.fogataBB = new TgcBoundingBox(new Vector3(position.X+10, position.Y + 10, position.Z + 10), new Vector3(position.X + 10, position.Y + 10, position.Z + 10));
         }
     }
 }

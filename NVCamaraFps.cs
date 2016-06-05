@@ -484,8 +484,8 @@ namespace AlumnoEjemplos.NatusVincere
 
             if(hayColision(personaje.getWorld()))
             {
-                direction.X = GuiController.Instance.ThirdPersonCamera.Position.X -5;
-                direction.Z = GuiController.Instance.ThirdPersonCamera.Position.Z - 5;
+                direction.X = GuiController.Instance.ThirdPersonCamera.Position.X - 0.1f;
+                direction.Z = GuiController.Instance.ThirdPersonCamera.Position.Z - 0.5f;
             }
 
             return direction;
@@ -496,7 +496,7 @@ namespace AlumnoEjemplos.NatusVincere
             for (int i = 0; i < currentWorld.objects.Count; i++)
             {
                 //if (TgcCollisionUtils.testSphereSphere(objects[i].getBB(), personaje.getBB()))
-                if (TgcCollisionUtils.testSphereCylinder(currentWorld.objects[i].getBB(), personaje.getBB()))
+                if (TgcCollisionUtils.testAABBCylinder(currentWorld.objects[i].getBB(), personaje.getBB()))
                 {
                     return true;
                 }
