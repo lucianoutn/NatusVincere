@@ -49,7 +49,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void render() {
             this.terrain.render();
-            this.objects.ForEach(crafteable => crafteable.Render());
+            this.objects.ForEach(crafteable => crafteable.render());
         }
 
         public void transform(Human human)
