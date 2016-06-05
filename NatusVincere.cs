@@ -16,6 +16,7 @@ using Microsoft.DirectX.DirectInput;
 using System.IO;
 using System.Windows.Forms;
 using AlumnoEjemplos.NatusVincere.NVSkyBoxes;
+using TgcViewer.Utils.Particles;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -45,6 +46,13 @@ namespace AlumnoEjemplos.NatusVincere
         bool showPersonajeMesh = true;
 
         int flag = 0;
+
+        ParticleEmitter emitter;
+        string texturePath;
+        string[] textureNames;
+        string selectedTextureName;
+        int selectedParticleCount;
+
         public override string getCategory()
         {
             return "AlumnoEjemplos";
@@ -181,6 +189,37 @@ namespace AlumnoEjemplos.NatusVincere
             //Vector3 targetFps = personaje.getPosition();
             //GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
 
+            //Directorio de texturas
+            texturePath = GuiController.Instance.ExamplesMediaDir + "Texturas\\Particles\\";
+
+            //Texturas de particulas a utilizar
+            textureNames = new string[] {
+                "pisada.png",
+                "fuego.png",
+                "humo.png",
+                "hoja.png",
+                "agua.png",
+                "nieve.png"
+            };
+
+            selectedTextureName = textureNames[1];
+            selectedParticleCount = 10;
+            emitter = new ParticleEmitter(texturePath + selectedTextureName, selectedParticleCount);
+            Vector3 posicionEmitter = new Vector3(10, currentWorld.calcularAltura(10, 10),10);
+            emitter.Position = posicionPersonaje;
+            
+            //Actualizar los demás parametros
+            emitter.MinSizeParticle = 20;
+            emitter.MaxSizeParticle = 40;
+            emitter.ParticleTimeToLive = 8;
+            emitter.CreationFrecuency = 0.001f;
+            emitter.Dispersion = 30;
+            emitter.Speed = new Vector3(10, -10, 10);
+            emitter.Enabled = true;
+
+            Sounds sounds = new Sounds();
+            sounds.playMusic();
+            sounds.playViento();
         }
 
         public override void render(float elapsedTime)
@@ -280,6 +319,10 @@ namespace AlumnoEjemplos.NatusVincere
 
                 }
             }
+
+            //Render de emisor
+            emitter.render();
+
         }
 
 
