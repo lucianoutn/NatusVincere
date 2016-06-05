@@ -9,7 +9,7 @@ namespace AlumnoEjemplos.NatusVincere
         public new int uses = 3;
         public new int type = 1;
         private float pinoBB = 20;
-        private TgcBoundingSphere tronco;
+        private TgcBoundingBox tronco;
 
         public Pino(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
@@ -17,7 +17,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Pino";
             this.minimumDistance = 200;
             this.storable = false;
-            this.tronco = new TgcBoundingSphere(new Vector3(position.X, position.Y + 90, position.Z), pinoBB);
+            setBB(position);
         }
         public override void doAction(Human user)
         {
@@ -35,7 +35,7 @@ namespace AlumnoEjemplos.NatusVincere
             return this.type;
         }
 
-        public override TgcBoundingSphere getBB()
+        public override TgcBoundingBox getBB()
         {
             return this.tronco;
         }
@@ -48,12 +48,12 @@ namespace AlumnoEjemplos.NatusVincere
         public override void borrarBB()
         {
             this.tronco.dispose();
-            this.tronco = new TgcBoundingSphere(new Vector3(0f, 0f, 0f), pinoBB);
+            this.tronco = new TgcBoundingBox(new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
         }
 
         public override void setBB(Vector3 position)
         {
-            this.tronco = new TgcBoundingSphere(new Vector3(position.X, position.Y + 45, position.Z), pinoBB);
+            this.tronco = new TgcBoundingBox(new Vector3(position.X - 10, position.Y, position.Z - 10), new Vector3(position.X + 10, position.Y + 80, position.Z + 10));
         }
     }
 }

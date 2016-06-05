@@ -30,9 +30,9 @@ namespace AlumnoEjemplos.NatusVincere
         private TimeSpan tTranscurridoAgua = TimeSpan.Zero;
         private TimeSpan tTranscurridoSuenio = TimeSpan.Zero;
         private TgcBoundingSphere BB;
-        private TgcBoundingCylinder BC;
-        private TgcD3dInput input = GuiController.Instance.D3dInput;
+        private TgcFixedYBoundingCylinder BC;
         private String animation = "Walk";
+        private World currentWorld;
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -44,7 +44,8 @@ namespace AlumnoEjemplos.NatusVincere
             this.agua = 101;
             this.suenio = -1;
             //this.BB = new TgcBoundingSphere(positionBS(position), 5.75f);
-            this.BC = new TgcBoundingCylinder(positionBS(position), 5.75f, 15f);
+            this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
+            this.playAnimation(animationCaminar, false);
         }
 
         private Vector3 positionBS(Vector3 position)
@@ -52,6 +53,116 @@ namespace AlumnoEjemplos.NatusVincere
             return new Vector3(position.X, position.Y + 20, position.Z);
         }
 
+
+        #region Movimientos //aplica para el personaje en 3era persona
+
+        TgcD3dInput input;
+        ObjectsFactory objectsFactory;
+        string animationCaminar = "Walk";
+        float velocidadCaminar = 150f;
+        //float velocidadRotacion = 100f;
+        //Calcular proxima posicion de personaje segun Input
+        float moveForward = 0f;
+        float rotate = 0;
+        bool moving = false;
+        bool rotating = false;
+        float jump = 0;
+        public const float DEFAULT_ROTATION_SPEED = 2f;
+
+        public void movete(Key input, float rotAngle, float elapsedTimeSec) //heading = rotAngle
+        {
+            //this.move(
+
+            //this.setPosition(vec);
+            //Adelante
+            if (input == Key.W)
+            {
+                moveForward = -velocidadCaminar;
+                moving = true;
+                //cam.getMovementDirection(input);
+            }
+
+            //Atras
+            if (input == Key.S)
+            {
+                moveForward = velocidadCaminar;
+                moving = true;
+            }
+            /*
+            //Derecha
+            if (input.keyDown(Key.D))
+            {
+                rotate = velocidadRotacion;
+                rotating = true;
+            }
+
+            //Izquierda
+            if (input.keyDown(Key.A))
+            {
+                rotate = -velocidadRotacion;
+                rotating = true;
+            }
+            */
+            //Jump
+            if (input == Key.Space)
+            {
+                jump = 30;
+                moving = true;
+            }
+
+
+            /*
+            if (input == Key.E)
+            {
+                objects.ForEach(crafteable => { if (crafteable.isNear(this)) objectsFactory.transform(crafteable); });
+            }
+
+            if (input == Key.R)
+            {
+                objects.ForEach(crafteable => { if (crafteable.isNear(this)) this.store(crafteable); });
+
+            }
+
+            if (input == Key.W)
+            {
+                this.leaveObject();
+            }
+            */
+            //cam.getMovementDirection(input);
+
+
+
+
+            //this.
+            //this.setPosition(pos);
+            //Rotar personaje y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
+            //float rotAngle = ((float)Math.PI / 180) * (rotate);
+            rotAngle *= DEFAULT_ROTATION_SPEED * elapsedTimeSec;
+            this.rotateY(rotAngle);
+            GuiController.Instance.ThirdPersonCamera.rotateY(rotAngle);
+            //GuiController.Instance.FpsCamera.updateViewMatrix(d3dDevice);
+            //this.playAnimation(animationCaminar, true);
+            //this.updateAnimation();
+
+
+            //Vector de movimiento
+            Vector3 movementVector = Vector3.Empty;
+            if (moving)
+            {
+                //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
+                movementVector = new Vector3(
+                    FastMath.Sin(this.getRotation().Y) * moveForward ,
+                    jump,
+                    FastMath.Cos(this.getRotation().Y) * moveForward );
+                this.move(movementVector);
+
+                //this.playAnimation(animationCaminar, true);
+                //this.updateAnimation();
+                moving = false;
+            }
+
+        }
+        #endregion Movimientos
 
         public void recalcularStats()
         {
@@ -86,12 +197,10 @@ namespace AlumnoEjemplos.NatusVincere
             //Dejar objeto un poco mas lejos
         }
 
-        public void render(bool renderMesh)
+        public void render()
         {
-            if (renderMesh) { 
-                this.mesh.render();
-            }
-            this.inventory.render();
+            this.mesh.render();
+            
         }
 
         public void store(Crafteable item) {
@@ -101,8 +210,8 @@ namespace AlumnoEjemplos.NatusVincere
         public void move(Vector3 movement)
         {
             this.mesh.move(movement);
-            this.playAnimation(animation, true);
-            this.updateAnimation();
+            //this.playAnimation(animation, true);
+            //this.updateAnimation();
 
         }
 
@@ -163,18 +272,18 @@ namespace AlumnoEjemplos.NatusVincere
         {
             this.mesh.dispose();
         }
-
-        public void refresh(World currentWorld, Vector3 direction, float elapsedTime) {
+        
+        /* public void refresh(World currentWorld, Vector3 direction, float elapsedTime) {
 
             float velocidadCaminar = 5f;
             //Calcular proxima posicion de personaje segun Input
             float moveForward = 0f;
-            TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+            
             bool moving = false;
             float jump = 0;
 
 
-            TgcD3dInput input = GuiController.Instance.D3dInput;
+            
 
             if (d3dInput.keyDown(Key.W))
             {
@@ -216,7 +325,8 @@ namespace AlumnoEjemplos.NatusVincere
             this.setPosition(position);
             this.setBB(position);
         }
-
+        */
+       
         public void pickObject(World world)
         {
             world.objects.ForEach(crafteable => {
@@ -228,22 +338,31 @@ namespace AlumnoEjemplos.NatusVincere
         }
 
         //public TgcBoundingSphere getBB()
-        public TgcBoundingCylinder getBB()
+        public TgcFixedYBoundingCylinder getBB()
         {
             //return BB;
             return BC;
         }
 
-        public void Render()
+        public void setWorld(World world)
         {
-            //BB.render();
-            BC.render();
+            currentWorld = world;
+        }
+        public World getWorld()
+        {
+            return currentWorld;
         }
 
         public void setBB(Vector3 position)
         {
             //BB = new TgcBoundingSphere(positionBS(position), 5.75f);
-            this.BC = new TgcBoundingCylinder(positionBS(position), 5.75f, 15f);
+            this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
+        }
+
+        public void Render()
+        {
+            this.BC.render();
+
         }
     }
 }

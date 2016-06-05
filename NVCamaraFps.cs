@@ -7,7 +7,7 @@ using Microsoft.DirectX.Direct3D;
 //using Microsoft.DirectX.Direct3DX;
 using TgcViewer;
 using TgcViewer.Utils.Input;
-using TgcViewer.Utils.TgcGeometry;
+//using TgcViewer.Utils.TgcGeometry;
 using Microsoft.DirectX.DirectInput;
 using System.Drawing;
 using System.Windows.Forms;
@@ -333,7 +333,7 @@ namespace AlumnoEjemplos.NatusVincere
             viewMatrix.M43 = -Vector3.Dot(zAxis, eye);
             
             // Extract the pitch angle from the view matrix.
-            accumPitchDegrees = RadianToDegree((float)-Math.Asin((double)viewMatrix.M23));
+            accumPitchDegrees = (float)((-Math.Asin((double)viewMatrix.M23)) * Math.PI / 180);
            
         }
 
@@ -489,9 +489,30 @@ namespace AlumnoEjemplos.NatusVincere
                 moveDownPressed = false;
             }
             //personaje.movete(direction);
+
+            if(hayColision(personaje.getWorld()))
+            {
+                direction.X = GuiController.Instance.ThirdPersonCamera.Position.X - 0.1f;
+                direction.Z = GuiController.Instance.ThirdPersonCamera.Position.Z - 0.5f;
+            }
+
             return direction;
         }
+        
+        private bool hayColision(World currentWorld)
+        {
+            for (int i = 0; i < currentWorld.objects.Count; i++)
+            {
+                //if (TgcCollisionUtils.testSphereSphere(objects[i].getBB(), personaje.getBB()))
+                if (TgcCollisionUtils.testAABBCylinder(currentWorld.objects[i].getBB(), personaje.getBB()))
+                {
+                    return true;
+                }
 
+            };
+
+            return false;
+        }
 
         private void rotate(float headingDegrees, float pitchDegrees, float rollDegrees)
         {
@@ -584,8 +605,8 @@ namespace AlumnoEjemplos.NatusVincere
                 accumPitchDegrees = -90.0f;
             }
 
-            float heading = DegreeToRadian(headingDegrees);
-            float pitch = DegreeToRadian(pitchDegrees);
+            float heading = (float)((headingDegrees) * Math.PI / 180);
+            float pitch = (float)((pitchDegrees) * Math.PI / 180);
 
             Matrix rotMtx;
             Vector4 result;
