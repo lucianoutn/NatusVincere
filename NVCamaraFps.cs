@@ -13,8 +13,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using TgcViewer.Utils.TgcSceneLoader;
 
-
-
 namespace AlumnoEjemplos.NatusVincere
 {
     public class NVCamaraFps : TgcCamera
@@ -91,6 +89,15 @@ namespace AlumnoEjemplos.NatusVincere
             this.personaje = personaje;
         }
         
+        private float DegreeToRadian(float angle)
+        {
+            return ((float)Math.PI / 180) * angle;
+        }
+
+        private float RadianToDegree(float angle)
+        {
+            return (180 / (float)Math.PI ) * angle;
+        }
 
         public void resetValues()
         {
@@ -326,7 +333,7 @@ namespace AlumnoEjemplos.NatusVincere
             viewMatrix.M43 = -Vector3.Dot(zAxis, eye);
             
             // Extract the pitch angle from the view matrix.
-            accumPitchDegrees = Geometry.RadianToDegree((float)-Math.Asin((double)viewMatrix.M23));
+            accumPitchDegrees = RadianToDegree((float)-Math.Asin((double)viewMatrix.M23));
            
         }
 
@@ -577,8 +584,8 @@ namespace AlumnoEjemplos.NatusVincere
                 accumPitchDegrees = -90.0f;
             }
 
-            float heading = Geometry.DegreeToRadian(headingDegrees);
-            float pitch = Geometry.DegreeToRadian(pitchDegrees);
+            float heading = DegreeToRadian(headingDegrees);
+            float pitch = DegreeToRadian(pitchDegrees);
 
             Matrix rotMtx;
             Vector4 result;
