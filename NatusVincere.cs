@@ -31,7 +31,7 @@ namespace AlumnoEjemplos.NatusVincere
         Human personaje;
         NVCamaraFps cam;
         Vector3 targetCamara3, targetCamara1;
-        //Vector3 eye; 
+        Vector3 eye; 
         Vector3 vNormal = new Vector3(0,1,0);
         TgcFrustum frustum;
         World currentWorld;

@@ -12,6 +12,7 @@ using Microsoft.DirectX.DirectInput;
 using System.Drawing;
 using System.Windows.Forms;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer.Utils.TgcGeometry;
 
 namespace AlumnoEjemplos.NatusVincere
 {
