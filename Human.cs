@@ -7,6 +7,8 @@ using System;
 using TgcViewer.Utils.Input;
 using System.Collections.Generic;
 using TgcViewer;
+using TgcViewer.Utils._2D;
+using System.Drawing;
 
 
 namespace AlumnoEjemplos.NatusVincere
@@ -33,6 +35,9 @@ namespace AlumnoEjemplos.NatusVincere
         private TgcFixedYBoundingCylinder BC;
         private String animation = "Walk";
         private World currentWorld;
+        private bool muerto = false;
+        TgcSprite gameOver;
+        Size screenSize = GuiController.Instance.Panel3d.Size;
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -171,24 +176,47 @@ namespace AlumnoEjemplos.NatusVincere
             tTranscurridoAgua = tTranscurridoAgua + tActual.Subtract(this.tAnterior);
             tTranscurridoSuenio = tTranscurridoSuenio + tActual.Subtract(this.tAnterior);
 
-            if (tTranscurridoVida.TotalSeconds > 30)
+            if (tTranscurridoVida.TotalSeconds > 2)
             {
-                this.health = health - 1;
+                this.health = health - 2;
                 tTranscurridoVida = TimeSpan.Zero;
             }
-            if (tTranscurridoAgua.TotalMinutes > 1)
+            if (tTranscurridoAgua.TotalMinutes > 0.2)
             {
-                this.agua = this.agua - 1;
+                this.agua = this.agua - 2;
                 tTranscurridoAgua = TimeSpan.Zero;
             }
-            if (tTranscurridoSuenio.TotalMinutes > 2)
+            if (tTranscurridoSuenio.TotalMinutes > 0.5)
             {
-                this.suenio = this.suenio + 1;
+                this.suenio = this.suenio + 3;
                 tTranscurridoSuenio = TimeSpan.Zero;
             }
 
             this.tAnterior = this.tActual;
+            if (this.agua < 1 || this.suenio > 99 || this.health < 1) this.muerto = true;
         }
+
+        public void morite()
+        {
+            //TODO
+            
+            gameOver = new TgcSprite();
+            gameOver.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\gameover.png");
+            Size textureSizeGameOver = gameOver.Texture.Size;
+            gameOver.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeGameOver.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeGameOver.Height / 2, 0));
+
+            //gameOver.Position = new Vector2(screenSize.Width/2 ,screenSize.Height / 2);
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+            gameOver.render();
+            GuiController.Instance.Drawer2D.endDrawSprite();
+
+        }
+
+        public void meshRender()
+        {
+            this.mesh.render();
+        }
+
 
         public void leaveObject(World world)
         {
@@ -199,8 +227,8 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void render()
         {
-            this.mesh.render();
-            
+            if (this.muerto) this.morite();
+                       
         }
 
         public void store(Crafteable item) {
@@ -271,6 +299,9 @@ namespace AlumnoEjemplos.NatusVincere
         public void dispose()
         {
             this.mesh.dispose();
+            this.gameOver.dispose();
+            this.currentWorld.dispose();
+            
         }
         
         /* public void refresh(World currentWorld, Vector3 direction, float elapsedTime) {

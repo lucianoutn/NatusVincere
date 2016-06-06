@@ -286,7 +286,7 @@ namespace AlumnoEjemplos.NatusVincere
                  Matrix result = lookAtM;
                  d3dDevice.Transform.View = result;
                  personaje.rotateY(elapsedTime* .3f);
-                 personaje.render();
+                 personaje.meshRender();
                  personaje.move(lookfrom-lookAt);
 
                 if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
@@ -485,7 +485,7 @@ namespace AlumnoEjemplos.NatusVincere
             alturaCam = currentWorld.calcularAltura(currentXCam, currentZCam);
             cam.setPosition(new Vector3(currentXCam, alturaCam + cam.alturaPreseteada, currentZCam));
             personaje.setPosition(new Vector3(currentXCam, alturaCam, currentZCam));
-            
+            personaje.render(); //no renderiza el mesh, solo actualiza valores y lo mata
             
             refreshWorlds();
             //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
@@ -506,8 +506,8 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Render de emisor
             emitter.render();
-
-            personaje.Render();
+            
+            //personaje.Render();
 
         }
 
@@ -540,7 +540,7 @@ namespace AlumnoEjemplos.NatusVincere
             if ((bool)GuiController.Instance.Modifiers["3ra"])
             {
                 GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
-                personaje.render();
+                personaje.meshRender();
                 //GuiController.Instance.D3dInput
             }
             GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
@@ -556,7 +556,8 @@ namespace AlumnoEjemplos.NatusVincere
             else
             {
                 Cursor.Show();
-                personaje.render();
+                //personaje.render();
+                personaje.meshRender();
             }
 
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
