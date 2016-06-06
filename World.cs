@@ -127,7 +127,8 @@ namespace AlumnoEjemplos.NatusVincere
                     k = 15;
                 }
                 if (i % 2 == 0) {  
-                    crearArbol(j * k * (i * qArboles), qArboles - 127*i);
+                    crearArbol(j * k * (i * qArboles), qArboles - 177*i);
+                    
                 } else
                 {
                     crearPino(j * k * ((i + 30) * qArboles), qArboles - 89 * i);
@@ -149,6 +150,16 @@ namespace AlumnoEjemplos.NatusVincere
         public void crearArbusto(float x, float z)
         {
             objectsFactory.createArbusto(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+        }
+
+        public void crearLeon(float x, float z)
+        {
+            objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+        }
+
+        public void crearHacha(float x, float z)
+        {
+            objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
     }
 }

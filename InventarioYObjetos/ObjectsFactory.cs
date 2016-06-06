@@ -17,6 +17,8 @@ namespace AlumnoEjemplos.NatusVincere
         private TgcMesh hachaMesh;
         private TgcMesh maderaMesh;
         private TgcMesh fogataMesh;
+        private TgcMesh leonMesh;
+
         private List<Crafteable> objectList;
         int objectId = 0;
 
@@ -56,6 +58,9 @@ namespace AlumnoEjemplos.NatusVincere
 
             TgcScene fogataScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Fogata\wood+fire-TgcScene.xml");
             this.fogataMesh = fogataScene.Meshes[0];
+
+            TgcScene leonScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Leon\Untitled (2)-TgcScene.xml");
+            this.leonMesh = leonScene.Meshes[0];
 
             dirAnim = new DirectoryInfo(skeletalPath + "Animations\\");
             animFiles = dirAnim.GetFiles("*-TgcSkeletalAnim.xml", SearchOption.TopDirectoryOnly);
@@ -141,6 +146,15 @@ namespace AlumnoEjemplos.NatusVincere
             Fogata fogata = new Fogata(meshInstance, position, scale);
             this.objectList.Add(fogata);
             return fogata;
+        }
+
+        public Leon createLeon(Vector3 position, Vector3 scale)
+        {
+            objectId++;
+            TgcMesh meshInstance = this.leonMesh.createMeshInstance("leon_" + objectId);
+            Leon leon = new Leon(meshInstance, position, scale);
+            this.objectList.Add(leon);
+            return leon;
         }
 
         public void transform(Crafteable crafteable)
