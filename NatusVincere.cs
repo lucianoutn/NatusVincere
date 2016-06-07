@@ -204,6 +204,7 @@ namespace AlumnoEjemplos.NatusVincere
             Vector3 posicionPersonaje = new Vector3(1000, currentWorld.calcularAltura(1000, 1000), 1000);
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
 
+            currentWorld.crearLeon(posicionPersonaje.X - 190, posicionPersonaje.Z - 190);
             //Hud
             hud = new Hud();
 
@@ -507,8 +508,7 @@ namespace AlumnoEjemplos.NatusVincere
             //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
             skyBox.updateYRender(personaje.getPosition());
             refreshCamera(); //Necesita que se actualice primero el personaje
-
-
+            
             personaje.setBB(personaje.getPosition());
             //personaje.render();
             for (int i = 0; i <= 2; i++)
@@ -523,7 +523,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Render de emisor
             emitter.render();
             
-            //personaje.Render();
+            personaje.Render();
 
         }
 
