@@ -74,6 +74,7 @@ namespace AlumnoEjemplos.NatusVincere
         Sounds sounds;
 
         float time; //usado en el shader de viento
+        Boolean vientoPlaying = false;
 
         public override string getCategory()
         {
@@ -240,13 +241,12 @@ namespace AlumnoEjemplos.NatusVincere
 
             sounds = new Sounds();
             sounds.playMusic();
-            sounds.playViento();
             personaje.setSounds(sounds);
         }
 
         public override void render(float elapsedTime)
         {
-            time += elapsedTime;
+            time += elapsedTime; 
             //Renderizo el logo del inicio y el hud
             if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)20)))
             {
@@ -289,28 +289,13 @@ namespace AlumnoEjemplos.NatusVincere
 
 
             }
-            //fin logo y hud
-
-
-
-            #region borrar dsp
-            /*
            
-            float velocidadCaminar = 5f;
-            float velocidadRotacion = 100f;
-            //Calcular proxima posicion de personaje segun Input
-            float moveForward = 0f;
-            float rotate = 0;
-            bool moving = false;
-            bool rotating = false;
-            float jump = 0;
-            */
+           
+                generarViento(currentWorld.objects);
+            
 
-
-
-
-            //Adelante
-            if (input.keyDown(Key.W))
+                //Adelante
+                if (input.keyDown(Key.W))
             {
                 Key key = Key.W;
                 personaje.movete(key, 0, elapsedTime);
@@ -365,81 +350,7 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             #endregion crafteo
-
-            /*
-            //cam.getMovementDirection(input);
-
-            //Si hubo rotacion
-            if (rotating)
-            {
-                //Rotar personaje y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
-                float rotAngle = ((float)Math.PI / 180) * (rotate * elapsedTime);
-                personaje.rotateY(rotAngle);
-                GuiController.Instance.ThirdPersonCamera.rotateY(rotAngle);
-                //GuiController.Instance.FpsCamera.updateViewMatrix(d3dDevice);
-                personaje.playAnimation(animationCaminar, true);
-                personaje.updateAnimation();
-            }
-
-            //Vector de movimiento
-            Vector3 movementVector = Vector3.Empty;
-            if (moving)
-            {
-                //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
-                movementVector = new Vector3(
-                    FastMath.Sin(personaje.getRotation().Y) * moveForward,
-                    jump,
-                    FastMath.Cos(personaje.getRotation().Y) * moveForward
-                    );
-                personaje.move(movementVector);
-               
-                personaje.playAnimation(animationCaminar, true);
-                personaje.updateAnimation();
-            }
-
-            */
-            #endregion borrar dsp
-           
-            /* 
-            //actualizando camaras
-            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
-            targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
-
-            //Controlo los modificadores de la camara
-            if ((bool)GuiController.Instance.Modifiers["3ra"])
-            {
-                GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
-                personaje.render();
-                //GuiController.Instance.D3dInput
-            }
-            GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
-            if ((bool)GuiController.Instance.Modifiers["FPS"])
-            {
-                cam.Enable = true;
-                //personaje.render(); //para test
-                Cursor.Hide();
-                //GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara1, 0f, 10f);//provisorio
-                //GuiController.Instance.ThirdPersonCamera.Enable = true; //provisorio
-                //targetCamara3 = targetCamara1;//provisorio
-            }
-            else
-            {
-                Cursor.Show();
-                //personaje.render();
-            }
-
-            GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
-            //GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 100f, 200);
-            //GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
-            //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
-            //           -GuiController.Instance.D3dInput.YposRelative * velocidadRotacion);
-            //GuiController.Instance.FpsCamera.setCamera(eye, targetCamara + new Vector3(1.0f, 0.0f, 0.0f));
-
-            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
-            //GuiController.Instance.Frustum.updateMesh(personaje.getPosition(),targetCamara1);
-            GuiController.Instance.BackgroundColor = Color.AntiqueWhite;
-           */
-
+            
             //Frustum values FAR PLANE
             d3dDevice.Transform.Projection =
                 Matrix.PerspectiveFovLH(((float)((45.0f)* Math.PI / 180)),
@@ -692,13 +603,23 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void generarViento(List<Crafteable> objetos)
         {
-            this.time = 0;
-            this.sounds.playViento();
             int i;
-            for (i = 0; i < objetos.Count; i++)
+            if (!vientoPlaying)
             {
-                objetos[i].getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
-                objetos[i].getMesh().Technique = "Viento";
+                for (i = 0; i < objetos.Count; i++)
+                {
+                    objetos[i].getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
+                    objetos[i].getMesh().Technique = "Viento";
+                    objetos[i].getMesh().Effect.SetValue("time", this.time);
+                }
+                vientoPlaying = true;
+                return;
+            }
+            
+            this.sounds.playViento();
+           
+            for (i = 0; i < objetos.Count; i++)
+            {          
                 objetos[i].getMesh().Effect.SetValue("time", this.time);
             }
         }

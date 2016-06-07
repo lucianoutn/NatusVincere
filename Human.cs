@@ -191,6 +191,7 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 this.health = health - 2;
                 tTranscurridoVida = TimeSpan.Zero;
+                if (this.health < 20) sounds.playIntense();
             }
             if (tTranscurridoAgua.TotalMinutes > 0.2)
             {

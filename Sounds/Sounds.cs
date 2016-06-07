@@ -25,6 +25,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         Boolean isMainMusicOpened = false;
         Boolean isWindPlaying = false;
+        Boolean isIntensePlaying = false;
 
         public void playMusic()
         {
@@ -39,8 +40,12 @@ namespace AlumnoEjemplos.NatusVincere
         
         public void playIntense()
         {
+            if (isIntensePlaying)
+            {
+                return;
+            }
             mediaPlayer.pause(happyMusicAlias);
-            mediaPlayer.openAndPlay(true, happyMusicPath, happyMusicAlias);
+            mediaPlayer.openAndPlay(true, intenseMusicPath, intenseAlias);
         }
         
         public void playViento()
