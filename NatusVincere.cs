@@ -33,6 +33,7 @@ namespace AlumnoEjemplos.NatusVincere
         List<Crafteable> objects;
         NVSkyBox skyBox;
         Human personaje;
+        Leon leon;
         NVCamaraFps cam;
         Vector3 targetCamara3, targetCamara1;
         Vector3 eye; 
@@ -168,7 +169,7 @@ namespace AlumnoEjemplos.NatusVincere
             Vector3 posicionPersonaje = new Vector3(1000, currentWorld.calcularAltura(1000, 1000), 1000);
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
 
-            currentWorld.crearLeon(posicionPersonaje.X - 190, posicionPersonaje.Z - 190);
+            leon = currentWorld.crearLeon(posicionPersonaje.X - 190, posicionPersonaje.Z - 190);
             //Hud
             hud = new Hud();
 
@@ -382,6 +383,19 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.updateYRender(personaje.getPosition());
             refreshCamera(); //Necesita que se actualice primero el personaje
             
+            if(leon.isNear(personaje))
+            {
+                float xL = leon.getPosition().X;
+                float zL = leon.getPosition().Z;
+                float xP = personaje.getPosition().X;
+                float zP = personaje.getPosition().Z;
+                float x = Math.Abs(xL - xP) - 1;
+                float z = Math.Abs(zL - zP) - 1;
+
+                leon.setPosition(new Vector3(xP - x, currentWorld.calcularAltura(xP - x, zP - z), zP - z));
+                leon.setBB(new Vector3(xP - x, currentWorld.calcularAltura(xP - x, zP - z), zP - z));
+            }
+
             personaje.setBB(personaje.getPosition());
             //personaje.render();
             for (int i = 0; i <= 2; i++)
@@ -397,7 +411,7 @@ namespace AlumnoEjemplos.NatusVincere
             emitter.render();
             
             personaje.Render();
-
+            leon.Render();
         }
 
 

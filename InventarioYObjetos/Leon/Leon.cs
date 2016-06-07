@@ -1,58 +1,82 @@
-﻿using Microsoft.DirectX;
+﻿using System;
+using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    public class Leon : Crafteable
+    public class Leon
     {
-        public new int uses = 3;
-        public new int type = 2;
-        private float radioBB = 10.75f;
-        TgcBoundingBox arbustoBB;
+        private int health;
+        private float minimumDistance = 200; //Default
+        private TgcMesh mesh;
+        private TgcBoundingBox arbustoBB;
 
-        public Leon(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
+        public Leon(TgcMesh mesh, Vector3 position, Vector3 scale)
         {
-            this.type = 2;
-            this.description = "Leon";
-            this.minimumDistance = 200;
-            this.storable = true;
+            this.health = 20;
+            this.mesh = mesh;
+            this.mesh.Position = position;
+            this.mesh.Scale = scale;
             setBB(position);
         }
 
-        public override void doAction(Human user)
+        public void doAction(Human user)
         {
             Vector3 direction = this.getPosition() - user.getPosition();
             direction.Normalize();
             this.move(direction);
         }
 
-        public override float getMinimumDistance()
+        public void move(Vector3 movement)
         {
-            return this.minimumDistance;
+            this.mesh.move(movement);
         }
-        public override int getType()
+        
+        public bool isNear(Human user)
         {
-            return this.type;
+            Vector3 distance = user.getPosition();
+            distance.Multiply(-1);
+            distance.Add(this.getPosition());
+            //TODO: Agregar checkear la dirección del personaje
+            return distance.Length() < this.getMinimumDistance();
         }
 
-        public override TgcBoundingBox getBB()
+        public virtual float getMinimumDistance()
+        {
+            return minimumDistance;
+        }
+
+        public Vector3 getPosition()
+        {
+            return this.mesh.Position;
+        }
+
+        public void setPosition(Vector3 position)
+        {
+            this.mesh.Position = position;
+        }
+
+
+        public TgcBoundingBox getBB()
         {
             return this.arbustoBB;
         }
         
-        public override void Render()
+        public void Render()
         {
+            mesh.render();
             arbustoBB.render();
         }
 
-        public override void borrarBB()
+        public void borrarBB()
         {
             this.arbustoBB.dispose();
             this.arbustoBB = new TgcBoundingBox(new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
         }
 
-        public override void setBB(Vector3 position)
+        public void setBB(Vector3 position)
         {
             this.arbustoBB = new TgcBoundingBox(new Vector3(position.X + 25, position.Y, position.Z + 70), new Vector3(position.X - 10, position.Y + 38, position.Z + 25));
         }

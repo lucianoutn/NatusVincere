@@ -152,9 +152,9 @@ namespace AlumnoEjemplos.NatusVincere
             objectsFactory.createArbusto(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
-        public void crearLeon(float x, float z)
+        public Leon crearLeon(float x, float z)
         {
-            objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearHacha(float x, float z)
