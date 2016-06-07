@@ -23,8 +23,11 @@ namespace AlumnoEjemplos.NatusVincere
     public class NatusVincere : TgcExample
     {
         TgcSprite spriteLogo;
+        TgcSprite spriteObjetivos;
+        TgcText2d objetivos;
         DateTime tiempoLogo;
         DateTime tiempoPresentacion;
+        DateTime tiempoObjetivos;
         Hud hud;
         List<Crafteable> objects;
         NVSkyBox skyBox;
@@ -158,10 +161,18 @@ namespace AlumnoEjemplos.NatusVincere
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
             tiempoLogo = DateTime.Now;
             tiempoPresentacion = DateTime.Now;
+            tiempoObjetivos = DateTime.Now;
             //Ubicarlo centrado en la pantalla
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
+            //spriteObjetivos.Position = spriteLogo.Position;
+            objetivos = new TgcText2d();
+            objetivos.Position = new Point(5, (int)spriteLogo.Position.Y);
+            objetivos.Align = TgcText2d.TextAlign.LEFT;
+            objetivos.changeFont(new System.Drawing.Font("Arial", 16, FontStyle.Regular));
+            objetivos.Color = Color.Yellow;
+            objetivos.Text = " Objetivo: encontrar a WILSON->(img) haciendo crafting para sobrevivir\n Movimientos: WASD\n Interacciones: E (usar), R (recolectar), L (dejar)";
 
             //creacion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -273,7 +284,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             
             //Renderizo el logo del inicio y el hud
-            if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)10)))
+            if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)20)))
             {
                 //animacion
                 
@@ -288,18 +299,23 @@ namespace AlumnoEjemplos.NatusVincere
                  personaje.rotateY(elapsedTime* .3f);
                  personaje.meshRender();
                  personaje.move(lookfrom-lookAt);
-
-                if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
-                {
-                    GuiController.Instance.Drawer2D.beginDrawSprite();
-                    spriteLogo.render();
-                    GuiController.Instance.Drawer2D.endDrawSprite();
-                }
-
+                
+                 if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
+                 {
+                     GuiController.Instance.Drawer2D.beginDrawSprite();
+                     spriteLogo.render();
+                     GuiController.Instance.Drawer2D.endDrawSprite();
+                 }
+                 else
+                 {
+                     objetivos.render();
+                     spriteLogo.dispose();
+                 }
+                 
             }
             else //render del hud
             {
-
+                objetivos.dispose();
                 hud.renderizate(personaje);
                 // GuiController.Instance.CurrentCamera = cam;
                 //GuiController.Instance.ThirdPersonCamera.
@@ -719,8 +735,8 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.dispose();
             personaje.dispose();
             currentWorld.dispose();
-            spriteLogo.dispose();
-            hud.dispose();
+           
+            //hud.dispose();
             cam.Enable = false; //para q deje de capturar el mouse
 
         }

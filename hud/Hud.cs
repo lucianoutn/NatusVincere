@@ -52,10 +52,12 @@ namespace AlumnoEjemplos.NatusVincere
   
         public void renderizate(Human personaje)
         {
-            GuiController.Instance.Drawer2D.beginDrawSprite();
+            
             vida.Text = personaje.health.ToString();  //hud tiene q ir en render
             agua.Text = personaje.agua.ToString();  //hud tiene q ir en render
             suenio.Text = personaje.suenio.ToString();  //hud tiene q ir en render
+            if (personaje.muerto) this.dispose();
+            GuiController.Instance.Drawer2D.beginDrawSprite();
             hudSprite.render();
             vida.render();
             agua.render();

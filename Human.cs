@@ -35,9 +35,11 @@ namespace AlumnoEjemplos.NatusVincere
         private TgcFixedYBoundingCylinder BC;
         private String animation = "Walk";
         private World currentWorld;
-        private bool muerto = false;
-        TgcSprite gameOver;
+        public bool muerto = false;
+        TgcSprite gameOver = new TgcSprite();
         Size screenSize = GuiController.Instance.Panel3d.Size;
+        Size textureSizeGameOver;
+        
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -45,12 +47,16 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh = mesh;
             this.mesh.Position = position;
             this.mesh.Scale = scale;
-            this.health = 101;
-            this.agua = 101;
+            this.health = 51;//101;
+            this.agua = 51;// 101;
             this.suenio = -1;
             //this.BB = new TgcBoundingSphere(positionBS(position), 5.75f);
             this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
             this.playAnimation(animationCaminar, false);
+            gameOver.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\gameover.png");
+            textureSizeGameOver = gameOver.Texture.Size;
+            gameOver.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeGameOver.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeGameOver.Height / 2, 0));
+          
         }
 
         private Vector3 positionBS(Vector3 position)
@@ -198,14 +204,6 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void morite()
         {
-            //TODO
-            
-            gameOver = new TgcSprite();
-            gameOver.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\gameover.png");
-            Size textureSizeGameOver = gameOver.Texture.Size;
-            gameOver.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeGameOver.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeGameOver.Height / 2, 0));
-
-            //gameOver.Position = new Vector2(screenSize.Width/2 ,screenSize.Height / 2);
             GuiController.Instance.Drawer2D.beginDrawSprite();
             gameOver.render();
             GuiController.Instance.Drawer2D.endDrawSprite();
@@ -225,7 +223,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Dejar objeto un poco mas lejos
         }
 
-        public void render()
+        public void render() //hay otro "renderMesh" para el mesh
         {
             if (this.muerto) this.morite();
                        
