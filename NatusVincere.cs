@@ -17,6 +17,7 @@ using System.IO;
 using System.Windows.Forms;
 using AlumnoEjemplos.NatusVincere.NVSkyBoxes;
 using TgcViewer.Utils.Particles;
+using TgcViewer.Utils.Shaders;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -70,6 +71,10 @@ namespace AlumnoEjemplos.NatusVincere
         string selectedTextureName;
         int selectedParticleCount;
 
+        Sounds sounds;
+
+        float time; //usado en el shader de viento
+
         public override string getCategory()
         {
             return "AlumnoEjemplos";
@@ -84,49 +89,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             return "Survival Craft – Supervivencia con creaciones.";
         }
-
-        /*public float CalcularAltura(float x, float z)
-        {
-            float largo = currentScaleXZ * 64;
-            float pos_i = 64f * (0.5f + x / largo);
-            float pos_j = 64f * (0.5f + z / largo);
-
-            int pi = (int)pos_i;
-            float fracc_i = pos_i - pi;
-            int pj = (int)pos_j;
-            float fracc_j = pos_j - pj;
-
-            if (pi < 0)
-                pi = 0;
-            else
-                if (pi > 63)
-                    pi = 63;
-
-            if (pj < 0)
-                pj = 0;
-            else
-                if (pj > 63)
-                    pj = 63;
-
-            int pi1 = pi + 1;
-            int pj1 = pj + 1;
-            if (pi1 > 63)
-                pi1 = 63;
-            if (pj1 > 63)
-                pj1 = 63;
-
-            // 2x2 percent closest filtering usual: 
-            float H0 = terrain.HeightmapData[pi, pj] * currentScaleY;
-            float H1 = terrain.HeightmapData[pi1, pj] * currentScaleY;
-            float H2 = terrain.HeightmapData[pi, pj1] * currentScaleY;
-            float H3 = terrain.HeightmapData[pi1, pj1] * currentScaleY;
-            float H = (H0 * (1 - fracc_i) + H1 * fracc_i) * (1 - fracc_j) +
-                      (H2 * (1 - fracc_i) + H3 * fracc_i) * fracc_j;
-
-            return H;
-        }
-        */
-
+        
         public override void init()
         {
             //Inicializaciones
@@ -275,15 +238,15 @@ namespace AlumnoEjemplos.NatusVincere
             emitter.Speed = new Vector3(10, -10, 10);
             emitter.Enabled = true;
 
-            Sounds sounds = new Sounds();
+            sounds = new Sounds();
             sounds.playMusic();
             sounds.playViento();
+            personaje.setSounds(sounds);
         }
 
         public override void render(float elapsedTime)
         {
-
-            
+            time += elapsedTime;
             //Renderizo el logo del inicio y el hud
             if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)20)))
             {
@@ -503,7 +466,6 @@ namespace AlumnoEjemplos.NatusVincere
             cam.setPosition(new Vector3(currentXCam, alturaCam + cam.alturaPreseteada, currentZCam));
             personaje.setPosition(new Vector3(currentXCam, alturaCam, currentZCam));
             personaje.render(); //no renderiza el mesh, solo actualiza valores y lo mata
-            
             refreshWorlds();
             //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
             skyBox.updateYRender(personaje.getPosition());
@@ -726,6 +688,19 @@ namespace AlumnoEjemplos.NatusVincere
             TgcText2d text = textCreator.createText(unNumero.ToString() + "POSICIONES");
             text.Position = new Point(positionX, positionY);
             text.render();
+        }
+
+        public void generarViento(List<Crafteable> objetos)
+        {
+            this.time = 0;
+            this.sounds.playViento();
+            int i;
+            for (i = 0; i < objetos.Count; i++)
+            {
+                objetos[i].getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
+                objetos[i].getMesh().Technique = "Viento";
+                objetos[i].getMesh().Effect.SetValue("time", this.time);
+            }
         }
 
         public override void close()

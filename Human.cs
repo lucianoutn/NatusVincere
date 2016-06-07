@@ -39,7 +39,12 @@ namespace AlumnoEjemplos.NatusVincere
         TgcSprite gameOver = new TgcSprite();
         Size screenSize = GuiController.Instance.Panel3d.Size;
         Size textureSizeGameOver;
+        public Sounds sounds;
         
+        public void setSounds(Sounds sounds)
+        {
+            this.sounds = sounds;
+        }
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -225,8 +230,11 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void render() //hay otro "renderMesh" para el mesh
         {
-            if (this.muerto) this.morite();
-                       
+            if (this.muerto)
+            {
+                sounds.playGameOver();
+                this.morite();
+            }
         }
 
         public void store(Crafteable item) {

@@ -6,15 +6,15 @@ using TgcViewer;
 using AlumnoEjemplos.MiGrupo.Sounds;
 namespace AlumnoEjemplos.NatusVincere
 {
-    class Sounds
+    public class Sounds
     {
         MediaPlayer mediaPlayer = new MediaPlayer();
-        String happyMusicPath = "AlumnoEjemplos\\NatusVincere\\happy.mp3";
-        String windPath = "AlumnoEjemplos\\NatusVincere\\wind.mp3";
-        String victoriaPath = "AlumnoEjemplos\\NatusVincere\\victory.mp3";
-        String gameOverPath = "AlumnoEjemplos\\NatusVincere\\gameOver.mp3";
-        String talarArbolPath = "AlumnoEjemplos\\NatusVincere\\talar.mp3";
-        String intenseMusicPath = "AlumnoEjemplos\\NatusVincere\\intense.mp3";
+        String happyMusicPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\happy.mp3";
+        String windPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\wind.mp3";
+        String victoriaPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\victory.mp3";
+        String gameOverPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\gameOver.mp3";
+        String talarArbolPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\talar.mp3";
+        String intenseMusicPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\intense.mp3";
 
         String happyMusicAlias = "music";
         String windAlias = "alias";
@@ -70,8 +70,8 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void playGameOver()
         {
+            if (isWindPlaying) mediaPlayer.closeFile(windAlias);
             mediaPlayer.closeFile("music");
-            isMainMusicOpened = false;
             mediaPlayer.openAndPlay(true, gameOverPath, gameOverAlias);
         }
 
