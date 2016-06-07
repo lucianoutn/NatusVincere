@@ -77,6 +77,8 @@ namespace AlumnoEjemplos.NatusVincere
         float time; //usado en el shader de viento
         Boolean vientoPlaying = false;
 
+        TgcMesh wilson;
+
         public override string getCategory()
         {
             return "AlumnoEjemplos";
@@ -243,6 +245,14 @@ namespace AlumnoEjemplos.NatusVincere
             sounds = new Sounds();
             sounds.playMusic();
             personaje.setSounds(sounds);
+
+            //Cargar mesh principal
+            wilson = loader.loadSceneFromFile("AlumnoEjemplos\\NatusVincere\\Wilson\\wilson-TgcScene.xml").Meshes[0];
+            float wilsonX = 1000 - 300;
+            float wilsonZ = 1000 - 300;
+            wilson.Position = new Vector3(wilsonX,
+                currentWorld.calcularAltura(wilsonX, wilsonZ) + 10,
+                wilsonZ);
         }
 
         public override void render(float elapsedTime)
@@ -412,6 +422,12 @@ namespace AlumnoEjemplos.NatusVincere
             
             personaje.Render();
             leon.Render();
+            wilson.render();
+            if (TgcCollisionUtils.testAABBAABB(wilson.BoundingBox, personaje.getMesh().BoundingBox) )
+            {
+                sounds.playVictoria();
+            }
+
         }
 
 
