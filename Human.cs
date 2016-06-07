@@ -394,7 +394,7 @@ namespace AlumnoEjemplos.NatusVincere
         public void setBB(Vector3 position)
         {
             //BB = new TgcBoundingSphere(positionBS(position), 5.75f);
-            this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
+            this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 15.75f, 15f);
         }
 
         public void Render()

@@ -9,7 +9,7 @@ namespace AlumnoEjemplos.NatusVincere
     public class Leon
     {
         private int health;
-        private float minimumDistance = 200; //Default
+        private float minimumDistance = 400; //Default
         private TgcMesh mesh;
         private TgcBoundingBox arbustoBB;
 
@@ -33,12 +33,19 @@ namespace AlumnoEjemplos.NatusVincere
         {
             this.mesh.move(movement);
         }
-        
-        public bool isNear(Human user)
+
+        public Vector3 distancia(Human user)
         {
             Vector3 distance = user.getPosition();
             distance.Multiply(-1);
             distance.Add(this.getPosition());
+
+            return distance;
+        }
+
+        public bool isNear(Human user)
+        {
+            Vector3 distance = distancia(user);
             //TODO: Agregar checkear la dirección del personaje
             return distance.Length() < this.getMinimumDistance();
         }
@@ -79,6 +86,51 @@ namespace AlumnoEjemplos.NatusVincere
         public void setBB(Vector3 position)
         {
             this.arbustoBB = new TgcBoundingBox(new Vector3(position.X + 25, position.Y, position.Z + 70), new Vector3(position.X - 10, position.Y + 38, position.Z + 25));
+        }
+
+        public void acercateA(Human personaje, World currentWorld)
+        {
+            float xL = this.getPosition().X;
+            float zL = this.getPosition().Z;
+            float xP = personaje.getPosition().X;
+            float zP = personaje.getPosition().Z - 40;
+
+            //if(distancia(personaje).Length()>80)
+            //{
+            if(Math.Abs(Math.Abs(xL) - Math.Abs(xP))>40)
+            {
+                if (xL > xP)
+                {
+                    xL = xL - 1;
+                }
+                else
+                {
+                    xL = xL + 1;
+                }
+            }
+            if(Math.Abs(Math.Abs(zL) - Math.Abs(zP)) > 40)
+            {
+                if (zL > zP)
+                {
+                    zL = zL - 1;
+                }
+                else
+                {
+                    zL = zL + 1;
+                }
+            }
+            //}
+            this.setPosition(new Vector3(xL, currentWorld.calcularAltura(xL, zL),zL));
+            this.setBB(new Vector3(xL, currentWorld.calcularAltura(xL, zL), zL));
+        }
+
+        private bool hayColision(Human personaje)
+        {
+            if (TgcCollisionUtils.testAABBCylinder(this.getBB(), personaje.getBB()))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
