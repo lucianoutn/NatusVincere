@@ -10,6 +10,9 @@ namespace AlumnoEjemplos.NatusVincere
     {
         private int health;
         private float minimumDistance = 400; //Default
+        bool quieto = true;
+        int coolDownTotal = 80;
+        int coolDown = 80;
         private TgcMesh mesh;
         private TgcBoundingBox arbustoBB;
 
@@ -88,16 +91,16 @@ namespace AlumnoEjemplos.NatusVincere
             this.arbustoBB = new TgcBoundingBox(new Vector3(position.X + 25, position.Y, position.Z + 70), new Vector3(position.X - 10, position.Y + 38, position.Z + 25));
         }
 
-        public void acercateA(Human personaje, World currentWorld)
+        public void acercateA(Human personaje, World currentWorld, float elapsedTime)
         {
             float xL = this.getPosition().X;
             float zL = this.getPosition().Z;
             float xP = personaje.getPosition().X;
             float zP = personaje.getPosition().Z - 40;
 
-            //if(distancia(personaje).Length()>80)
-            //{
-            if(Math.Abs(Math.Abs(xL) - Math.Abs(xP))>40)
+            quieto = true;
+
+            if (Math.Abs(Math.Abs(xL) - Math.Abs(xP))>40)
             {
                 if (xL > xP)
                 {
@@ -107,8 +110,10 @@ namespace AlumnoEjemplos.NatusVincere
                 {
                     xL = xL + 1;
                 }
+
+                quieto = false;
             }
-            if(Math.Abs(Math.Abs(zL) - Math.Abs(zP)) > 40)
+            if(Math.Abs(Math.Abs(zL) - Math.Abs(zP)) > 30)
             {
                 if (zL > zP)
                 {
@@ -118,10 +123,30 @@ namespace AlumnoEjemplos.NatusVincere
                 {
                     zL = zL + 1;
                 }
+
+                quieto = false;
             }
-            //}
+
+            if ( (distancia(personaje).Length() < 100) && (quieto==true) && (coolDown >= coolDownTotal))
+            {
+                this.atacarA(personaje);
+                coolDown = 0;
+            }
+            else
+            {
+                if ( (int)(elapsedTime) % 2 == 0)
+                {
+                    coolDown++;
+                }
+            }
+
             this.setPosition(new Vector3(xL, currentWorld.calcularAltura(xL, zL),zL));
             this.setBB(new Vector3(xL, currentWorld.calcularAltura(xL, zL), zL));
+        }
+
+        private void atacarA(Human personaje)
+        {
+            personaje.causarDaño(3);
         }
 
         private bool hayColision(Human personaje)

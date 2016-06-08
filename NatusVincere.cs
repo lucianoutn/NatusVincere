@@ -395,7 +395,7 @@ namespace AlumnoEjemplos.NatusVincere
             
             if(leon.isNear(personaje))
             {
-                leon.acercateA(personaje, currentWorld);
+                leon.acercateA(personaje, currentWorld, elapsedTime);
             }
 
             personaje.setBB(personaje.getPosition());

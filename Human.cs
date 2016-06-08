@@ -400,7 +400,15 @@ namespace AlumnoEjemplos.NatusVincere
         public void Render()
         {
             this.BC.render();
+        }
 
+        public int getHealth()
+        {
+            return health;
+        }
+        public void causarDaño(int daño)
+        {
+            health = health - daño;
         }
     }
 }
