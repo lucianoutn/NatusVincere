@@ -68,6 +68,10 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void playVictoria()
         {
+            if (isWindPlaying)
+            {
+                mediaPlayer.closeFile(windAlias);
+            }
             mediaPlayer.closeFile("music");
             isMainMusicOpened = false;
             mediaPlayer.openAndPlay(true, victoriaPath, victoriaAlias);
