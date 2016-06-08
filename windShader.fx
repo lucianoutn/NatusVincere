@@ -35,7 +35,9 @@ VS_OUTPUT VS_viento (
 {
 	VS_OUTPUT Out = (VS_OUTPUT)0;
 
-	Position.z += Position.y * sin(time);
+	float timeFactor = sin(time);
+	Position.z += Position.y * timeFactor  * 0.2;
+        Position.x += Position.y * timeFactor  * 0.1;
 
 	Out.Position = mul(Position, matWorldViewProj);
 	Out.Color = Color;
