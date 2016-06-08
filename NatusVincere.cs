@@ -257,8 +257,11 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void render(float elapsedTime)
         {
-            time += elapsedTime; 
+            
+            time += elapsedTime;
+
             //Renderizo el logo del inicio y el hud
+            #region presentacion
             if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)20)))
             {
                 //animacion
@@ -300,18 +303,18 @@ namespace AlumnoEjemplos.NatusVincere
 
 
             }
-           
-           
-                generarViento(currentWorld.objects);
-            
+            #endregion presentacion
 
+            generarViento(currentWorld.objects);
+
+            /*
                 //Adelante
                 if (input.keyDown(Key.W))
             {
                 Key key = Key.W;
                 personaje.movete(key, 0, elapsedTime);
             }
-            /*
+            
             //Atras
             if (input.keyDown(Key.S))
             {
@@ -412,7 +415,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Render de emisor
             emitter.render();
             
-            personaje.Render();
+            personaje.Render(); //renderiza solo el BC
             leon.Render();
             wilson.render();
             if (TgcCollisionUtils.testAABBAABB(wilson.BoundingBox, personaje.getMesh().BoundingBox) )
@@ -656,6 +659,7 @@ namespace AlumnoEjemplos.NatusVincere
            
             //hud.dispose();
             cam.Enable = false; //para q deje de capturar el mouse
+            
 
         }
     }

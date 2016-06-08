@@ -52,8 +52,8 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh = mesh;
             this.mesh.Position = position;
             this.mesh.Scale = scale;
-            this.health = 51;//101;
-            this.agua = 51;// 101;
+            this.health = 101;//101;
+            this.agua = 101;// 101;
             this.suenio = -1;
             //this.BB = new TgcBoundingSphere(positionBS(position), 5.75f);
             this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
