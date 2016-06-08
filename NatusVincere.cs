@@ -73,10 +73,7 @@ namespace AlumnoEjemplos.NatusVincere
         int selectedParticleCount;
 
         Sounds sounds;
-
-        float time; //usado en el shader de viento
-        Boolean vientoPlaying = false;
-
+        
         TgcMesh wilson;
 
         public override string getCategory()
@@ -258,8 +255,6 @@ namespace AlumnoEjemplos.NatusVincere
         public override void render(float elapsedTime)
         {
             
-            time += elapsedTime;
-
             //Renderizo el logo del inicio y el hud
             #region presentacion
             if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)20)))
@@ -305,7 +300,7 @@ namespace AlumnoEjemplos.NatusVincere
             }
             #endregion presentacion
 
-            generarViento(currentWorld.objects);
+            Wind.generarViento(currentWorld.objects, elapsedTime, sounds);
 
             /*
                 //Adelante
@@ -625,30 +620,7 @@ namespace AlumnoEjemplos.NatusVincere
             text.Position = new Point(positionX, positionY);
             text.render();
         }
-
-        public void generarViento(List<Crafteable> objetos)
-        {
-            int i;
-            if (!vientoPlaying)
-            {
-                for (i = 0; i < objetos.Count; i++)
-                {
-                    objetos[i].getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
-                    objetos[i].getMesh().Technique = "Viento";
-                    objetos[i].getMesh().Effect.SetValue("time", this.time);
-                }
-                vientoPlaying = true;
-                return;
-            }
-            
-            this.sounds.playViento();
-           
-            for (i = 0; i < objetos.Count; i++)
-            {          
-                objetos[i].getMesh().Effect.SetValue("time", this.time);
-            }
-        }
-
+        
         public override void close()
         {
             //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
