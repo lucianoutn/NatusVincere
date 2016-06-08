@@ -15,6 +15,7 @@ namespace AlumnoEjemplos.NatusVincere
         String gameOverPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\gameOver.mp3";
         String talarArbolPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\talar.mp3";
         String intenseMusicPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\intense.mp3";
+        String rainPath = "AlumnoEjemplos\\NatusVincere\\Sounds\\rain.mp3";
 
         String happyMusicAlias = "music";
         String windAlias = "alias";
@@ -22,10 +23,13 @@ namespace AlumnoEjemplos.NatusVincere
         String gameOverAlias = "gameOver";
         String talarArbolAlias = "talar";
         String intenseAlias = "intense";
+        String rainAlias = "rain";
 
         Boolean isMainMusicOpened = false;
         Boolean isWindPlaying = false;
         Boolean isIntensePlaying = false;
+        Boolean isRainPlaying = false;
+        Boolean isTalarPlaying = false;
 
         public void playMusic()
         {
@@ -72,6 +76,10 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 mediaPlayer.closeFile(windAlias);
             }
+            if (isRainPlaying)
+            {
+                mediaPlayer.closeFile(rainAlias);
+            }
             mediaPlayer.closeFile("music");
             isMainMusicOpened = false;
             mediaPlayer.openAndPlay(true, victoriaPath, victoriaAlias);
@@ -86,7 +94,14 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void playTalarArbol()
         {
+            if (isTalarPlaying) return;
             mediaPlayer.openAndPlay(false, talarArbolPath, talarArbolAlias);
+        }
+
+        public void playRain()
+        {
+            if (isRainPlaying) return;
+            mediaPlayer.openAndPlay(true, rainPath, rainAlias);
         }
     }
 }

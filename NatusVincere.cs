@@ -16,7 +16,9 @@ using Microsoft.DirectX.DirectInput;
 using System.IO;
 using System.Windows.Forms;
 using AlumnoEjemplos.NatusVincere.NVSkyBoxes;
-using TgcViewer.Utils.Particles;
+using AlumnoEjemplos.NatusVincere.Particulas;
+using TgcViewer.Utils.Interpolation;
+using TgcViewer.Utils;
 using TgcViewer.Utils.Shaders;
 
 namespace AlumnoEjemplos.NatusVincere
@@ -43,7 +45,6 @@ namespace AlumnoEjemplos.NatusVincere
         World[][] worlds;
         ObjectsFactory objectsFactory;
         TgcD3dInput input;
-        Microsoft.DirectX.Direct3D.Device d3dDevice;
         //TgcViewer.Utils.TgcD3dDevice d3dDevice;
         TgcViewer.Utils.Logger log; 
         Vector3 lookfrom = new Vector3(-2500, 3400, 2000);
@@ -54,27 +55,28 @@ namespace AlumnoEjemplos.NatusVincere
         int flag = 0;
 
         //string animationCaminar = "Walk";
-        const float MOVEMENT_SPEED = 200f;
-        string currentHeightmap;
-        string currentTexture;
-        float currentScaleXZ;
-        float currentScaleY;
-        float currentX;
-        float currentZ;
-        float altura;
+        const float MOVEMENT_SPEED = 200f;  
         float currentXCam;
         float currentZCam;
         float alturaCam;
 
-        ParticleEmitter emitter;
-        string texturePath;
-        string[] textureNames;
-        string selectedTextureName;
-        int selectedParticleCount;
-
         Sounds sounds;
         
         TgcMesh wilson;
+
+        EmisorDeParticulas emisorDeParticulas;
+
+        VertexBuffer screenQuadVB;
+        Texture renderTarget2D;
+        Surface pOldRT;
+        Microsoft.DirectX.Direct3D.Effect effect;
+        TgcTexture lluviaTexture;
+
+        InterpoladorVaiven intVaivenAlarm;
+
+        Microsoft.DirectX.Direct3D.Device d3dDevice;
+
+        float time;
 
         public override string getCategory()
         {
@@ -210,35 +212,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Vector3 eye = new Vector3(2,2,2);
             //Vector3 targetFps = personaje.getPosition();
             //GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
-
-            //Directorio de texturas
-            texturePath = GuiController.Instance.ExamplesMediaDir + "Texturas\\Particles\\";
-
-            //Texturas de particulas a utilizar
-            textureNames = new string[] {
-                "pisada.png",
-                "fuego.png",
-                "humo.png",
-                "hoja.png",
-                "agua.png",
-                "nieve.png"
-            };
-
-            selectedTextureName = textureNames[1];
-            selectedParticleCount = 10;
-            emitter = new ParticleEmitter(texturePath + selectedTextureName, selectedParticleCount);
-            Vector3 posicionEmitter = new Vector3(10, currentWorld.calcularAltura(10, 10),10);
-            emitter.Position = posicionPersonaje;
             
-            //Actualizar los demás parametros
-            emitter.MinSizeParticle = 20;
-            emitter.MaxSizeParticle = 40;
-            emitter.ParticleTimeToLive = 8;
-            emitter.CreationFrecuency = 0.001f;
-            emitter.Dispersion = 30;
-            emitter.Speed = new Vector3(10, -10, 10);
-            emitter.Enabled = true;
-
             sounds = new Sounds();
             sounds.playMusic();
             personaje.setSounds(sounds);
@@ -250,11 +224,80 @@ namespace AlumnoEjemplos.NatusVincere
             wilson.Position = new Vector3(wilsonX,
                 currentWorld.calcularAltura(wilsonX, wilsonZ) + 10,
                 wilsonZ);
+
+            String fuegoPath = "AlumnoEjemplos\\NatusVincere\\fuego.png";
+            emisorDeParticulas = new EmisorDeParticulas(fuegoPath, 100, GuiController.Instance.D3dDevice);
+            Vector3 emisorPosicion = personaje.getPosition();
+            emisorPosicion.Y += 20;
+            emisorDeParticulas.Posicion = personaje.getPosition();
+
+            //Cargar shader con efectos de Post-Procesado
+            effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\PostProcess.fx");
+            //Configurar Technique dentro del shader
+            effect.Technique = "RainTechnique";    
+            //Cargar textura que se va a dibujar arriba de la escena del Render Target
+            lluviaTexture = TgcTexture.createTexture(d3dDevice, "AlumnoEjemplos\\NatusVincere\\efecto_rain.png");
+
+            //Interpolador para efecto de variar la intensidad de la textura de alarma
+            intVaivenAlarm = new InterpoladorVaiven();
+            intVaivenAlarm.Min = 0;
+            intVaivenAlarm.Max = 1;
+            intVaivenAlarm.Speed = 5;
+            intVaivenAlarm.reset();
+
+            //Activamos el renderizado customizado. De esta forma el framework nos delega control total sobre como dibujar en pantalla
+            //La responsabilidad cae toda de nuestro lado
+            GuiController.Instance.CustomRenderEnabled = true;
+
+            //Se crean 2 triangulos (o Quad) con las dimensiones de la pantalla con sus posiciones ya transformadas
+            // x = -1 es el extremo izquiedo de la pantalla, x = 1 es el extremo derecho
+            // Lo mismo para la Y con arriba y abajo
+            // la Z en 1 simpre
+            CustomVertex.PositionTextured[] screenQuadVertices = new CustomVertex.PositionTextured[]
+            {
+                new CustomVertex.PositionTextured( -1, 1, 1, 0,0),
+                new CustomVertex.PositionTextured(1,  1, 1, 1,0),
+                new CustomVertex.PositionTextured(-1, -1, 1, 0,1),
+                new CustomVertex.PositionTextured(1,-1, 1, 1,1)
+            };
+            //vertex buffer de los triangulos
+            screenQuadVB = new VertexBuffer(typeof(CustomVertex.PositionTextured),
+                    4, d3dDevice, Usage.Dynamic | Usage.WriteOnly,
+                        CustomVertex.PositionTextured.Format, Pool.Default);
+            screenQuadVB.SetData(screenQuadVertices, 0, LockFlags.None);
+
+            //Creamos un Render Targer sobre el cual se va a dibujar la pantalla
+            renderTarget2D = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
+                    , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
+                        Format.X8R8G8B8, Pool.Default);
+
+            time = 0;
         }
 
         public override void render(float elapsedTime)
         {
-            
+            time += elapsedTime;
+            //Cargamos el Render Targer al cual se va a dibujar la escena 3D. Antes nos guardamos el surface original
+            //En vez de dibujar a la pantalla, dibujamos a un buffer auxiliar, nuestro Render Target.
+            pOldRT = d3dDevice.GetRenderTarget(0);
+            Surface pSurf = renderTarget2D.GetSurfaceLevel(0);
+            d3dDevice.SetRenderTarget(0, pSurf);
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            //Arrancamos el renderizado. Esto lo tenemos que hacer nosotros a mano porque estamos en modo CustomRenderEnabled = true
+            d3dDevice.BeginScene();
+
+
+            //Como estamos en modo CustomRenderEnabled, tenemos que dibujar todo nosotros, incluso el contador de FPS
+            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+
+            //Tambien hay que dibujar el indicador de los ejes cartesianos
+            GuiController.Instance.AxisLines.render();
+
+           
+
+
+
+
             //Renderizo el logo del inicio y el hud
             #region presentacion
             if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)20)))
@@ -406,21 +449,41 @@ namespace AlumnoEjemplos.NatusVincere
 
                 }
             }
-
-            //Render de emisor
-            emitter.render();
             
             personaje.Render(); //renderiza solo el BC
             leon.Render();
             wilson.render();
-            if (TgcCollisionUtils.testAABBAABB(wilson.BoundingBox, personaje.getMesh().BoundingBox) )
-            {
-                sounds.playVictoria();
-            }
 
+            chequearVictoria();
+            
+            //Terminamos manualmente el renderizado de esta escena. Esto manda todo a dibujar al GPU al Render Target que cargamos antes
+            d3dDevice.EndScene();
+
+            //Liberar memoria de surface de Render Target
+            pSurf.Dispose();
+
+            //Ahora volvemos a restaurar el Render Target original (osea dibujar a la pantalla)
+            d3dDevice.SetRenderTarget(0, pOldRT);
+
+            //Luego tomamos lo dibujado antes y lo combinamos con una textura con efecto de alarma
+            if (time > 12) activarLluvia();
+            PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, lluviaTexture);
         }
 
+        private void chequearVictoria()
+        {
+            if (TgcCollisionUtils.testAABBAABB(wilson.BoundingBox, personaje.getMesh().BoundingBox))
+            {
+                PostProcessing.lluviaActivada = false;
+                sounds.playVictoria();
+            }
+        }
 
+        private void activarLluvia()
+        {
+            PostProcessing.lluviaActivada = true;
+            sounds.playRain();
+        }
 
         private bool FullScreen()
         {
