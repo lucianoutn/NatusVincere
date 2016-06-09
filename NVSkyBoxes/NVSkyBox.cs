@@ -65,9 +65,13 @@ namespace AlumnoEjemplos.NatusVincere.NVSkyBoxes
 
         public void updateYRender(Vector3 pos)
         {
-            this.Center = pos;
-            this.updateValues();
-            this.render();
+            foreach (TgcMesh face in base.Faces)
+            {
+                face.AutoTransformEnable = false;
+                face.Transform = Matrix.Translation(pos.X, pos.Y, pos.Z);
+                face.render();
+
+            }
         }
 
 
