@@ -73,6 +73,7 @@ namespace AlumnoEjemplos.NatusVincere
         Surface pOldRT;
         Microsoft.DirectX.Direct3D.Effect effect;
         TgcTexture lluviaTexture;
+        TgcTexture alarmaTexture;
 
         InterpoladorVaiven intVaivenAlarm;
 
@@ -258,6 +259,8 @@ namespace AlumnoEjemplos.NatusVincere
             //Cargar textura que se va a dibujar arriba de la escena del Render Target
             lluviaTexture = TgcTexture.createTexture(d3dDevice, "AlumnoEjemplos\\NatusVincere\\efecto_rain.png");
 
+            alarmaTexture = TgcTexture.createTexture(d3dDevice, "AlumnoEjemplos\\NatusVincere\\efecto_alarma.png");
+
             //Interpolador para efecto de variar la intensidad de la textura de alarma
             intVaivenAlarm = new InterpoladorVaiven();
             intVaivenAlarm.Min = 0;
@@ -428,11 +431,6 @@ namespace AlumnoEjemplos.NatusVincere
             //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
             refreshCamera(); //Necesita que se actualice primero el personaje
             
-            if(leon.isNear(personaje))
-            {
-                leon.acercateA(personaje, currentWorld, elapsedTime);
-            }
-
             personaje.setBB(personaje.getPosition());
             
             renderWorlds();
@@ -452,8 +450,18 @@ namespace AlumnoEjemplos.NatusVincere
             d3dDevice.SetRenderTarget(0, pOldRT);
 
             //Luego tomamos lo dibujado antes y lo combinamos con una textura con efecto de alarma
-            if (time > 12) activarLluvia();
+            if (time > 12)
+            {
+                activarLluvia();
+            }
+
             PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, lluviaTexture);
+
+            if (leon.isNear(personaje))
+            {
+                leon.acercateA(personaje, currentWorld, elapsedTime);
+                PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, alarmaTexture);
+            }
         }
 
         private void chequearVictoria()
