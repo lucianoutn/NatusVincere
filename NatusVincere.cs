@@ -26,6 +26,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         TgcSprite spriteLogo;
         TgcSprite spriteObjetivos;
+        TgcSprite hachaEnMano;
         //TgcText2d objetivos;
         //DateTime tiempoLogo;
         //DateTime tiempoPresentacion;
@@ -146,6 +147,10 @@ namespace AlumnoEjemplos.NatusVincere
             //objetivos.changeFont(new System.Drawing.Font("Arial", 16, FontStyle.Regular));
             //objetivos.Color = Color.Yellow;
             //objetivos.Text = " Objetivo: encontrar a WILSON->(img) haciendo crafting para sobrevivir\n Movimientos: WASD\n Interacciones: E (usar), R (recolectar), L (dejar)";
+            hachaEnMano = new TgcSprite();
+            hachaEnMano.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\hud\\hachaMina.png");
+            hachaEnMano.Position = new Vector2(screenSize.Width - hachaEnMano.Texture.Size.Width, screenSize.Height - hachaEnMano.Texture.Size.Height);
+            
 
             //creacion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -341,6 +346,7 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 spriteObjetivos.dispose();
                 hud.renderizate(personaje);
+                if (personaje.inventory.hachaEquipada) hachaEnMano.render();
                 // GuiController.Instance.CurrentCamera = cam;
                 //GuiController.Instance.ThirdPersonCamera.
                 //GuiController.Instance.FpsCamera.Enable = true;
@@ -648,7 +654,7 @@ namespace AlumnoEjemplos.NatusVincere
             personaje.dispose();
             currentWorld.dispose();
             leon.dispose();
-            
+            hachaEnMano.dispose();
             //hud.dispose();
             cam.Enable = false; //para q deje de capturar el mouse
             

@@ -25,7 +25,7 @@ namespace AlumnoEjemplos.NatusVincere
         public float minimumDistance = 100; //Default
         private TgcSkeletalMesh mesh;
         public Inventory inventory;
-        List<Crafteable> objects;
+        public List<Crafteable> objects;
         private DateTime tActual;
         private DateTime tAnterior;
         private TimeSpan tTranscurridoVida = TimeSpan.Zero;
@@ -41,6 +41,7 @@ namespace AlumnoEjemplos.NatusVincere
         Size textureSizeGameOver;
         public Sounds sounds;
         
+
         public void setSounds(Sounds sounds)
         {
             this.sounds = sounds;
@@ -122,7 +123,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Jump
             if (input == Key.Space)
             {
-                jump = 30;
+                jump = 50;
                 moving = true;
             }
 

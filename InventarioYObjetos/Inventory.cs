@@ -15,13 +15,14 @@ namespace AlumnoEjemplos.NatusVincere
 
     public class Inventory
     {
-        Crafteable[] items;
+        public Crafteable[] items;
         TgcText2d[] texts;
         bool[] selections;
         TgcText2d title;
         TextCreator textCreator = new TextCreator("Arial", 16, new Size(300, 16));
         Point position;
         ObjectsFactory objectsFactory;
+        public bool hachaEquipada = false;
 
         public Inventory(ObjectsFactory objectsFactory, Vector2 position)
         {
@@ -211,6 +212,7 @@ namespace AlumnoEjemplos.NatusVincere
             if (firstItem.getType() == 5 && secondItem.getType() == 2 || firstItem.getType() == 2 && secondItem.getType() == 5)
             {
                 newObject = this.objectsFactory.createHacha(new Vector3(0, 0, 200), new Vector3(1, 1, 1));
+                this.hachaEquipada = true;
             }
             else
             {
