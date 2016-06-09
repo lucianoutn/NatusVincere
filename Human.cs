@@ -50,6 +50,7 @@ namespace AlumnoEjemplos.NatusVincere
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
             this.inventory = inventory;
+            inventory.setDueño(this);
             this.mesh = mesh;
             this.mesh.Position = position;
             this.mesh.Scale = scale;
@@ -178,6 +179,11 @@ namespace AlumnoEjemplos.NatusVincere
                 moving = false;
             }
 
+        }
+
+        public void recuperarVida(int v)
+        {
+            this.health = health + v;
         }
         #endregion Movimientos
 

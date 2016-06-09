@@ -15,6 +15,7 @@ namespace AlumnoEjemplos.NatusVincere
         private Human owner;
         private TgcMesh mesh;
         public bool storable;
+        public bool consumible;
         private TgcBoundingBox BB;
 
         public Crafteable(TgcMesh mesh, Vector3 position, Vector3 scale)
@@ -23,6 +24,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.Position = position;
             this.mesh.Scale = scale;
             this.storable = true;
+            this.consumible = false;
             this.setBB(position);
             this.mesh.AlphaBlendEnable = true;
         }
@@ -121,6 +123,17 @@ namespace AlumnoEjemplos.NatusVincere
         {
             return this.type;
         }
+
+        public virtual bool getConsumible()
+        {
+            return this.consumible;
+        }
+
+        public virtual void consumir(Human dueño)
+        {
+            
+        }
+
 
         public virtual int getStatus()
         {

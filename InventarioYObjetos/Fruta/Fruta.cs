@@ -16,6 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Fruta";
             this.minimumDistance = 200;
             storable = true;
+            consumible = true;
             setBB(position);
         }
 
@@ -33,6 +34,16 @@ namespace AlumnoEjemplos.NatusVincere
         public override int getType()
         {
             return this.type;
+        }
+        
+        public override bool getConsumible()
+        {
+            return this.consumible;
+        }
+        
+        public override void consumir(Human dueño)
+        {
+            dueño.recuperarVida(20);
         }
 
         public override TgcBoundingBox getBB()

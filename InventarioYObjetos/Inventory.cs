@@ -8,6 +8,7 @@ using TgcViewer.Utils._2D;
 using System.Drawing;
 using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
+using System;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -22,6 +23,7 @@ namespace AlumnoEjemplos.NatusVincere
         TextCreator textCreator = new TextCreator("Arial", 16, new Size(300, 16));
         Point position;
         ObjectsFactory objectsFactory;
+        Human dueño;
         public bool hachaEquipada = false;
 
         public Inventory(ObjectsFactory objectsFactory, Vector2 position)
@@ -63,6 +65,11 @@ namespace AlumnoEjemplos.NatusVincere
                     this.texts[i].render();
                 }
             }
+        }
+
+        public void setDueño(Human human)
+        {
+            dueño = human;
         }
 
         public void setPosition(Vector2 position)
@@ -122,6 +129,16 @@ namespace AlumnoEjemplos.NatusVincere
                 if (checkCombinationPosible()) { 
                     this.doCombine();
                 }
+                else
+                {
+                    int item = checkConsumible();
+
+                    if (item!=-1)
+                    {
+                        doConsumir(item);
+                        dropObject(item);
+                    }
+                }
             }
         }
         
@@ -152,6 +169,35 @@ namespace AlumnoEjemplos.NatusVincere
                 this.texts[index].Color = Color.White;
                 this.togglePossibleCombinationText();
             }
+        }
+        private int checkConsumible()
+        {
+            int i = 0;
+            int j = 0;
+
+            int[] selected = new int[2];
+            selected = getSelectedIndexes();
+            
+            if (selected[0] != -1)
+            {
+                Crafteable firstItem = items[selected[0]];
+
+                if (firstItem.getConsumible())
+                {
+                    return selected[0];
+                }
+            }
+            if (selected[1] != -1)
+            {
+                Crafteable secondItem = items[selected[1]];
+
+                if (secondItem.getConsumible())
+                {
+                    return selected[1];
+                }
+            }
+
+            return -1;
         }
 
         private bool checkCombinationPosible()
@@ -246,6 +292,11 @@ namespace AlumnoEjemplos.NatusVincere
                 this.combine(firstIndex, secondIndex);
             }
 
+        }
+
+        private void doConsumir(int item)
+        {
+            items[item].consumir(dueño);
         }
 
         public void dropObject(int index)
