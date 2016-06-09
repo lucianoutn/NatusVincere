@@ -65,6 +65,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             if (isWindPlaying)
             {
+                mediaPlayer.pause(windAlias);
                 mediaPlayer.closeFile(windAlias);
                 isWindPlaying = false;
             }
@@ -74,12 +75,15 @@ namespace AlumnoEjemplos.NatusVincere
         {
             if (isWindPlaying)
             {
+                mediaPlayer.pause(windAlias);
                 mediaPlayer.closeFile(windAlias);
             }
             if (isRainPlaying)
             {
+                mediaPlayer.pause(rainAlias);
                 mediaPlayer.closeFile(rainAlias);
             }
+            mediaPlayer.pause("music");
             mediaPlayer.closeFile("music");
             isMainMusicOpened = false;
             mediaPlayer.openAndPlay(true, victoriaPath, victoriaAlias);

@@ -27,9 +27,9 @@ namespace AlumnoEjemplos.NatusVincere
         TgcSprite spriteLogo;
         TgcSprite spriteObjetivos;
         //TgcText2d objetivos;
-        DateTime tiempoLogo;
-        DateTime tiempoPresentacion;
-        DateTime tiempoObjetivos;
+        //DateTime tiempoLogo;
+        //DateTime tiempoPresentacion;
+        //DateTime tiempoObjetivos;
         Hud hud;
         List<Crafteable> objects;
         NVSkyBox skyBox;
@@ -130,9 +130,9 @@ namespace AlumnoEjemplos.NatusVincere
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
-            tiempoLogo = DateTime.Now;
-            tiempoPresentacion = DateTime.Now;
-            tiempoObjetivos = DateTime.Now;
+            //tiempoLogo = DateTime.Now;
+            //tiempoPresentacion = DateTime.Now;
+            //tiempoObjetivos = DateTime.Now;
             //Ubicarlo centrado en la pantalla
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
@@ -301,8 +301,9 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Renderizo el logo del inicio y el hud
             #region presentacion
-            if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)20)))
+            if (time < 45)
             {
+               
                 //animacion
                 
                 if (lookfrom.Y -250f > currentWorld.calcularAltura(lookfrom.X, lookfrom.Z)) lookfrom.Y += (elapsedTime * -150f);
@@ -317,8 +318,9 @@ namespace AlumnoEjemplos.NatusVincere
                  personaje.meshRender();
                  personaje.move(lookfrom-lookAt);
                 
-                 if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
+                 if (time < 25)
                  {
+                     lookfrom = new Vector3(-2500, 3400, 2000);
                      GuiController.Instance.Drawer2D.beginDrawSprite();
                      spriteLogo.render();
                      GuiController.Instance.Drawer2D.endDrawSprite();
