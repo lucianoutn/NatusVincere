@@ -16,7 +16,6 @@ using Microsoft.DirectX.DirectInput;
 using System.IO;
 using System.Windows.Forms;
 using AlumnoEjemplos.NatusVincere.NVSkyBoxes;
-using AlumnoEjemplos.NatusVincere.Particulas;
 using TgcViewer.Utils.Interpolation;
 using TgcViewer.Utils;
 using TgcViewer.Utils.Shaders;
@@ -63,9 +62,7 @@ namespace AlumnoEjemplos.NatusVincere
         Sounds sounds;
         
         TgcMesh wilson;
-
-        EmisorDeParticulas emisorDeParticulas;
-
+       
         VertexBuffer screenQuadVB;
         Texture renderTarget2D;
         Surface pOldRT;
@@ -224,13 +221,7 @@ namespace AlumnoEjemplos.NatusVincere
             wilson.Position = new Vector3(wilsonX,
                 currentWorld.calcularAltura(wilsonX, wilsonZ) + 10,
                 wilsonZ);
-
-            String fuegoPath = "AlumnoEjemplos\\NatusVincere\\fuego.png";
-            emisorDeParticulas = new EmisorDeParticulas(fuegoPath, 100, GuiController.Instance.D3dDevice);
-            Vector3 emisorPosicion = personaje.getPosition();
-            emisorPosicion.Y += 20;
-            emisorDeParticulas.Posicion = personaje.getPosition();
-
+            
             //Cargar shader con efectos de Post-Procesado
             effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\PostProcess.fx");
             //Configurar Technique dentro del shader
