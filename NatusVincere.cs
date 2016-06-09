@@ -178,6 +178,9 @@ namespace AlumnoEjemplos.NatusVincere
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
 
             leon = currentWorld.crearLeon(posicionPersonaje.X - 390, posicionPersonaje.Z - 490);
+
+            currentWorld.crearMadera(posicionPersonaje.X - 90, posicionPersonaje.Z - 90);
+            currentWorld.crearPiedra(posicionPersonaje.X + 90, posicionPersonaje.Z + 90);
             //Hud
             hud = new Hud();
 
@@ -642,6 +645,7 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.dispose();
             personaje.dispose();
             currentWorld.dispose();
+            leon.dispose();
             
             //hud.dispose();
             cam.Enable = false; //para q deje de capturar el mouse
