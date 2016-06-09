@@ -106,6 +106,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             if (isRainPlaying) return;
             mediaPlayer.openAndPlay(true, rainPath, rainAlias);
+            isRainPlaying = true;
         }
     }
 }
