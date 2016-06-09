@@ -153,7 +153,7 @@ namespace AlumnoEjemplos.NatusVincere
             objectId++;
             TgcMesh meshInstance = this.leonMesh.createMeshInstance("leon_" + objectId);
             Leon leon = new Leon(meshInstance, position, scale);
-            this.objectList.Add(leon);
+            
             return leon;
         }
 

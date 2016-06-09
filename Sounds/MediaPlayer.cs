@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -41,36 +38,12 @@ namespace AlumnoEjemplos.MiGrupo.Sounds
 
         // Constante con el formato de archivo a reproducir.
         private const string WINMM_FILE_TYPE = "MPEGVIDEO";
-
-        // Alias asignado al archivo especificado.
-        private const string WINMM_FILE_ALIAS = "TgcMp3MediaFile";
-        
-        private string fileName;
-        /// <summary>
-        /// Path del archivo a reproducir
-        /// </summary>
-        public string FileName
-        {
-            get { return fileName; }
-            set { fileName = value; }
-        }
-
-        /// <summary>
-        /// Estados del reproductor
-        /// </summary>
-        public enum States
-        {
-            Open,
-            Playing,
-            Paused,
-            Stopped,
-        }
-
+       
         /// <summary>
         /// Inicia la reproducción del archivo MP3.
         /// <param name="playLoop">True para reproducir en loop</param>
         /// </summary>
-        public void play(bool playLoop, String soundPath, String alias)
+        public void openAndPlay(bool playLoop, String soundPath, String alias)
         {
             mciSendString("open " + NombreCorto(soundPath) + " type " + WINMM_FILE_TYPE +
             " alias " + alias, null, 0, 0);
@@ -85,105 +58,34 @@ namespace AlumnoEjemplos.MiGrupo.Sounds
             int mciResul = mciSendString(command.ToString(), null, 0, 0);
 
         }
-
+   
         /// <summary>
         /// Pausa la reproducción en proceso.
         /// </summary>
-        public void pause()
+        public void pause(String alias)
         {
             // Enviamos el comando de pausa mediante la función mciSendString,
-            int mciResul = mciSendString("pause " + WINMM_FILE_ALIAS, null, 0, 0);
-            if (mciResul != 0)
-            {
-                throw new Exception(MciMensajesDeError(mciResul));
-            }
+            int mciResul = mciSendString("pause " + alias, null, 0, 0);          
         }
         /// <summary>
         /// Continúa con la reproducción actual.
         /// </summary>
-        public void resume()
+        public void resume(String alias)
         {
             // Enviamos el comando de pausa mediante la función mciSendString,
-            int mciResul = mciSendString("resume " + WINMM_FILE_ALIAS, null, 0, 0);
-            if (mciResul != 0)
-            {
-                throw new Exception(MciMensajesDeError(mciResul));
-            }
-        }
-
-        /// <summary>
-        /// Detiene la reproducción del archivo de audio.
-        /// </summary>
-        public void stop()
-        {
-            // Detenemos la reproducción, mediante el comando adecuado.
-            mciSendString("stop " + WINMM_FILE_ALIAS, null, 0, 0);
+            int mciResul = mciSendString("resume " + alias, null, 0, 0); 
         }
 
         /// <summary>
         /// Detiene la reproducción actual y cierra el archivo de audio.
         /// </summary>
-        public void closeFile()
+        public void closeFile(String aliasSound)
         {
             // Establecemos los comando detener reproducción y cerrar archivo.
-            mciSendString("stop " + WINMM_FILE_ALIAS, null, 0, 0);
-            mciSendString("close " + WINMM_FILE_ALIAS, null, 0, 0);
+            mciSendString("stop " + aliasSound, null, 0, 0);
+            mciSendString("close " + aliasSound, null, 0, 0);
         }
-
-
-        /// <summary>
-        /// Obtiene el estado de la reproducción en proceso.
-        /// </summary>
-        /// <returns>Estado del reproducto</returns>
-        public States getStatus()
-        {
-            StringBuilder sbBuffer = new StringBuilder(MAX_PATH);
-            // Obtenemos la información mediante el comando adecuado.
-            mciSendString("status " + WINMM_FILE_ALIAS + " mode", sbBuffer, MAX_PATH, 0);
-            string strState = sbBuffer.ToString();
-
-            if (strState == "playing")
-            {
-                return States.Playing;
-            }
-            if (strState == "paused")
-            {
-                return States.Paused;
-            }
-            if (strState == "stopped")
-            {
-                return States.Stopped;
-            }
-            return States.Open;
-        }
-
-        /// <summary>
-        /// Mueve el apuntador de archivo al inicio del mismo.
-        /// </summary>
-        public void goToBeginning()
-        {
-            // Establecemos la cadena de comando para mover el apuntador del archivo,
-            // al inicio de este.
-            int mciResul = mciSendString("seek " + WINMM_FILE_ALIAS + " to start", null, 0, 0);
-            if (mciResul != 0)
-            {
-                throw new Exception(MciMensajesDeError(mciResul));
-            }
-        }
-        /// <summary>
-        /// Mueve el apuntador de archivo al final del mismo.
-        /// </summary>
-        public void goToEnd()
-        {
-            // Establecemos la cadena de comando para mover el apuntador del archivo,
-            // al final de este.
-            int mciResul = mciSendString("seek " + WINMM_FILE_ALIAS + " to end", null, 0, 0);
-            if (mciResul != 0)
-            {
-                throw new Exception(MciMensajesDeError(mciResul));
-            }
-        }
-
+        
         /// <summary>
         /// Método para convertir un nombre de archivo largo en uno corto,
         /// necesario para usarlo como parámetro de la función MciSendString.
@@ -216,28 +118,7 @@ namespace AlumnoEjemplos.MiGrupo.Sounds
             else
                 return "";
         }
-
-        /// <summary>
-        /// Método para convertir los mensajes de error numéricos, generados por la
-        /// función mciSendString, en su correspondiente cadena de caracteres.
-        /// </summary>
-        /// <param name="ErrorCode">Código de error devuelto por la función 
-        /// mciSendString</param>
-        /// <returns>Cadena de tipo string, con el mensaje de error</returns>
-        private string MciMensajesDeError(int ErrorCode)
-        {
-            // Creamos un buffer, con suficiente espacio, para almacenar el mensaje
-            // devuelto por la función.
-            StringBuilder sbBuffer = new StringBuilder(MAX_PATH);
-            // Obtenemos la cadena de mensaje.
-            if (mciGetErrorString(ErrorCode, sbBuffer, MAX_PATH) != 0)
-                // Sí la función ha tenido éxito, valor devuelto diferente de 0,
-                // devolvemos el valor del buffer, formateado a string.
-                return sbBuffer.ToString();
-            else // si no, devolvemos una cadena vacía.
-                return "";
-        }
-
+        
     }
 }
 

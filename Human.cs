@@ -39,7 +39,12 @@ namespace AlumnoEjemplos.NatusVincere
         TgcSprite gameOver = new TgcSprite();
         Size screenSize = GuiController.Instance.Panel3d.Size;
         Size textureSizeGameOver;
+        public Sounds sounds;
         
+        public void setSounds(Sounds sounds)
+        {
+            this.sounds = sounds;
+        }
 
         public Human(Inventory inventory, TgcSkeletalMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -47,8 +52,8 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh = mesh;
             this.mesh.Position = position;
             this.mesh.Scale = scale;
-            this.health = 51;//101;
-            this.agua = 51;// 101;
+            this.health = 101;//101;
+            this.agua = 101;// 101;
             this.suenio = -1;
             //this.BB = new TgcBoundingSphere(positionBS(position), 5.75f);
             this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
@@ -186,6 +191,7 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 this.health = health - 2;
                 tTranscurridoVida = TimeSpan.Zero;
+                if (this.health < 20) sounds.playIntense();
             }
             if (tTranscurridoAgua.TotalMinutes > 0.2)
             {
@@ -225,8 +231,11 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void render() //hay otro "renderMesh" para el mesh
         {
-            if (this.muerto) this.morite();
-                       
+            if (this.muerto)
+            {
+                sounds.playGameOver();
+                this.morite();
+            }
         }
 
         public void store(Crafteable item) {
@@ -385,13 +394,21 @@ namespace AlumnoEjemplos.NatusVincere
         public void setBB(Vector3 position)
         {
             //BB = new TgcBoundingSphere(positionBS(position), 5.75f);
-            this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 5.75f, 15f);
+            this.BC = new TgcFixedYBoundingCylinder(positionBS(position), 15.75f, 15f);
         }
 
         public void Render()
         {
             this.BC.render();
+        }
 
+        public int getHealth()
+        {
+            return health;
+        }
+        public void causarDaño(int daño)
+        {
+            health = health - daño;
         }
     }
 }

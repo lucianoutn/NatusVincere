@@ -1,60 +1,161 @@
-﻿using Microsoft.DirectX;
+﻿using System;
+using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer;
 
 namespace AlumnoEjemplos.NatusVincere
 {
-    public class Leon : Crafteable
+    public class Leon
     {
-        public new int uses = 3;
-        public new int type = 2;
-        private float radioBB = 10.75f;
-        TgcBoundingBox arbustoBB;
+        private int health;
+        private float minimumDistance = 400; //Default
+        bool quieto = true;
+        int coolDownTotal = 80;
+        int coolDown = 80;
+        private TgcMesh mesh;
+        private TgcBoundingBox arbustoBB;
 
-        public Leon(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
+        public Leon(TgcMesh mesh, Vector3 position, Vector3 scale)
         {
-            this.type = 2;
-            this.description = "Leon";
-            this.minimumDistance = 200;
-            this.storable = true;
+            this.health = 20;
+            this.mesh = mesh;
+            this.mesh.Position = position;
+            this.mesh.Scale = scale;
             setBB(position);
         }
 
-        public override void doAction(Human user)
+        public void doAction(Human user)
         {
             Vector3 direction = this.getPosition() - user.getPosition();
             direction.Normalize();
             this.move(direction);
         }
 
-        public override float getMinimumDistance()
+        public void move(Vector3 movement)
         {
-            return this.minimumDistance;
-        }
-        public override int getType()
-        {
-            return this.type;
+            this.mesh.move(movement);
         }
 
-        public override TgcBoundingBox getBB()
+        public Vector3 distancia(Human user)
+        {
+            Vector3 distance = user.getPosition();
+            distance.Multiply(-1);
+            distance.Add(this.getPosition());
+
+            return distance;
+        }
+
+        public bool isNear(Human user)
+        {
+            Vector3 distance = distancia(user);
+            //TODO: Agregar checkear la dirección del personaje
+            return distance.Length() < this.getMinimumDistance();
+        }
+
+        public virtual float getMinimumDistance()
+        {
+            return minimumDistance;
+        }
+
+        public Vector3 getPosition()
+        {
+            return this.mesh.Position;
+        }
+
+        public void setPosition(Vector3 position)
+        {
+            this.mesh.Position = position;
+        }
+
+
+        public TgcBoundingBox getBB()
         {
             return this.arbustoBB;
         }
         
-        public override void Render()
+        public void Render()
         {
+            mesh.render();
             arbustoBB.render();
         }
 
-        public override void borrarBB()
+        public void borrarBB()
         {
             this.arbustoBB.dispose();
             this.arbustoBB = new TgcBoundingBox(new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
         }
 
-        public override void setBB(Vector3 position)
+        public void setBB(Vector3 position)
         {
             this.arbustoBB = new TgcBoundingBox(new Vector3(position.X + 25, position.Y, position.Z + 70), new Vector3(position.X - 10, position.Y + 38, position.Z + 25));
+        }
+
+        public void acercateA(Human personaje, World currentWorld, float elapsedTime)
+        {
+            float xL = this.getPosition().X;
+            float zL = this.getPosition().Z;
+            float xP = personaje.getPosition().X;
+            float zP = personaje.getPosition().Z - 40;
+
+            quieto = true;
+
+            if (Math.Abs(Math.Abs(xL) - Math.Abs(xP))>40)
+            {
+                if (xL > xP)
+                {
+                    xL = xL - 1;
+                }
+                else
+                {
+                    xL = xL + 1;
+                }
+
+                quieto = false;
+            }
+            if(Math.Abs(Math.Abs(zL) - Math.Abs(zP)) > 30)
+            {
+                if (zL > zP)
+                {
+                    zL = zL - 1;
+                }
+                else
+                {
+                    zL = zL + 1;
+                }
+
+                quieto = false;
+            }
+
+            if ( (distancia(personaje).Length() < 100) && (quieto==true) && (coolDown >= coolDownTotal))
+            {
+                this.atacarA(personaje);
+                coolDown = 0;
+            }
+            else
+            {
+                if ( (int)(elapsedTime) % 2 == 0)
+                {
+                    coolDown++;
+                }
+            }
+
+            this.setPosition(new Vector3(xL, currentWorld.calcularAltura(xL, zL),zL));
+            this.setBB(new Vector3(xL, currentWorld.calcularAltura(xL, zL), zL));
+        }
+
+        private void atacarA(Human personaje)
+        {
+            personaje.causarDaño(3);
+        }
+
+        private bool hayColision(Human personaje)
+        {
+            if (TgcCollisionUtils.testAABBCylinder(this.getBB(), personaje.getBB()))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
