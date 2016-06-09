@@ -410,8 +410,7 @@ namespace AlumnoEjemplos.NatusVincere
             d3dDevice.Transform.Projection =
                 Matrix.PerspectiveFovLH(((float)((45.0f)* Math.PI / 180)),
                 (screenSize.Width/screenSize.Height), 1f, 99999999f);
-            //GuiController.Instance.Frustum.render();
-            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
+            
 
 
             personaje.setWorld(currentWorld);
@@ -443,10 +442,10 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             personaje.setBB(personaje.getPosition());
-            //personaje.render();
+            
             renderWorlds();
 
-            personaje.Render(); //renderiza solo el BC
+            //personaje.Render(); //renderiza solo el BC
             leon.Render();
             wilson.render();
             chequearVictoria();
