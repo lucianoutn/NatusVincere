@@ -39,6 +39,7 @@ namespace AlumnoEjemplos.NatusVincere
         TgcFrustum frustum;
         World currentWorld;
         World[][] worlds;
+        World[][] savedWorlds;
         ObjectsFactory objectsFactory;
         TgcD3dInput input;
         Microsoft.DirectX.Direct3D.Device d3dDevice;
@@ -53,6 +54,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         //string animationCaminar = "Walk";
         const float MOVEMENT_SPEED = 200f;
+        int sectorToRender;
         string currentHeightmap;
         string currentTexture;
         float currentScaleXZ;
@@ -139,6 +141,11 @@ namespace AlumnoEjemplos.NatusVincere
             worlds[0] = new World[3];
             worlds[1] = new World[3];
             worlds[2] = new World[3];
+            savedWorlds = new World[3][];
+            savedWorlds[0] = new World[3];
+            savedWorlds[1] = new World[3];
+            savedWorlds[2] = new World[3];
+
             worlds[0][0] = new World(new Vector3(-size, 0, size), size);
             worlds[0][1] = new World(new Vector3(0, 0, size), size);
             worlds[0][2] = new World(new Vector3(size, 0, size), size);
@@ -511,14 +518,7 @@ namespace AlumnoEjemplos.NatusVincere
             
             personaje.setBB(personaje.getPosition());
             //personaje.render();
-            for (int i = 0; i <= 2; i++)
-            {
-                for (int j = 0; j <= 2; j++)
-                {
-                    worlds[i][j].render();
-
-                }
-            }
+            renderWorlds();
 
             //Render de emisor
             emitter.render();
@@ -593,97 +593,54 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void refreshWorlds()
         {
-            if (true)
-            {
                 Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
-                //showAsText(logicPosition.X, 100, 300);
-                //showAsText(logicPosition.Z, 100, 350);
-                //showAsText(logicPosition.Y, 100, 400);
-                int size = 7000 / 2;
+
+            showAsText(logicPosition.X, 100, 300);
+            showAsText(logicPosition.Z, 100, 350);
+            showAsText(logicPosition.Y, 100, 400);
+            int size = 7000 / 2;
                 if (logicPosition.X > size)
                 {
                     Vector3 newPosition = personaje.getPosition();
                     newPosition.X = -size;
-                    //personaje.setPosition(newPosition);
-                    /*
-                    flag = 1;
+
+                    copyWorlds();
                     for (int i = 0; i <= 2; i++)
                     {
-                        for (int j = 0; j <= 2; j++)
-                        {
-
-                            if (j == 2)
-                            {
-                                worlds[i][j] = new World(new Vector3(worlds[i][j].position.X + (size * 2), worlds[i][j].position.Y, worlds[i][j].position.Z));
-                            }
-                            if (j == 0)
-                            {
-                                worlds[i][j].dispose();
-                                worlds[i][j] = worlds[i][j + 1];
-                            }
-                            if (j == 1)
-                            {
-                                worlds[i][j] = worlds[i][j + 1];
-                            }
-                        }
-                    }*/
+                        savedWorlds[i][0].move(new Vector3(size * 6, 0, 0));
+                        worlds[i][2] = savedWorlds[i][0];
+                        worlds[i][1] = savedWorlds[i][2];
+                        worlds[i][0] = savedWorlds[i][1];
+                    }
                 }
                 if (logicPosition.X < -size)
                 {
                     flag = 1;
                     Vector3 newPosition = personaje.getPosition();
                     newPosition.X = size;
-                    //personaje.setPosition(newPosition);
-                    /*
+                    copyWorlds();
                     for (int i = 0; i <= 2; i++)
                     {
-                        for (int j = 0; j <= 2; j++)
-                        {
-                            if (j == 0)
-                            {
-                                worlds[i][j] = new World(new Vector3(worlds[i][j].position.X - (size * 2), worlds[i][j].position.Y, worlds[i][j].position.Z));
-                            }
-
-                            if (j == 2)
-                            {
-                                worlds[i][j].dispose();
-                                worlds[i][j] = worlds[i][j - 1];
-                            }
-
-                            if (j == 1)
-                            {
-                                worlds[i][j] = worlds[i][j - 1];
-                            }
-                        }
-                    }*/
+                        savedWorlds[i][2].move(new Vector3(size * -6, 0, 0));
+                        worlds[i][2] = savedWorlds[i][1];
+                        worlds[i][1] = savedWorlds[i][0];
+                        worlds[i][0] = savedWorlds[i][2];
+                    }
                 }
                 if (logicPosition.Z > size)
                 {
                     flag = 1;
                     Vector3 newPosition = personaje.getPosition();
                     newPosition.Z = -size;
-                    //personaje.setPosition(newPosition);
-                    /*
+                    copyWorlds();
+
                     for (int i = 0; i <= 2; i++)
                     {
-                        for (int j = 0; j <= 2; j++)
-                        {
-
-                            if (i == 0)
-                            {
-                                worlds[i][j] = new World(new Vector3(worlds[i][j].position.X, worlds[i][j].position.Y, worlds[i][j].position.Z + (size * 2)));
-                            }
-                            if (i == 2)
-                            {
-                                worlds[i][j].dispose();
-                                worlds[i][j] = worlds[i - 1][j];
-                            }
-                            if (i == 1)
-                            {
-                                worlds[i][j] = worlds[i - 1][j];
-                            }
-                        }
-                    }*/
+                        savedWorlds[2][i].move(new Vector3(0, 0, size * 6));
+                        worlds[0][i] = savedWorlds[2][i];
+                        worlds[1][i] = savedWorlds[0][i];
+                        worlds[2][i] = savedWorlds[1][i];
+                    }
                 }
                 if (logicPosition.Z < -size)
                 {
@@ -691,30 +648,17 @@ namespace AlumnoEjemplos.NatusVincere
                     flag = 1;
                     Vector3 newPosition = personaje.getPosition();
                     newPosition.Z = size;
+                    copyWorlds();
                     //personaje.setPosition(newPosition);
-                    /*for (int i = 0; i <= 2; i++)
+                    for (int i = 0; i <= 2; i++)
                     {
-                        for (int j = 0; j <= 2; j++)
-                        {
-
-                            if (i == 2)
-                            {
-                                worlds[i][j] = new World(new Vector3(worlds[i][j].position.X, worlds[i][j].position.Y, worlds[i][j].position.Z - (size * 2)));
-                            }
-                            if (i == 0)
-                            {
-                                worlds[i][j].dispose();
-                                worlds[i][j] = worlds[i + 1][j];
-                            }
-                            if (i == 1)
-                            {
-                                worlds[i][j] = worlds[i + 1][j];
-                            }
-
-                        }
-                    }*/
+                        savedWorlds[0][i].move(new Vector3(0, 0, size * -6));
+                        worlds[1][i] = savedWorlds[2][i];
+                        worlds[2][i] = savedWorlds[0][i];
+                        worlds[0][i] = savedWorlds[1][i];
+                    }
                 }
-            }
+            
             currentWorld = worlds[1][1];
             currentWorld.refresh();
         }
@@ -726,6 +670,19 @@ namespace AlumnoEjemplos.NatusVincere
             TgcText2d text = textCreator.createText(unNumero.ToString() + "POSICIONES");
             text.Position = new Point(positionX, positionY);
             text.render();
+            text.dispose();
+        }
+
+        public void copyWorlds()
+        {
+            for (int i = 0; i <= 2; i++)
+            {
+                for (int j = 0; j <= 2; j++)
+                {
+                    savedWorlds[i][j] = worlds[i][j];
+
+                }
+            }
         }
 
         public override void close()
@@ -735,10 +692,91 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.dispose();
             personaje.dispose();
             currentWorld.dispose();
-           
+            
             //hud.dispose();
             cam.Enable = false; //para q deje de capturar el mouse
 
+        }
+
+        public void renderWorlds()
+        {
+            {
+                for (int i = 0; i <= 2; i++)
+                {
+                    for (int j = 0; j <= 2; j++)
+                    {
+                        worlds[i][j].rendered = false;
+                    }
+
+                }
+            }
+            Vector3 viewDir = new Vector3(cam.viewDir.X, 0, cam.viewDir.Z);
+            Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
+            showAsText(viewDir.X, 500, 300);
+            showAsText(viewDir.Z, 500, 450);
+            Vector3 personajePosition = personaje.getPosition();
+            worlds[1][1].render();
+
+            if (logicPosition.X < -3000)
+            {
+                worlds[1][0].render();
+            } else if (logicPosition.X > -3000)
+            {
+                worlds[1][2].render();
+            }
+
+            if (logicPosition.Z < -3000)
+            {
+                worlds[2][1].render();
+            }
+            else if (logicPosition.Z > -3000)
+            {
+                worlds[0][1].render();
+            }
+
+            if ((viewDir.X > 0 && viewDir.Z > 0) || sectorToRender == 1)
+            {
+                sectorToRender = 1;
+                worlds[0][1].render();
+                worlds[0][2].render();
+                worlds[1][2].render();
+            }
+
+            if ((viewDir.X < 0 && viewDir.Z > 0) || sectorToRender == 2)
+            {
+                sectorToRender = 2;
+                worlds[0][1].render();
+                worlds[0][0].render();
+                worlds[1][0].render();
+            }
+
+            if ((viewDir.X > 0 && viewDir.Z < 0) || sectorToRender == 3)
+            {
+                sectorToRender = 3;
+                worlds[1][2].render();
+                worlds[2][1].render();
+                worlds[2][2].render();
+            }
+
+            if ((viewDir.X < 0 && viewDir.Z < 0) || sectorToRender == 4)
+            {
+                sectorToRender = 4;
+                worlds[1][0].render();
+                worlds[2][0].render();
+                worlds[2][1].render();
+            }
+        }
+
+        public void renderAll()
+        {
+            for (int i =0; i <= 2; i++)
+            {
+                for (int j = 0; j <= 2; j++)
+                {
+                    worlds[i][j].render();
+                }
+
+            }
         }
     }
 }

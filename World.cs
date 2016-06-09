@@ -20,36 +20,48 @@ namespace AlumnoEjemplos.NatusVincere
         float  currentScaleY;
         public Vector3 position;
         int size;
+        public Vector3 terrainPosition;
+        string terrainTexture;
+        public string terrainHeightmap;
+        public bool rendered = false;
         public World(Vector3 worldPosition, int size)
         {
 
             this.size = size;
-            string terrainTexture = terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg"; ;
-            if (worldPosition.X > 3000)
+            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg"; ;
+            if (worldPosition.X > 3500)
             {
-                terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture4.jpg";
+                this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture4.jpg";
             }
-            if (worldPosition.X > 3000)
-            terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg";
+            if (worldPosition.X < 3500)
+            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg";
 
-            string terrainHeightmap = GuiController.Instance.AlumnoEjemplosDir + "NatusVincere\\" + "heightmap.jpg";
+            this.terrainHeightmap = GuiController.Instance.AlumnoEjemplosDir + "NatusVincere\\" + "heightmap.jpg";
             this.objects = new List<Crafteable>();
             this.objectsFactory = new ObjectsFactory(this.objects);
             this.currentScaleXZ = (79.4f / 5000) * size;
             this.currentScaleY = 2f;
             this.position = worldPosition;
             this.terrain = new TgcSimpleTerrain();
-            terrain.loadTexture(terrainTexture);
-            worldPosition.X /= currentScaleXZ;
-            worldPosition.Z /= currentScaleXZ;
-            terrain.loadHeightmap(terrainHeightmap, this.currentScaleXZ, this.currentScaleY, worldPosition);
+            this.refreshTerrain();
             this.agregarObjetos();
-            
+            this.terrain.loadTexture(terrainTexture);
+
+        }
+
+        public void refreshTerrain()
+        {
+            this.terrainPosition.X = this.position.X / this.currentScaleXZ;
+            this.terrainPosition.Z = this.position.Z / this.currentScaleXZ;
+            this.terrain.loadHeightmap(this.terrainHeightmap, this.currentScaleXZ, this.currentScaleY, this.terrainPosition);
         }
 
         public void render() {
-            this.terrain.render();
-            this.objects.ForEach(crafteable => crafteable.render());
+            if (!this.rendered) { 
+                this.terrain.render();
+                this.objects.ForEach(crafteable => crafteable.render());
+                this.rendered = true;
+            }
         }
 
         public void transform(Human human)
@@ -108,6 +120,18 @@ namespace AlumnoEjemplos.NatusVincere
             return H;
         }
 
+        public void move(Vector3 distance)
+        {
+            this.setPosition(this.position + distance);
+        }
+
+        public void setPosition(Vector3 position)
+        {
+            this.objects.ForEach(crafteable => { crafteable.move(position); });
+            this.position = position;
+            this.refreshTerrain();
+        }
+
         public void dispose()
         {
             this.refresh();
@@ -140,26 +164,31 @@ namespace AlumnoEjemplos.NatusVincere
         }
         public void crearArbol(float x, float z)
         {
+            if (x < size / 2 && z < size / 2)
             objectsFactory.createArbol(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
         public void crearPino(float x, float z)
         {
-            objectsFactory.createPino(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            if (x < size / 2 && z < size / 2)
+                objectsFactory.createPino(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearArbusto(float x, float z)
         {
-            objectsFactory.createArbusto(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            if (x < size / 2 && z < size / 2)
+                objectsFactory.createArbusto(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearLeon(float x, float z)
         {
-            objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            if (x < size / 2 && z < size / 2)
+                objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearHacha(float x, float z)
         {
-            objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            if (x < size / 2 && z < size / 2)
+                objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
     }
 }

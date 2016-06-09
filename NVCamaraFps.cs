@@ -22,7 +22,7 @@ namespace AlumnoEjemplos.NatusVincere
         
 
         public const float DEFAULT_ROTATION_SPEED = 2f;
-        public const float DEFAULT_MOVEMENT_SPEED = 100f;
+        public const float DEFAULT_MOVEMENT_SPEED = 300f;
         public const float DEFAULT_JUMP_SPEED = 100f;
         public float accumPitchDegrees;
         public Vector3 eye;
