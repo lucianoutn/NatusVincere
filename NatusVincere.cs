@@ -408,7 +408,7 @@ namespace AlumnoEjemplos.NatusVincere
             personaje.setWorld(currentWorld);
 
             //recalculo la vida del jugador segun el tiempo transcurrido
-            personaje.recalcularStats();
+            personaje.recalcularStats(elapsedTime);
             //Actualizar personaje
             personaje.inventory.update();
             personaje.inventory.render();

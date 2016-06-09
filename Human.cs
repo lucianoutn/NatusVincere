@@ -26,11 +26,11 @@ namespace AlumnoEjemplos.NatusVincere
         private TgcSkeletalMesh mesh;
         public Inventory inventory;
         public List<Crafteable> objects;
-        private DateTime tActual;
-        private DateTime tAnterior;
-        private TimeSpan tTranscurridoVida = TimeSpan.Zero;
-        private TimeSpan tTranscurridoAgua = TimeSpan.Zero;
-        private TimeSpan tTranscurridoSuenio = TimeSpan.Zero;
+        //private DateTime tActual;
+        //private DateTime tAnterior;
+        private float tTranscurridoVida = 0;
+        private float tTranscurridoAgua = 0;
+        private float tTranscurridoSuenio = 0;
         private TgcBoundingSphere BB;
         private TgcFixedYBoundingCylinder BC;
         private String animation = "Walk";
@@ -181,31 +181,29 @@ namespace AlumnoEjemplos.NatusVincere
         }
         #endregion Movimientos
 
-        public void recalcularStats()
+        public void recalcularStats(float elapsedTime)
         {
-            this.tActual = DateTime.Now;
-            tTranscurridoVida = tTranscurridoVida + tActual.Subtract(this.tAnterior);
-            tTranscurridoAgua = tTranscurridoAgua + tActual.Subtract(this.tAnterior);
-            tTranscurridoSuenio = tTranscurridoSuenio + tActual.Subtract(this.tAnterior);
+            tTranscurridoVida += elapsedTime;
+            tTranscurridoAgua += elapsedTime;
+            tTranscurridoSuenio += elapsedTime;
 
-            if (tTranscurridoVida.TotalSeconds > 2)
+            if (tTranscurridoVida > 6)
             {
                 this.health = health - 2;
-                tTranscurridoVida = TimeSpan.Zero;
+                tTranscurridoVida = 0;
                 if (this.health < 20) sounds.playIntense();
             }
-            if (tTranscurridoAgua.TotalMinutes > 0.2)
+            if (tTranscurridoAgua > 12)
             {
                 this.agua = this.agua - 2;
-                tTranscurridoAgua = TimeSpan.Zero;
+                tTranscurridoAgua = 0;
             }
-            if (tTranscurridoSuenio.TotalMinutes > 0.5)
+            if (tTranscurridoSuenio > 30)
             {
                 this.suenio = this.suenio + 3;
-                tTranscurridoSuenio = TimeSpan.Zero;
+                tTranscurridoSuenio = 0;
             }
 
-            this.tAnterior = this.tActual;
             if (this.agua < 1 || this.suenio > 99 || this.health < 1) this.muerto = true;
         }
 
