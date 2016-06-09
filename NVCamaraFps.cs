@@ -493,8 +493,8 @@ namespace AlumnoEjemplos.NatusVincere
 
             if(hayColision(personaje.getWorld()))
             {
-                direction.X = GuiController.Instance.ThirdPersonCamera.Position.X - 0.1f;
-                direction.Z = GuiController.Instance.ThirdPersonCamera.Position.Z - 0.5f;
+                direction.X = GuiController.Instance.ThirdPersonCamera.Position.X - 1f;
+                direction.Z = GuiController.Instance.ThirdPersonCamera.Position.Z - 1f;
             }
 
             return direction;

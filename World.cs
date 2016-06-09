@@ -181,9 +181,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public Leon crearLeon(float x, float z)
         {
-            if (x < size / 2 && z < size / 2)
-                objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
-                return objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearHacha(float x, float z)

@@ -23,9 +23,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.Position = position;
             this.mesh.Scale = scale;
             this.storable = true;
-            Vector3 centro = getMesh().BoundingBox.calculateBoxCenter();
-
-            this.BB = new TgcBoundingBox(new Vector3(centro.X, centro.Y - 4, centro.Z), new Vector3(centro.X + 50, centro.Y + 40, centro.Z + 50));
+            this.setBB(position);
         }
 
        public void use(Human user)
@@ -109,6 +107,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void setPosition(Vector3 position)
         {
+            this.setBB(position);
             this.mesh.Position = position;
         }
 
@@ -143,7 +142,8 @@ namespace AlumnoEjemplos.NatusVincere
 
         public virtual void setBB(Vector3 position)
         {
-
+            Vector3 centro = getMesh().BoundingBox.calculateBoxCenter();
+            this.BB = new TgcBoundingBox(new Vector3(centro.X, centro.Y - 4, centro.Z), new Vector3(centro.X + 50, centro.Y + 40, centro.Z + 50));
         }
         public void dispose()
         {
