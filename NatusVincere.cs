@@ -651,10 +651,9 @@ namespace AlumnoEjemplos.NatusVincere
             
 
         }
-
+        
         public void renderWorlds()
         {
-            {
                 for (int i = 0; i <= 2; i++)
                 {
                     for (int j = 0; j <= 2; j++)
@@ -663,7 +662,7 @@ namespace AlumnoEjemplos.NatusVincere
                     }
 
                 }
-            }
+            
             Vector3 viewDir = new Vector3(cam.viewDir.X, 0, cam.viewDir.Z);
             Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
             Vector3 personajePosition = personaje.getPosition();
