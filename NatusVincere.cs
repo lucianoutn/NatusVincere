@@ -33,7 +33,7 @@ namespace AlumnoEjemplos.NatusVincere
         //DateTime tiempoObjetivos;
         Hud hud;
         List<Crafteable> objects;
-        NVSkyBox skyBox;
+        NVSkyBox []skyBox;
         Human personaje;
         Leon leon;
         NVCamaraFps cam;
@@ -51,6 +51,7 @@ namespace AlumnoEjemplos.NatusVincere
         Vector3 lookfrom = new Vector3(-2500, 3400, 2000);
         Vector3 lookAt = new Vector3(0, 0, 0);
         Size screenSize;
+        int horaDelDia = 2; //0: maniana, 1:dia, 2:tarde, 3:noche
         
         //bool showPersonajeMesh = true;
         int flag = 0;
@@ -78,6 +79,7 @@ namespace AlumnoEjemplos.NatusVincere
         Microsoft.DirectX.Direct3D.Device d3dDevice;
 
         float time;
+        float timeAcumParaCambioDeHorario;
 
         public override string getCategory()
         {
@@ -158,9 +160,16 @@ namespace AlumnoEjemplos.NatusVincere
             objectsFactory = new ObjectsFactory(objects);
 
             //Crear SkyBox
-            skyBox = new NVSkyBox();
-            skyBox.horario("maniana"); //cambiarlo "maniana" "dia" "tarde" "noche"
-            skyBox.init();
+            skyBox = new NVSkyBox[4];
+            for (int i = 0; i < 4; i++) skyBox[i] = new NVSkyBox();
+            skyBox[0].horario("maniana"); //cambiarlo "maniana" "dia" "tarde" "noche"
+            skyBox[1].horario("dia"); //cambiarlo "maniana" "dia" "tarde" "noche"
+            skyBox[2].horario("tarde"); //cambiarlo "maniana" "dia" "tarde" "noche"
+            skyBox[3].horario("noche"); //cambiarlo "maniana" "dia" "tarde" "noche"
+            for (int i = 0; i < 4; i++) skyBox[i].init();
+                   
+            
+            
 
             //configurando el frustum
             //Plane leftPlane = new Plane(0,0,0,1000);
@@ -281,11 +290,13 @@ namespace AlumnoEjemplos.NatusVincere
                         Format.X8R8G8B8, Pool.Default);
 
             time = 0;
+            timeAcumParaCambioDeHorario = 0;
         }
 
         public override void render(float elapsedTime)
         {
             time += elapsedTime;
+            timeAcumParaCambioDeHorario += elapsedTime;
             //Cargamos el Render Targer al cual se va a dibujar la escena 3D. Antes nos guardamos el surface original
             //En vez de dibujar a la pantalla, dibujamos a un buffer auxiliar, nuestro Render Target.
             pOldRT = d3dDevice.GetRenderTarget(0);
@@ -401,7 +412,8 @@ namespace AlumnoEjemplos.NatusVincere
             personaje.inventory.render();
 
             //Actualizar Skybox
-            skyBox.updateYRender(personaje.getPosition()); //lo dibuja y lo mueve con centro en el personaje
+            skyBox[horaDelDia].updateYRender(personaje.getPosition()); //lo dibuja y lo mueve con centro en el personaje
+            if (timeAcumParaCambioDeHorario > 15) cambioHorario();
             
 
             currentXCam = cam.getPosition().X;
@@ -412,7 +424,6 @@ namespace AlumnoEjemplos.NatusVincere
             personaje.render(); //no renderiza el mesh, solo actualiza valores y lo mata
             refreshWorlds();
             //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
-            skyBox.updateYRender(personaje.getPosition());
             refreshCamera(); //Necesita que se actualice primero el personaje
             
             if(leon.isNear(personaje))
@@ -464,16 +475,19 @@ namespace AlumnoEjemplos.NatusVincere
             return result == DialogResult.Yes;
         }
 
-        /*private void cambioHorario(Object myObject, EventArgs myEventArgs)
+        private void cambioHorario()
           {
-              //skyBox.dispose();
-              //skyBox = new NVSkyBox();
-              skyBox.cambiarHorario();
-              temporizador.Stop();
-              temporizador.Enabled = false;
-              skyBox = new NVSkyBox();
+              timeAcumParaCambioDeHorario = 0;
+              if (horaDelDia < 3)
+              {
+                  horaDelDia++;
+              }
+              else
+              {
+                  horaDelDia = 0;
+              }
           }
-          */   
+            
 
         public void refreshCamera()
         {
@@ -615,7 +629,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
             //pasto.dispose();
-            skyBox.dispose();
+            for (int i = 0; i < 4; i++) skyBox[i].dispose();
             personaje.dispose();
             currentWorld.dispose();
             leon.dispose();

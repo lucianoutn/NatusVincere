@@ -25,6 +25,8 @@ namespace AlumnoEjemplos.NatusVincere.NVSkyBoxes
             setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "lostatseaday_bk.jpg");
             setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_ft.jpg");
             SkyEpsilon = 1f;
+            //this.AlphaBlendEnable = true;
+            
             updateValues();
             
         } 
@@ -38,8 +40,8 @@ namespace AlumnoEjemplos.NatusVincere.NVSkyBoxes
             {
                 case "maniana": this.Color = Color.Coral; break;
                 case "dia": this.Color = Color.Transparent; break;
-                case "tarde": this.Color = Color.DarkGoldenrod; break;
-                case "noche": this.Color = Color.DarkBlue; break;
+                case "tarde": this.Color = Color.DarkOrange; break;
+                case "noche": this.Color = Color.DarkSlateBlue; break;
             }
         }
 
