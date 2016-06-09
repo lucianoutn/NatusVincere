@@ -26,7 +26,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         TgcSprite spriteLogo;
         TgcSprite spriteObjetivos;
-        TgcText2d objetivos;
+        //TgcText2d objetivos;
         DateTime tiempoLogo;
         DateTime tiempoPresentacion;
         DateTime tiempoObjetivos;
@@ -137,13 +137,15 @@ namespace AlumnoEjemplos.NatusVincere
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
-            //spriteObjetivos.Position = spriteLogo.Position;
-            objetivos = new TgcText2d();
-            objetivos.Position = new Point(5, (int)spriteLogo.Position.Y);
-            objetivos.Align = TgcText2d.TextAlign.LEFT;
-            objetivos.changeFont(new System.Drawing.Font("Arial", 16, FontStyle.Regular));
-            objetivos.Color = Color.Yellow;
-            objetivos.Text = " Objetivo: encontrar a WILSON->(img) haciendo crafting para sobrevivir\n Movimientos: WASD\n Interacciones: E (usar), R (recolectar), L (dejar)";
+            spriteObjetivos = new TgcSprite();
+            spriteObjetivos.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\objetivos.png");
+            spriteObjetivos.Position = new Vector2(2, 2);
+            //objetivos = new TgcText2d();
+            //objetivos.Position = new Point(5, (int)spriteLogo.Position.Y);
+            //objetivos.Align = TgcText2d.TextAlign.LEFT;
+            //objetivos.changeFont(new System.Drawing.Font("Arial", 16, FontStyle.Regular));
+            //objetivos.Color = Color.Yellow;
+            //objetivos.Text = " Objetivo: encontrar a WILSON->(img) haciendo crafting para sobrevivir\n Movimientos: WASD\n Interacciones: E (usar), R (recolectar), L (dejar)";
 
             //creacion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -200,7 +202,7 @@ namespace AlumnoEjemplos.NatusVincere
             log = GuiController.Instance.Logger;
             log.clear();
             cam = new NVCamaraFps(personaje);
-            cam.alturaPreseteada = 50;
+            cam.alturaPreseteada = 100;
             cam.setCamera(personaje.getPosition(), personaje.getPosition() + new Vector3(50f, 0, 0));
             input.EnableMouseSmooth = true;
             log.log("Inicio Juego", Color.Brown);
@@ -323,14 +325,16 @@ namespace AlumnoEjemplos.NatusVincere
                  }
                  else
                  {
-                     objetivos.render();
+                     GuiController.Instance.Drawer2D.beginDrawSprite();
+                     spriteObjetivos.render();
+                     GuiController.Instance.Drawer2D.endDrawSprite();
                      spriteLogo.dispose();
                  }
                  
             }
             else //render del hud
             {
-                objetivos.dispose();
+                spriteObjetivos.dispose();
                 hud.renderizate(personaje);
                 // GuiController.Instance.CurrentCamera = cam;
                 //GuiController.Instance.ThirdPersonCamera.
