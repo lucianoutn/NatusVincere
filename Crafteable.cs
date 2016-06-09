@@ -24,6 +24,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.Scale = scale;
             this.storable = true;
             this.setBB(position);
+            this.mesh.AlphaBlendEnable = true;
         }
 
        public void use(Human user)

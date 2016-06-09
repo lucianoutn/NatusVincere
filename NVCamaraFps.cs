@@ -54,6 +54,7 @@ namespace AlumnoEjemplos.NatusVincere
         TgcViewer.Utils.Logger log = GuiController.Instance.Logger;
         Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
         Human personaje;
+        
 
         #endregion declaraciones
         

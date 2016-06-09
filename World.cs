@@ -189,5 +189,16 @@ namespace AlumnoEjemplos.NatusVincere
             if (x < size / 2 && z < size / 2)
                 objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
+
+        public void crearMadera(float x, float z)
+        {
+            if (x < size / 2 && z < size / 2)
+                objectsFactory.createMadera(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+        }
+        public void crearPiedra(float x, float z)
+        {
+            if (x < size / 2 && z < size / 2)
+                objectsFactory.createPiedra(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+        }
     }
 }

@@ -26,10 +26,10 @@ namespace AlumnoEjemplos.NatusVincere
     {
         TgcSprite spriteLogo;
         TgcSprite spriteObjetivos;
-        TgcText2d objetivos;
-        DateTime tiempoLogo;
-        DateTime tiempoPresentacion;
-        DateTime tiempoObjetivos;
+        //TgcText2d objetivos;
+        //DateTime tiempoLogo;
+        //DateTime tiempoPresentacion;
+        //DateTime tiempoObjetivos;
         Hud hud;
         List<Crafteable> objects;
         NVSkyBox skyBox;
@@ -130,20 +130,22 @@ namespace AlumnoEjemplos.NatusVincere
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
-            tiempoLogo = DateTime.Now;
-            tiempoPresentacion = DateTime.Now;
-            tiempoObjetivos = DateTime.Now;
+            //tiempoLogo = DateTime.Now;
+            //tiempoPresentacion = DateTime.Now;
+            //tiempoObjetivos = DateTime.Now;
             //Ubicarlo centrado en la pantalla
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
-            //spriteObjetivos.Position = spriteLogo.Position;
-            objetivos = new TgcText2d();
-            objetivos.Position = new Point(5, (int)spriteLogo.Position.Y);
-            objetivos.Align = TgcText2d.TextAlign.LEFT;
-            objetivos.changeFont(new System.Drawing.Font("Arial", 16, FontStyle.Regular));
-            objetivos.Color = Color.Yellow;
-            objetivos.Text = " Objetivo: encontrar a WILSON->(img) haciendo crafting para sobrevivir\n Movimientos: WASD\n Interacciones: E (usar), R (recolectar), L (dejar)";
+            spriteObjetivos = new TgcSprite();
+            spriteObjetivos.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\objetivos.png");
+            spriteObjetivos.Position = new Vector2(2, 2);
+            //objetivos = new TgcText2d();
+            //objetivos.Position = new Point(5, (int)spriteLogo.Position.Y);
+            //objetivos.Align = TgcText2d.TextAlign.LEFT;
+            //objetivos.changeFont(new System.Drawing.Font("Arial", 16, FontStyle.Regular));
+            //objetivos.Color = Color.Yellow;
+            //objetivos.Text = " Objetivo: encontrar a WILSON->(img) haciendo crafting para sobrevivir\n Movimientos: WASD\n Interacciones: E (usar), R (recolectar), L (dejar)";
 
             //creacion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -176,6 +178,9 @@ namespace AlumnoEjemplos.NatusVincere
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
 
             leon = currentWorld.crearLeon(posicionPersonaje.X - 390, posicionPersonaje.Z - 490);
+
+            currentWorld.crearMadera(posicionPersonaje.X - 90, posicionPersonaje.Z - 90);
+            currentWorld.crearPiedra(posicionPersonaje.X + 90, posicionPersonaje.Z + 90);
             //Hud
             hud = new Hud();
 
@@ -200,7 +205,7 @@ namespace AlumnoEjemplos.NatusVincere
             log = GuiController.Instance.Logger;
             log.clear();
             cam = new NVCamaraFps(personaje);
-            cam.alturaPreseteada = 50;
+            cam.alturaPreseteada = 100;
             cam.setCamera(personaje.getPosition(), personaje.getPosition() + new Vector3(50f, 0, 0));
             input.EnableMouseSmooth = true;
             log.log("Inicio Juego", Color.Brown);
@@ -299,8 +304,9 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Renderizo el logo del inicio y el hud
             #region presentacion
-            if (DateTime.Now < (tiempoPresentacion.AddSeconds((double)20)))
+            if (time < 45)
             {
+               
                 //animacion
                 
                 if (lookfrom.Y -250f > currentWorld.calcularAltura(lookfrom.X, lookfrom.Z)) lookfrom.Y += (elapsedTime * -150f);
@@ -315,22 +321,25 @@ namespace AlumnoEjemplos.NatusVincere
                  personaje.meshRender();
                  personaje.move(lookfrom-lookAt);
                 
-                 if (DateTime.Now < (tiempoLogo.AddSeconds((double)5)))
+                 if (time < 25)
                  {
+                     lookfrom = new Vector3(-2500, 3400, 2000);
                      GuiController.Instance.Drawer2D.beginDrawSprite();
                      spriteLogo.render();
                      GuiController.Instance.Drawer2D.endDrawSprite();
                  }
                  else
                  {
-                     objetivos.render();
+                     GuiController.Instance.Drawer2D.beginDrawSprite();
+                     spriteObjetivos.render();
+                     GuiController.Instance.Drawer2D.endDrawSprite();
                      spriteLogo.dispose();
                  }
                  
             }
             else //render del hud
             {
-                objetivos.dispose();
+                spriteObjetivos.dispose();
                 hud.renderizate(personaje);
                 // GuiController.Instance.CurrentCamera = cam;
                 //GuiController.Instance.ThirdPersonCamera.
@@ -406,8 +415,7 @@ namespace AlumnoEjemplos.NatusVincere
             d3dDevice.Transform.Projection =
                 Matrix.PerspectiveFovLH(((float)((45.0f)* Math.PI / 180)),
                 (screenSize.Width/screenSize.Height), 1f, 99999999f);
-            //GuiController.Instance.Frustum.render();
-            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
+            
 
 
             personaje.setWorld(currentWorld);
@@ -439,10 +447,10 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             personaje.setBB(personaje.getPosition());
-            //personaje.render();
+            
             renderWorlds();
 
-            personaje.Render(); //renderiza solo el BC
+            //personaje.Render(); //renderiza solo el BC
             leon.Render();
             wilson.render();
             chequearVictoria();
@@ -636,6 +644,7 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox.dispose();
             personaje.dispose();
             currentWorld.dispose();
+            leon.dispose();
             
             //hud.dispose();
             cam.Enable = false; //para q deje de capturar el mouse

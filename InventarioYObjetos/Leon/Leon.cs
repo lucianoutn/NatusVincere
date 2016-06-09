@@ -3,6 +3,8 @@ using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer;
+using TgcViewer.Utils._2D;
+using System.Drawing;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -11,10 +13,17 @@ namespace AlumnoEjemplos.NatusVincere
         private int health;
         private float minimumDistance = 400; //Default
         bool quieto = true;
-        int coolDownTotal = 80;
-        int coolDown = 80;
+        bool ataco = false;
+        int coolDownTotal = 120;
+        int coolDown = 120;
         private TgcMesh mesh;
         private TgcBoundingBox arbustoBB;
+
+        TgcSprite spriteMordida;
+        TgcSprite spriteObjetivos;
+        //TgcText2d objetivos;
+        DateTime tiempoMordida;
+        Size screenSize;
 
         public Leon(TgcMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -23,6 +32,15 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.Position = position;
             this.mesh.Scale = scale;
             setBB(position);
+
+            //Creo un sprite de logo inicial
+            spriteMordida = new TgcSprite();
+            spriteMordida.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Leon\\mordida.png");
+            tiempoMordida = DateTime.Now;
+            screenSize = GuiController.Instance.Panel3d.Size;
+            Size textureSizeLogo = spriteMordida.Texture.Size;
+            spriteMordida.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
+
         }
 
         public void doAction(Human user)
@@ -127,16 +145,25 @@ namespace AlumnoEjemplos.NatusVincere
                 quieto = false;
             }
 
+
             if ( (distancia(personaje).Length() < 100) && (quieto==true) && (coolDown >= coolDownTotal))
             {
                 this.atacarA(personaje);
                 coolDown = 0;
+                ataco = true;
+                tiempoMordida = DateTime.Now;
             }
-            else
+            
+
+            if (coolDown < coolDownTotal)
             {
-                if ( (int)(elapsedTime) % 2 == 0)
+                coolDown++;
+                ataco = false;
+                if (DateTime.Now < (tiempoMordida.AddSeconds((double)1)))
                 {
-                    coolDown++;
+                    GuiController.Instance.Drawer2D.beginDrawSprite();
+                    spriteMordida.render();
+                    GuiController.Instance.Drawer2D.endDrawSprite();
                 }
             }
 
@@ -156,6 +183,11 @@ namespace AlumnoEjemplos.NatusVincere
                 return true;
             }
             return false;
+        }
+
+        public void dispose()
+        {
+            spriteMordida.dispose();
         }
     }
 }
