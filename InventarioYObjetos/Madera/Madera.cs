@@ -17,7 +17,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Madera";
             this.minimumDistance = 200;
             this.status = 1;
-            this.tronco = new TgcBoundingBox(new Vector3(position.X+10, position.Y+10, position.Z), new Vector3(position.X + 10, position.Y + 10, position.Z));
+            this.tronco = new TgcBoundingBox(new Vector3(position.X-10, position.Y+10, position.Z-40), new Vector3(position.X + 20, position.Y + 20, position.Z + 30));
         }
 
         public override void doAction(Human user)
