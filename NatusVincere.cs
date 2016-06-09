@@ -123,7 +123,7 @@ namespace AlumnoEjemplos.NatusVincere
             worlds[2][1] = new World(new Vector3(0, 0, -size), size);
             worlds[2][2] = new World(new Vector3(size, 0, -size), size);
             currentWorld = worlds[1][1];
-            initializeWind();
+
             //FullScreen
             GuiController.Instance.FullScreenEnable = this.FullScreen();
             GuiController.Instance.FullScreenPanel.ControlBox = false;
@@ -375,7 +375,7 @@ namespace AlumnoEjemplos.NatusVincere
             }
             #endregion presentacion
 
-            Wind.generarViento(currentWorld.objects, elapsedTime, sounds);
+            Wind.generarViento(getAllObjects(), elapsedTime, sounds);
 
            
             #region crafteo
@@ -708,16 +708,19 @@ namespace AlumnoEjemplos.NatusVincere
             }
         }
 
-        public void initializeWind()
+        public List<Crafteable> getAllObjects()
         {
-            for (int i =0; i <= 2; i++)
+            List<Crafteable> crafteables = new List<Crafteable>();
+            for (int i = 0; i <= 2; i++)
             {
                 for (int j = 0; j <= 2; j++)
                 {
-                    Wind.initialize(worlds[i][j].objects);
+                    crafteables.AddRange(worlds[i][j].objects);
                 }
 
             }
+            return crafteables;
         }
+
     }
 }

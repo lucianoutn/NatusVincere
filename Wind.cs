@@ -8,33 +8,34 @@ namespace AlumnoEjemplos.NatusVincere
 {
     class Wind
     {
-  
+
         static Boolean vientoPlaying = false;
-        static List<Crafteable> lastObjetos = null;
+
         static float vientoPlayedTime = 0;
-        
+
         public static void generarViento(List<Crafteable> objetos, float elapsedTime, Sounds sounds)
         {
-
             vientoPlayedTime += elapsedTime;
 
-            
-            if (vientoPlaying) {
-                sounds.playViento();
-                objetos.ForEach(crafteable => {
-                    crafteable.getMesh().Effect.SetValue("time", vientoPlayedTime);
-                });
-            }
-        }
-
-        public static void initialize(List<Crafteable> objetos)
-        {
-            objetos.ForEach(crafteable =>
+            int i;
+            if (!vientoPlaying)
             {
-                crafteable.getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
-                crafteable.getMesh().Technique = "Viento";
-                crafteable.getMesh().Effect.SetValue("time", vientoPlayedTime);
-            });
+                for (i = 0; i < objetos.Count; i++)
+                {
+                    objetos[i].getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
+                    objetos[i].getMesh().Technique = "Viento";
+                    objetos[i].getMesh().Effect.SetValue("time", vientoPlayedTime);
+                }
+                vientoPlaying = true;
+                return;
+            }
+
+            sounds.playViento();
+
+            for (i = 0; i < objetos.Count; i++)
+            {
+                objetos[i].getMesh().Effect.SetValue("time", vientoPlayedTime);
+            }
         }
     }
 }
