@@ -346,7 +346,12 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 spriteObjetivos.dispose();
                 hud.renderizate(personaje);
-                if (personaje.inventory.hachaEquipada) hachaEnMano.render();
+                if (personaje.inventory.hachaEquipada)
+                {
+                    GuiController.Instance.Drawer2D.beginDrawSprite();
+                    hachaEnMano.render();
+                    GuiController.Instance.Drawer2D.endDrawSprite();
+                } 
                 // GuiController.Instance.CurrentCamera = cam;
                 //GuiController.Instance.ThirdPersonCamera.
                 //GuiController.Instance.FpsCamera.Enable = true;
@@ -359,44 +364,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             Wind.generarViento(currentWorld.objects, elapsedTime, sounds);
 
-            /*
-                //Adelante
-                if (input.keyDown(Key.W))
-            {
-                Key key = Key.W;
-                personaje.movete(key, 0, elapsedTime);
-            }
-            
-            //Atras
-            if (input.keyDown(Key.S))
-            {
-                moveForward = velocidadCaminar;
-                moving = true;
-            }
-
-            //Derecha
-            if (input.keyDown(Key.D))
-            {
-                rotate = velocidadRotacion;
-                rotating = true;
-            }
-
-            //Izquierda
-            if (input.keyDown(Key.A))
-            {
-                rotate = -velocidadRotacion;
-                rotating = true;
-            }
-
-            //Jump
-            if (input.keyDown(Key.Space))
-            {
-                jump = 30;
-                moving = true;
-            }
-
-
-            */
+           
             #region crafteo
 
             if (input.keyDown(Key.E))
