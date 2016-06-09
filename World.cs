@@ -161,6 +161,22 @@ namespace AlumnoEjemplos.NatusVincere
                 j *= -1;
             }
 
+            qArboles = (size / 300);
+
+            for (int i = 0; i <= qArboles; i++)
+            {
+                k = 1;
+                if (i % 3 == 0)
+                {
+                    k = 15;
+                }
+                if (i % 2 == 0)
+                {
+                    crearArbustoFruta(j * k * (i * qArboles), qArboles - 277 * i);
+
+                }
+                j *= -1;
+            }
         }
 
         public bool isInWorld(float x, float z)
@@ -188,6 +204,20 @@ namespace AlumnoEjemplos.NatusVincere
         public Leon crearLeon(float x, float z)
         {
             return objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+        }
+
+
+        public void crearFruta(float x, float z)
+        {
+            if (isInWorld(x, z))
+                objectsFactory.createFruta(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.15f, 0.25f, 0.15f));
+        }
+
+
+        public void crearArbustoFruta(float x, float z)
+        {
+            if (isInWorld(x, z))
+                objectsFactory.createArbustoFruta(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearHacha(float x, float z)
