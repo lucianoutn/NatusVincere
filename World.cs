@@ -162,44 +162,48 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
         }
+
+        public bool isInWorld(float x, float z)
+        {
+            float maxDistance = this.size / 2;
+            return (FastMath.Abs(x) < maxDistance && FastMath.Abs(z) < maxDistance);
+        }
         public void crearArbol(float x, float z)
         {
-            if (x < size / 2 && z < size / 2)
+            if (isInWorld(x,z))
             objectsFactory.createArbol(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
         public void crearPino(float x, float z)
         {
-            if (x < size / 2 && z < size / 2)
+            if (isInWorld(x,z))
                 objectsFactory.createPino(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearArbusto(float x, float z)
         {
-            if (x < size / 2 && z < size / 2)
+            if (isInWorld(x,z))
                 objectsFactory.createArbusto(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public Leon crearLeon(float x, float z)
         {
-            if (x < size / 2 && z < size / 2)
-                objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
-                return objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearHacha(float x, float z)
         {
-            if (x < size / 2 && z < size / 2)
+            if (isInWorld(x,z))
                 objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public void crearMadera(float x, float z)
         {
-            if (x < size / 2 && z < size / 2)
+            if (isInWorld(x,z))
                 objectsFactory.createMadera(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
         public void crearPiedra(float x, float z)
         {
-            if (x < size / 2 && z < size / 2)
+            if (isInWorld(x, z))
                 objectsFactory.createPiedra(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
     }

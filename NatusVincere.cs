@@ -401,12 +401,12 @@ namespace AlumnoEjemplos.NatusVincere
 
             if (input.keyDown(Key.E))
             {
-                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) objectsFactory.transform(crafteable); });
+                currentWorld.objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) objectsFactory.transform(crafteable); });
             }
 
             if (input.keyDown(Key.R))
             {
-                objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) personaje.store(crafteable); });
+                currentWorld.objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) personaje.store(crafteable); });
 
             }
 
@@ -555,10 +555,7 @@ namespace AlumnoEjemplos.NatusVincere
         public void refreshWorlds()
         {
                 Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
-
-            showAsText(logicPosition.X, 100, 300);
-            showAsText(logicPosition.Z, 100, 350);
-            showAsText(logicPosition.Y, 100, 400);
+            
             int size = 7000 / 2;
                 if (logicPosition.X > size)
                 {
@@ -660,10 +657,9 @@ namespace AlumnoEjemplos.NatusVincere
             
 
         }
-
+        
         public void renderWorlds()
         {
-            {
                 for (int i = 0; i <= 2; i++)
                 {
                     for (int j = 0; j <= 2; j++)
@@ -672,11 +668,9 @@ namespace AlumnoEjemplos.NatusVincere
                     }
 
                 }
-            }
+            
             Vector3 viewDir = new Vector3(cam.viewDir.X, 0, cam.viewDir.Z);
             Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
-            showAsText(viewDir.X, 500, 300);
-            showAsText(viewDir.Z, 500, 450);
             Vector3 personajePosition = personaje.getPosition();
             worlds[1][1].render();
 

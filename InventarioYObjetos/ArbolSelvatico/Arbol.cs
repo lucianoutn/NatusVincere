@@ -15,7 +15,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             this.type = 1;
             this.description = "Arbol";
-            this.minimumDistance = 130;
+            this.minimumDistance = 130f;
             storable = false;
             setBB(position);
         }
