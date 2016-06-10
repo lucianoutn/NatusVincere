@@ -98,8 +98,15 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void playTalarArbol()
         {
-            if (isTalarPlaying) return;
+            if (isTalarPlaying)
+            {
+                mediaPlayer.closeFile(talarArbolAlias);
+                mediaPlayer.openAndPlay(false, talarArbolPath, talarArbolAlias);
+                return;
+            }
+
             mediaPlayer.openAndPlay(false, talarArbolPath, talarArbolAlias);
+            isTalarPlaying = true;
         }
 
         public void playRain()
