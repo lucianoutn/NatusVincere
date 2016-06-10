@@ -134,26 +134,16 @@ namespace AlumnoEjemplos.NatusVincere
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
-            //tiempoLogo = DateTime.Now;
-            //tiempoPresentacion = DateTime.Now;
-            //tiempoObjetivos = DateTime.Now;
-            //Ubicarlo centrado en la pantalla
+
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
             spriteObjetivos = new TgcSprite();
             spriteObjetivos.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\objetivos.png");
             spriteObjetivos.Position = new Vector2(2, 2);
-            //objetivos = new TgcText2d();
-            //objetivos.Position = new Point(5, (int)spriteLogo.Position.Y);
-            //objetivos.Align = TgcText2d.TextAlign.LEFT;
-            //objetivos.changeFont(new System.Drawing.Font("Arial", 16, FontStyle.Regular));
-            //objetivos.Color = Color.Yellow;
-            //objetivos.Text = " Objetivo: encontrar a WILSON->(img) haciendo crafting para sobrevivir\n Movimientos: WASD\n Interacciones: E (usar), R (recolectar), L (dejar)";
             hachaEnMano = new TgcSprite();
             hachaEnMano.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\hud\\hachaMina.png");
             hachaEnMano.Position = new Vector2(screenSize.Width - hachaEnMano.Texture.Size.Width, screenSize.Height - hachaEnMano.Texture.Size.Height);
-            
 
             //creacion de la escena
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -168,22 +158,7 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox[2].horario("tarde"); //cambiarlo "maniana" "dia" "tarde" "noche"
             skyBox[3].horario("noche"); //cambiarlo "maniana" "dia" "tarde" "noche"
             for (int i = 0; i < 4; i++) skyBox[i].init();
-                   
-            
-            
 
-            //configurando el frustum
-            //Plane leftPlane = new Plane(0,0,0,1000);
-            //Plane rightPlane = new Plane(0, 0, 0, 1000);
-            //Plane topPlane = new Plane(0, 0, 0, 1000);
-            //Plane bottomPlane = new Plane(0, 0, 0, 1000);
-            //Plane nearPlane = new Plane(0, 0, 0, 1000);
-            //Plane farPlane = new Plane(0, 0, 0, 1000);
-            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
-            //frustum = new TgcFrustum();
-
-            //*****MODIFICADORES*****
-            //Modifier para la camara
             GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", true);
             GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", false);
             GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
@@ -209,16 +184,6 @@ namespace AlumnoEjemplos.NatusVincere
             //camara rotacional
             GuiController.Instance.RotCamera.setCamera(targetCamara3, 500f);
 
-            ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
-            //Camara en primera persona, tipo videojuego FPS
-            //Solo puede haber una camara habilitada a la vez. Al habilitar la camara FPS se deshabilita la camara rotacional
-            //Por default la camara FPS viene desactivada
-            //Configurar posicion y hacia donde se mira
-            //eye = targetCamara3;
-            //Vector3 eye = new Vector3(2,2,2);
-            //Vector3 targetFps = personaje.getPosition();
-            //cam = new TgcFpsCamera(); 
-            //cam.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
             log = GuiController.Instance.Logger;
             log.clear();
             cam = new NVCamaraFps(personaje);
@@ -230,15 +195,8 @@ namespace AlumnoEjemplos.NatusVincere
             //camara rotacional
             GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
 
-            ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
-            //Camara en primera persona, tipo videojuego FPS
-            //Solo puede haber una camara habilitada a la vez. Al habilitar la camara FPS se deshabilita la camara rotacional
-            //Por default la camara FPS viene desactivada
             //Configurar posicion y hacia donde se mira
             eye = targetCamara3;
-            //Vector3 eye = new Vector3(2,2,2);
-            //Vector3 targetFps = personaje.getPosition();
-            //GuiController.Instance.FpsCamera.setCamera(eye, targetFps + new Vector3(1.0f, 0.0f, 0.0f));
             
             sounds = new Sounds();
             sounds.playMusic();
@@ -317,12 +275,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Tambien hay que dibujar el indicador de los ejes cartesianos
             GuiController.Instance.AxisLines.render();
-
-           
-
-
-
-
+            
             //Renderizo el logo del inicio y el hud
             #region presentacion
             if (time < 45)
@@ -522,9 +475,6 @@ namespace AlumnoEjemplos.NatusVincere
                 cam.Enable = true;
                 //personaje.render(); //para test
                 Cursor.Hide();
-                //GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara1, 0f, 10f);//provisorio
-                //GuiController.Instance.ThirdPersonCamera.Enable = true; //provisorio
-                //targetCamara3 = targetCamara1;//provisorio
             }
             else
             {
@@ -534,18 +484,8 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
-            //GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 100f, 200);
-            //GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
-            //rotar(-GuiController.Instance.D3dInput.XposRelative * velocidadRotacion,
-            //           -GuiController.Instance.D3dInput.YposRelative * velocidadRotacion);
-            //GuiController.Instance.FpsCamera.setCamera(eye, targetCamara + new Vector3(1.0f, 0.0f, 0.0f));
-
-            //GuiController.Instance.Frustum.FrustumPlanes.Initialize();
-            //GuiController.Instance.Frustum.updateMesh(personaje.getPosition(),targetCamara1);
             GuiController.Instance.BackgroundColor = Color.AntiqueWhite;
                                    
-            //Vector3 cameraPosition = personaje.getPosition() + new Vector3(0, 50, 0);
-            //cam.setPosition(cameraPosition);
         }
 
         public void refreshWorlds()
