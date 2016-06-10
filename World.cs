@@ -59,7 +59,17 @@ namespace AlumnoEjemplos.NatusVincere
         public void render() {
             if (!this.rendered) { 
                 this.terrain.render();
-                this.objects.ForEach(crafteable => crafteable.render());
+                int i;
+                for(i=0; i < objects.Count; i++)
+                {
+                    TgcCollisionUtils.FrustumResult frustumResult = TgcCollisionUtils.classifyFrustumAABB(GuiController.Instance.Frustum, objects[i].getBB()); //por cada modelo. haceer if antes de render()
+                    if (frustumResult.Equals(TgcCollisionUtils.FrustumResult.INTERSECT)
+                        || frustumResult.Equals(TgcCollisionUtils.FrustumResult.INSIDE))
+                    {
+                        objects[i].render();
+                    };
+                }
+                
                 this.rendered = true;
             }
         }

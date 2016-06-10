@@ -430,7 +430,11 @@ namespace AlumnoEjemplos.NatusVincere
             refreshWorlds();
             //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
             refreshCamera(); //Necesita que se actualice primero el personaje
-            
+
+
+            GuiController.Instance.Frustum.updateVolume(GuiController.Instance.D3dDevice.Transform.View,
+            GuiController.Instance.D3dDevice.Transform.Projection);
+
             personaje.setBB(personaje.getPosition());
             
             renderWorlds();
