@@ -5,6 +5,7 @@ using TgcViewer;
 using System.IO;
 using System.Collections.Generic;
 using TgcViewer.Utils.TgcGeometry;
+using TgcViewer.Utils.Shaders;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -183,12 +184,18 @@ namespace AlumnoEjemplos.NatusVincere
             return leon;
         }
 
-        public void transform(Crafteable crafteable)
+        public void transform(Crafteable crafteable, Sounds sounds, World currentWorld)
         {
             if (crafteable.getType() == 1 && crafteable.getStatus() == 1)
             {
-                this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
+                sounds.playTalarArbol();
+                //this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
+                Madera newMadera = currentWorld.crearMadera(crafteable.getPosition().X, crafteable.getPosition().Z);
                 crafteable.destroy();
+
+                newMadera.getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
+                newMadera.getMesh().Technique = "Viento";
+
             }
 
         }

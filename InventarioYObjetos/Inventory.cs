@@ -9,6 +9,7 @@ using System.Drawing;
 using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using System;
+using TgcViewer.Utils.Shaders;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -259,6 +260,9 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 newObject = this.objectsFactory.createHacha(new Vector3(0, 0, 200), new Vector3(1, 1, 1));
                 this.hachaEquipada = true;
+
+                newObject.getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
+                newObject.getMesh().Technique = "Viento";
             }
             else
             {

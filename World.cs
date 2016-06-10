@@ -76,7 +76,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void transform(Human human)
         {
-            this.objects.ForEach(crafteable => { if (crafteable.isNear(human)) this.objectsFactory.transform(crafteable); });
+            this.objects.ForEach(crafteable => { if (crafteable.isNear(human)) this.objectsFactory.transform(crafteable, null, null); });
         }
 
         public void addObject(Crafteable crafteable)
@@ -236,10 +236,11 @@ namespace AlumnoEjemplos.NatusVincere
                 objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
-        public void crearMadera(float x, float z)
+        public Madera crearMadera(float x, float z)
         {
             if (isInWorld(x,z))
-                objectsFactory.createMadera(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+                return objectsFactory.createMadera(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return null;
         }
         public void crearPiedra(float x, float z)
         {

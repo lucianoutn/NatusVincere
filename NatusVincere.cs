@@ -274,41 +274,41 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Tambien hay que dibujar el indicador de los ejes cartesianos
             GuiController.Instance.AxisLines.render();
-            
+
             //Renderizo el logo del inicio y el hud
             #region presentacion
             if (time < 45)
             {
-               
+
                 //animacion
-                
-                if (lookfrom.Y -250f > currentWorld.calcularAltura(lookfrom.X, lookfrom.Z)) lookfrom.Y += (elapsedTime * -150f);
+
+                if (lookfrom.Y - 250f > currentWorld.calcularAltura(lookfrom.X, lookfrom.Z)) lookfrom.Y += (elapsedTime * -150f);
                 if (lookfrom.X < targetCamara3.X) lookfrom.X += (elapsedTime * 150f);
                 if (lookfrom.Z > targetCamara3.Z) lookfrom.Z += (elapsedTime * -100f);
-                
+
                 lookAt = personaje.getPosition();
-                 Matrix lookAtM = Matrix.LookAtLH(lookfrom, lookAt, vNormal);
-                 Matrix result = lookAtM;
-                 d3dDevice.Transform.View = result;
-                 personaje.rotateY(elapsedTime* .3f);
-                 personaje.meshRender();
-                 personaje.move(lookfrom-lookAt);
-                
-                 if (time < 25)
-                 {
-                     lookfrom = new Vector3(-2500, 3400, 2000);
-                     GuiController.Instance.Drawer2D.beginDrawSprite();
-                     spriteLogo.render();
-                     GuiController.Instance.Drawer2D.endDrawSprite();
-                 }
-                 else
-                 {
-                     GuiController.Instance.Drawer2D.beginDrawSprite();
-                     spriteObjetivos.render();
-                     GuiController.Instance.Drawer2D.endDrawSprite();
-                     spriteLogo.dispose();
-                 }
-                 
+                Matrix lookAtM = Matrix.LookAtLH(lookfrom, lookAt, vNormal);
+                Matrix result = lookAtM;
+                d3dDevice.Transform.View = result;
+                personaje.rotateY(elapsedTime * .3f);
+                personaje.meshRender();
+                personaje.move(lookfrom - lookAt);
+
+                if (time < 25)
+                {
+                    lookfrom = new Vector3(-2500, 3400, 2000);
+                    GuiController.Instance.Drawer2D.beginDrawSprite();
+                    spriteLogo.render();
+                    GuiController.Instance.Drawer2D.endDrawSprite();
+                }
+                else
+                {
+                    GuiController.Instance.Drawer2D.beginDrawSprite();
+                    spriteObjetivos.render();
+                    GuiController.Instance.Drawer2D.endDrawSprite();
+                    spriteLogo.dispose();
+                }
+
             }
             else //render del hud
             {
@@ -319,7 +319,7 @@ namespace AlumnoEjemplos.NatusVincere
                     GuiController.Instance.Drawer2D.beginDrawSprite();
                     hachaEnMano.render();
                     GuiController.Instance.Drawer2D.endDrawSprite();
-                } 
+                }
                 // GuiController.Instance.CurrentCamera = cam;
                 //GuiController.Instance.ThirdPersonCamera.
                 //GuiController.Instance.FpsCamera.Enable = true;
@@ -337,7 +337,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             if (input.keyDown(Key.E))
             {
-                currentWorld.objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) objectsFactory.transform(crafteable); });
+                currentWorld.objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) objectsFactory.transform(crafteable, sounds, currentWorld); });
             }
 
             if (input.keyDown(Key.R))
