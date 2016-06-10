@@ -90,7 +90,6 @@ namespace AlumnoEjemplos.NatusVincere
             if (this.getStatus() == 3) return;
 
             this.mesh.render();
-            this.getBB().render();
         }
 
         public void move(Vector3 movement)

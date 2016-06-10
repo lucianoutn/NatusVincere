@@ -95,7 +95,6 @@ namespace AlumnoEjemplos.NatusVincere
         public void Render()
         {
             mesh.render();
-            arbustoBB.render();
         }
 
         public void borrarBB()
