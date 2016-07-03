@@ -22,7 +22,7 @@ namespace AlumnoEjemplos.NatusVincere
         TgcSprite spriteMordida;
         TgcSprite spriteObjetivos;
         //TgcText2d objetivos;
-        DateTime tiempoMordida;
+        float tiempoMordida;
         Size screenSize;
 
         public Leon(TgcMesh mesh, Vector3 position, Vector3 scale)
@@ -36,7 +36,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Creo un sprite de logo inicial
             spriteMordida = new TgcSprite();
             spriteMordida.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Leon\\mordida.png");
-            tiempoMordida = DateTime.Now;
+            tiempoMordida = 0f;
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteMordida.Texture.Size;
             spriteMordida.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
@@ -150,7 +150,7 @@ namespace AlumnoEjemplos.NatusVincere
                 this.atacarA(personaje);
                 coolDown = 0;
                 ataco = true;
-                tiempoMordida = DateTime.Now;
+                tiempoMordida = elapsedTime + 14;
             }
             
 
@@ -158,7 +158,7 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 coolDown++;
                 ataco = false;
-                if (DateTime.Now < (tiempoMordida.AddSeconds((double)1)))
+                if (elapsedTime < tiempoMordida)
                 {
                     GuiController.Instance.Drawer2D.beginDrawSprite();
                     spriteMordida.render();
@@ -172,7 +172,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         private void atacarA(Human personaje)
         {
-            personaje.causarDaño(3);
+            personaje.causarDaño(11);
         }
 
         private bool hayColision(Human personaje)

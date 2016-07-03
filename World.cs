@@ -155,24 +155,13 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void agregarObjetos()
         {
-            for (int i = 0; i <= 10; i++)
+            for (int i = 0; i <= 5; i++)
             {
-                for (int j = 0; j < 5; j++)
+                for (int j = 0; j < 7; j++)
                 {
                     if(rnd.Next(72)%2==0)
                     {
                         crearArbol(j * rnd.Next(700,2500), i * rnd.Next(900, 1200));
-                        crearPiedra(j * rnd.Next(700, 2500), i * rnd.Next(900, 1200));
-                    }
-                }
-            }
-            for (int i = 0; i <= 4; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (rnd.Next(10) % 2 != 0)
-                    {
-                        crearArbusto(j * rnd.Next(700, 2500), i * rnd.Next(900, 1200));
                     }
                 }
             }

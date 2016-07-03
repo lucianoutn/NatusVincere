@@ -136,13 +136,13 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
-            spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi_LOGO.png");
+            spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\NaVi_LOGO.png");
 
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
             spriteObjetivos = new TgcSprite();
-            spriteObjetivos.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\objetivos.png");
+            spriteObjetivos.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\objetivos.png");
             spriteObjetivos.Position = new Vector2(2, 2);
             hachaEnMano = new TgcSprite();
             hachaEnMano.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\hud\\hachaMina.png");
@@ -207,7 +207,7 @@ namespace AlumnoEjemplos.NatusVincere
             personaje.setSounds(sounds);
 
             //Cargar mesh principal
-            wilson = loader.loadSceneFromFile("AlumnoEjemplos\\NatusVincere\\Wilson\\wilson-TgcScene.xml").Meshes[0];
+            wilson = loader.loadSceneFromFile("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Wilson\\wilson-TgcScene.xml").Meshes[0];
             float wilsonX = 1000 - 300;
             float wilsonZ = 1000 - 300;
             wilson.Position = new Vector3(wilsonX,
@@ -215,13 +215,13 @@ namespace AlumnoEjemplos.NatusVincere
                 wilsonZ);
             
             //Cargar shader con efectos de Post-Procesado
-            effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\PostProcess.fx");
+            effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\PostProcess.fx");
             //Configurar Technique dentro del shader
             effect.Technique = "RainTechnique";    
             //Cargar textura que se va a dibujar arriba de la escena del Render Target
-            lluviaTexture = TgcTexture.createTexture(d3dDevice, "AlumnoEjemplos\\NatusVincere\\efecto_rain.png");
+            lluviaTexture = TgcTexture.createTexture(d3dDevice, "AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\efecto_rain.png");
 
-            alarmaTexture = TgcTexture.createTexture(d3dDevice, "AlumnoEjemplos\\NatusVincere\\efecto_alarma.png");
+            alarmaTexture = TgcTexture.createTexture(d3dDevice, "AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\efecto_alarma.png");
 
             //Interpolador para efecto de variar la intensidad de la textura de alarma
             intVaivenAlarm = new InterpoladorVaiven();
