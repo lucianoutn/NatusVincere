@@ -67,9 +67,12 @@ namespace AlumnoEjemplos.NatusVincere
         Sounds sounds;
         
         TgcMesh wilson;
-       
+
+        // Shadow map
+        readonly int SHADOWMAP_SIZE = 1024;
         VertexBuffer screenQuadVB;
         Texture renderTarget2D;
+        Surface g_pDSShadow;     // Depth-stencil buffer for rendering to shadow map
         Surface pOldRT;
         Microsoft.DirectX.Direct3D.Effect effect;
         TgcTexture lluviaTexture;
@@ -252,6 +255,12 @@ namespace AlumnoEjemplos.NatusVincere
             renderTarget2D = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
                     , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
                         Format.X8R8G8B8, Pool.Default);
+            g_pDSShadow = d3dDevice.CreateDepthStencilSurface(SHADOWMAP_SIZE,
+                                                             SHADOWMAP_SIZE,
+                                                             DepthFormat.D24S8,
+                                                             MultiSampleType.None,
+                                                             0,
+                                                             true);
 
             time = 0;
             timeAcumParaCambioDeHorario = 0;
@@ -266,6 +275,10 @@ namespace AlumnoEjemplos.NatusVincere
             pOldRT = d3dDevice.GetRenderTarget(0);
             Surface pSurf = renderTarget2D.GetSurfaceLevel(0);
             d3dDevice.SetRenderTarget(0, pSurf);
+
+            Surface pOldDS = d3dDevice.DepthStencilSurface;
+            d3dDevice.DepthStencilSurface = g_pDSShadow;
+
             d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             //Arrancamos el renderizado. Esto lo tenemos que hacer nosotros a mano porque estamos en modo CustomRenderEnabled = true
             d3dDevice.BeginScene();
@@ -404,6 +417,7 @@ namespace AlumnoEjemplos.NatusVincere
             pSurf.Dispose();
 
             //Ahora volvemos a restaurar el Render Target original (osea dibujar a la pantalla)
+            d3dDevice.DepthStencilSurface = pOldDS;
             d3dDevice.SetRenderTarget(0, pOldRT);
 
             //Luego tomamos lo dibujado antes y lo combinamos con una textura con efecto de alarma
