@@ -2,6 +2,8 @@
 using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using Microsoft.DirectX.Direct3D;
+using TgcViewer.Utils.Shaders;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -166,6 +168,17 @@ namespace AlumnoEjemplos.NatusVincere
 
         public virtual void Render()
         {
+        }
+
+        public void setEfecto(string shaderPath, string technique)
+        {
+            this.getMesh().Effect = TgcShaders.loadEffect(shaderPath);
+            this.getMesh().Technique = technique;
+        }
+
+        public  Effect getEfecto()
+        {
+            return this.getMesh().Effect;
         }
 
     }

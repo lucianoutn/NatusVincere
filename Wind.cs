@@ -22,19 +22,27 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 for (i = 0; i < objetos.Count; i++)
                 {
-                    objetos[i].getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
-                    objetos[i].getMesh().Technique = "Viento";
-                    objetos[i].getMesh().Effect.SetValue("time", vientoPlayedTime);
+                    if (objetos[i].getType() == 1 || objetos[i].getType() == 3)
+                    {
+                        objetos[i].setEfecto("AlumnoEjemplos\\NatusVincere\\windShader.fx", "Viento");
+                        objetos[i].getEfecto().SetValue("time", vientoPlayedTime);
+                    }
                 }
                 vientoPlaying = true;
-                return;
             }
 
             sounds.playViento();
 
             for (i = 0; i < objetos.Count; i++)
             {
-                objetos[i].getMesh().Effect.SetValue("time", vientoPlayedTime);
+                try
+                {
+                    objetos[i].getMesh().Effect.SetValue("time", vientoPlayedTime);
+                }
+                catch(Exception)
+                {
+
+                }
             }
         }
     }

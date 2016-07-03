@@ -258,17 +258,14 @@ namespace AlumnoEjemplos.NatusVincere
 
             if (firstItem.getType() == 5 && secondItem.getType() == 2 || firstItem.getType() == 2 && secondItem.getType() == 5)
             {
-                newObject = this.objectsFactory.createHacha(new Vector3(0, 0, 200), new Vector3(1, 1, 1));
+                newObject = this.objectsFactory.createHacha(new Vector3(0, 0, 200), new Vector3(5, 5,5));
                 this.hachaEquipada = true;
-
-                newObject.getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
-                newObject.getMesh().Technique = "Viento";
             }
             else
             {
                 if (firstItem.getType() == 5 && secondItem.getType() == 5)
                 {
-                    newObject = this.objectsFactory.createFogata(new Vector3(0, 0, 200), new Vector3(0.25f, 0.25f, 0.25f));
+                    newObject = this.objectsFactory.createFogata(new Vector3(0, 0, 200), new Vector3(0.75f, 0.55f, 0.75f));
                 }
             }
             

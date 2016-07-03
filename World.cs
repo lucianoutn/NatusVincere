@@ -8,6 +8,8 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
 using TgcViewer.Utils._2D;
+using System;
+
 namespace AlumnoEjemplos.NatusVincere
 {
 
@@ -149,43 +151,19 @@ namespace AlumnoEjemplos.NatusVincere
             this.terrain.dispose();
         }
 
+        Random rnd = new Random();
+
         public void agregarObjetos()
         {
-            int qArboles = (size / 200);
-            int j = 1;
-            int k = 1;
-            for (int i = 0; i <= qArboles; i++) {
-                k = 1;
-                if (i % 3 == 0)
-                {
-                    k = 15;
-                }
-                if (i % 2 == 0) {  
-                    crearArbol(j * k * (i * qArboles), qArboles - 177*i);
-                    
-                } else
-                {
-                    crearPino(j * k * ((i + 30) * qArboles), qArboles - 89 * i);
-                    crearArbusto(j * k * ((i - 40) * qArboles), qArboles - 45* i);
-                }
-                j *= -1;
-            }
-
-            qArboles = (size / 300);
-
-            for (int i = 0; i <= qArboles; i++)
+            for (int i = 0; i <= 10; i++)
             {
-                k = 1;
-                if (i % 3 == 0)
+                for (int j = 0; j < 5; j++)
                 {
-                    k = 15;
+                    if(rnd.Next(72)%2==0)
+                    {
+                        crearArbol(j * rnd.Next(700,2500), i * rnd.Next(900, 1200));
+                    }
                 }
-                if (i % 2 == 0)
-                {
-                    crearArbustoFruta(j * k * (i * qArboles), qArboles - 277 * i);
-
-                }
-                j *= -1;
             }
         }
 
@@ -194,21 +172,18 @@ namespace AlumnoEjemplos.NatusVincere
             float maxDistance = this.size / 2;
             return (FastMath.Abs(x) < maxDistance && FastMath.Abs(z) < maxDistance);
         }
-        public void crearArbol(float x, float z)
+        public Arbol crearArbol(float x, float z)
         {
-            if (isInWorld(x,z))
-            objectsFactory.createArbol(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createArbol(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
-        public void crearPino(float x, float z)
+        public Pino crearPino(float x, float z)
         {
-            if (isInWorld(x,z))
-                objectsFactory.createPino(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createPino(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
-        public void crearArbusto(float x, float z)
+        public Arbusto crearArbusto(float x, float z)
         {
-            if (isInWorld(x,z))
-                objectsFactory.createArbusto(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createArbusto(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public Leon crearLeon(float x, float z)
@@ -217,35 +192,30 @@ namespace AlumnoEjemplos.NatusVincere
         }
 
 
-        public void crearFruta(float x, float z)
+        public Fruta crearFruta(float x, float z)
         {
-            if (isInWorld(x, z))
-                objectsFactory.createFruta(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.15f, 0.25f, 0.15f));
+            return objectsFactory.createFruta(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.15f, 0.25f, 0.15f));
         }
 
 
-        public void crearArbustoFruta(float x, float z)
+        public ArbustoFruta crearArbustoFruta(float x, float z)
         {
-            if (isInWorld(x, z))
-                objectsFactory.createArbustoFruta(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createArbustoFruta(this.position + new Vector3(x-100, calcularAltura(x-100, z-50), z-50), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
-        public void crearHacha(float x, float z)
+        public Hacha crearHacha(float x, float z)
         {
-            if (isInWorld(x,z))
-                objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public Madera crearMadera(float x, float z)
         {
-            if (isInWorld(x,z))
-                return objectsFactory.createMadera(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
-            return null;
+            return objectsFactory.createMadera(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
-        public void crearPiedra(float x, float z)
+
+        public Piedra crearPiedra(float x, float z)
         {
-            if (isInWorld(x, z))
-                objectsFactory.createPiedra(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            return objectsFactory.createPiedra(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
     }
 }

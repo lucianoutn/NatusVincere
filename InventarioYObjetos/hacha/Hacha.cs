@@ -6,11 +6,11 @@ namespace AlumnoEjemplos.NatusVincere
     public class Hacha : Crafteable
     {
         public new int uses = 3;
-        public new int type = 3;
+        public new int type = 5;
 
         public Hacha(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
-            this.type = 1;
+            this.type = 5;
             this.description = "Hacha";
             this.minimumDistance = 200;
             this.status = 1;

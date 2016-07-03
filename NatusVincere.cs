@@ -172,6 +172,7 @@ namespace AlumnoEjemplos.NatusVincere
             currentWorld.crearMadera(posicionPersonaje.X - 90, posicionPersonaje.Z - 90);
             currentWorld.crearPiedra(posicionPersonaje.X + 90, posicionPersonaje.Z + 90);
             currentWorld.crearArbustoFruta(posicionPersonaje.X - 40, posicionPersonaje.Z - 90);
+            currentWorld.crearArbustoFruta(posicionPersonaje.X - 40, posicionPersonaje.Z -590);
             currentWorld.crearFruta(posicionPersonaje.X + 70, posicionPersonaje.Z + 90);
             //Hud
             hud = new Hud();

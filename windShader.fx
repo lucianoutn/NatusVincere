@@ -26,6 +26,22 @@ struct VS_OUTPUT
 	float2 TexCoord : TEXCOORD0;
 };
 
+VS_OUTPUT VS_onlyTexture(
+	float4 Position : POSITION,
+	float3 Normal : NORMAL,
+	float4 Color : COLOR,
+	float2 TexCoord : TEXCOORD0
+	)
+{
+	VS_OUTPUT Out;
+
+	Out.Position = mul(Position, matWorldViewProj);
+	Out.Color = Color;
+	Out.TexCoord = TexCoord;
+
+	return Out;
+}
+
 VS_OUTPUT VS_viento (
 	float4 Position : POSITION,
 	float3 Normal : NORMAL,
@@ -58,6 +74,13 @@ float4 PS_onlyTexture(VS_OUTPUT In): COLOR
 technique Viento {
 	pass p0 {
 		VertexShader = compile vs_2_0 VS_viento();
+		PixelShader = compile ps_2_0 PS_onlyTexture();
+	}
+}
+
+technique renderNormal {
+	pass p0 {
+		VertexShader = compile vs_2_0 VS_onlyTexture();
 		PixelShader = compile ps_2_0 PS_onlyTexture();
 	}
 }

@@ -192,10 +192,13 @@ namespace AlumnoEjemplos.NatusVincere
                 //this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
                 Madera newMadera = currentWorld.crearMadera(crafteable.getPosition().X, crafteable.getPosition().Z);
                 crafteable.destroy();
-
-                newMadera.getMesh().Effect = TgcShaders.loadEffect("AlumnoEjemplos\\NatusVincere\\windShader.fx");
-                newMadera.getMesh().Technique = "Viento";
-
+            }
+            if (crafteable.getType() == 3 && crafteable.getStatus() == 1)
+            {
+                sounds.playTalarArbol();
+                //this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
+                Fruta newFruta = currentWorld.crearFruta(crafteable.getPosition().X, crafteable.getPosition().Z);
+                crafteable.destroy();
             }
 
         }

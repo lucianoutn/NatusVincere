@@ -7,8 +7,7 @@ namespace AlumnoEjemplos.NatusVincere
     public class Arbol : Crafteable
     {
         public new int uses = 3;
-        public new int type = 1;
-        private float radioBC = 48f;
+        public new int type = 3;
         TgcBoundingBox BC;
 
         public Arbol(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)

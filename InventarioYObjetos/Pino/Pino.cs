@@ -8,7 +8,6 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 1;
-        private float pinoBB = 20;
         private TgcBoundingBox tronco;
 
         public Pino(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)

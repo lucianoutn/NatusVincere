@@ -7,12 +7,12 @@ namespace AlumnoEjemplos.NatusVincere
     public class ArbustoFruta : Crafteable
     {
         public new int uses = 3;
-        public new int type = 2;
+        public new int type = 3;
         private TgcBoundingBox piedraBB;
 
         public ArbustoFruta(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
-            this.type = 2;
+            this.type = 3;
             this.description = "ArbustoFruta";
             this.minimumDistance = 200;
             setBB(position);
