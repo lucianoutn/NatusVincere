@@ -41,7 +41,7 @@ namespace AlumnoEjemplos.NatusVincere
             */
             this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg"; ;
 
-            this.terrainHeightmap = GuiController.Instance.AlumnoEjemplosDir + "NatusVincere\\" + "heightmap.jpg";
+            this.terrainHeightmap = GuiController.Instance.AlumnoEjemplosDir + "NatusVincere\\" + "heightmap3.jpg";
             this.objects = new List<Crafteable>();
             this.objectsFactory = new ObjectsFactory(this.objects);
             this.currentScaleXZ = (79.4f / 5000) * size;

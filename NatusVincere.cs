@@ -117,7 +117,7 @@ namespace AlumnoEjemplos.NatusVincere
             savedWorlds[0] = new World[3];
             savedWorlds[1] = new World[3];
             savedWorlds[2] = new World[3];
-
+            
             worlds[0][0] = new World(new Vector3(-size, 0, size), size);
             worlds[0][1] = new World(new Vector3(0, 0, size), size);
             worlds[0][2] = new World(new Vector3(size, 0, size), size);
@@ -127,6 +127,7 @@ namespace AlumnoEjemplos.NatusVincere
             worlds[2][0] = new World(new Vector3(-size, 0, -size), size);
             worlds[2][1] = new World(new Vector3(0, 0, -size), size);
             worlds[2][2] = new World(new Vector3(size, 0, -size), size);
+            
             currentWorld = worlds[1][1];
 
             //FullScreen
@@ -292,7 +293,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             //Tambien hay que dibujar el indicador de los ejes cartesianos
             GuiController.Instance.AxisLines.render();
-
+            /*
             //Renderizo el logo del inicio y el hud
             #region presentacion
             if (time < 45)
@@ -345,7 +346,7 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
             #endregion presentacion
-
+            */
             Wind.generarViento(getAllObjects(), elapsedTime, sounds);
 
            
