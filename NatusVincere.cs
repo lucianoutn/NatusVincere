@@ -84,6 +84,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         float time;
         float timeAcumParaCambioDeHorario;
+        float timeAcumParaLluvia;
 
         public override string getCategory()
         {
@@ -177,6 +178,7 @@ namespace AlumnoEjemplos.NatusVincere
             currentWorld.crearArbustoFruta(posicionPersonaje.X - 40, posicionPersonaje.Z - 90);
             currentWorld.crearArbustoFruta(posicionPersonaje.X - 40, posicionPersonaje.Z -590);
             currentWorld.crearFruta(posicionPersonaje.X + 70, posicionPersonaje.Z + 90);
+            
             //Hud
             hud = new Hud();
 
@@ -206,7 +208,7 @@ namespace AlumnoEjemplos.NatusVincere
             sounds.playMusic();
             personaje.setSounds(sounds);
 
-            //Cargar mesh principal
+            //Cargar mesh WILSON
             wilson = loader.loadSceneFromFile("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Wilson\\wilson-TgcScene.xml").Meshes[0];
             float wilsonX = 1000 - 300;
             float wilsonZ = 1000 - 300;
@@ -255,8 +257,8 @@ namespace AlumnoEjemplos.NatusVincere
             renderTarget2D = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
                     , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
                         Format.X8R8G8B8, Pool.Default);
-            g_pDSShadow = d3dDevice.CreateDepthStencilSurface(SHADOWMAP_SIZE,
-                                                             SHADOWMAP_SIZE,
+            g_pDSShadow = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth
+                    , d3dDevice.PresentationParameters.BackBufferHeight,
                                                              DepthFormat.D24S8,
                                                              MultiSampleType.None,
                                                              0,
@@ -264,12 +266,14 @@ namespace AlumnoEjemplos.NatusVincere
 
             time = 0;
             timeAcumParaCambioDeHorario = 0;
+            timeAcumParaLluvia = 0;
         }
 
         public override void render(float elapsedTime)
         {
             time += elapsedTime;
             timeAcumParaCambioDeHorario += elapsedTime;
+            timeAcumParaLluvia += elapsedTime;
             //Cargamos el Render Targer al cual se va a dibujar la escena 3D. Antes nos guardamos el surface original
             //En vez de dibujar a la pantalla, dibujamos a un buffer auxiliar, nuestro Render Target.
             pOldRT = d3dDevice.GetRenderTarget(0);
@@ -293,7 +297,6 @@ namespace AlumnoEjemplos.NatusVincere
             #region presentacion
             if (time < 45)
             {
-
                 //animacion
 
                 if (lookfrom.Y - 250f > currentWorld.calcularAltura(lookfrom.X, lookfrom.Z)) lookfrom.Y += (elapsedTime * -150f);
@@ -339,9 +342,8 @@ namespace AlumnoEjemplos.NatusVincere
                 //GuiController.Instance.FpsCamera.Enable = true;
 
                 // cam.Enable = true;
-
-
             }
+
             #endregion presentacion
 
             Wind.generarViento(getAllObjects(), elapsedTime, sounds);
@@ -357,7 +359,6 @@ namespace AlumnoEjemplos.NatusVincere
             if (input.keyDown(Key.R))
             {
                 currentWorld.objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) personaje.store(crafteable); });
-
             }
 
             if (input.keyDown(Key.L))
@@ -421,12 +422,11 @@ namespace AlumnoEjemplos.NatusVincere
             d3dDevice.SetRenderTarget(0, pOldRT);
 
             //Luego tomamos lo dibujado antes y lo combinamos con una textura con efecto de alarma
-            if (time > 12)
-            {
-                activarLluvia();
-            }
+            if (timeAcumParaLluvia > 20) activarLluvia();
+            if (timeAcumParaLluvia > 50) desactivarLluvia();
 
             PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, lluviaTexture);
+
 
             if (leon.isNear(personaje))
             {
@@ -449,6 +449,12 @@ namespace AlumnoEjemplos.NatusVincere
             PostProcessing.lluviaActivada = true;
             sounds.playRain();
         }
+        private void desactivarLluvia()
+        {
+            timeAcumParaLluvia = 0;
+            PostProcessing.lluviaActivada = false;
+            sounds.stopRain();
+        }
 
         private bool FullScreen()
         {
@@ -457,17 +463,17 @@ namespace AlumnoEjemplos.NatusVincere
         }
 
         private void cambioHorario()
-          {
-              timeAcumParaCambioDeHorario = 0;
-              if (horaDelDia < 3)
-              {
-                  horaDelDia++;
-              }
-              else
-              {
-                  horaDelDia = 0;
-              }
-          }
+        {
+            timeAcumParaCambioDeHorario = 0;
+            if (horaDelDia < 3)
+            {
+                horaDelDia++;
+            }
+            else
+            {
+                horaDelDia = 0;
+            }
+        }
             
 
         public void refreshCamera()
@@ -499,73 +505,72 @@ namespace AlumnoEjemplos.NatusVincere
 
             GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
             GuiController.Instance.BackgroundColor = Color.AntiqueWhite;
-                                   
         }
 
         public void refreshWorlds()
         {
-                Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
+            Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
             
             int size = 7000 / 2;
-                if (logicPosition.X > size)
-                {
-                    Vector3 newPosition = personaje.getPosition();
-                    newPosition.X = -size;
+            if (logicPosition.X > size)
+            {
+                Vector3 newPosition = personaje.getPosition();
+                newPosition.X = -size;
 
-                    copyWorlds();
-                    for (int i = 0; i <= 2; i++)
-                    {
-                        savedWorlds[i][0].move(new Vector3(size * 6, 0, 0));
-                        worlds[i][2] = savedWorlds[i][0];
-                        worlds[i][1] = savedWorlds[i][2];
-                        worlds[i][0] = savedWorlds[i][1];
-                    }
-                }
-                if (logicPosition.X < -size)
+                copyWorlds();
+                for (int i = 0; i <= 2; i++)
                 {
-                    flag = 1;
-                    Vector3 newPosition = personaje.getPosition();
-                    newPosition.X = size;
-                    copyWorlds();
-                    for (int i = 0; i <= 2; i++)
-                    {
-                        savedWorlds[i][2].move(new Vector3(size * -6, 0, 0));
-                        worlds[i][2] = savedWorlds[i][1];
-                        worlds[i][1] = savedWorlds[i][0];
-                        worlds[i][0] = savedWorlds[i][2];
-                    }
+                    savedWorlds[i][0].move(new Vector3(size * 6, 0, 0));
+                    worlds[i][2] = savedWorlds[i][0];
+                    worlds[i][1] = savedWorlds[i][2];
+                    worlds[i][0] = savedWorlds[i][1];
                 }
-                if (logicPosition.Z > size)
+            }
+            if (logicPosition.X < -size)
+            {
+                flag = 1;
+                Vector3 newPosition = personaje.getPosition();
+                newPosition.X = size;
+                copyWorlds();
+                for (int i = 0; i <= 2; i++)
                 {
-                    flag = 1;
-                    Vector3 newPosition = personaje.getPosition();
-                    newPosition.Z = -size;
-                    copyWorlds();
+                    savedWorlds[i][2].move(new Vector3(size * -6, 0, 0));
+                    worlds[i][2] = savedWorlds[i][1];
+                    worlds[i][1] = savedWorlds[i][0];
+                    worlds[i][0] = savedWorlds[i][2];
+                }
+            }
+            if (logicPosition.Z > size)
+            {
+                flag = 1;
+                Vector3 newPosition = personaje.getPosition();
+                newPosition.Z = -size;
+                copyWorlds();
 
-                    for (int i = 0; i <= 2; i++)
-                    {
-                        savedWorlds[2][i].move(new Vector3(0, 0, size * 6));
-                        worlds[0][i] = savedWorlds[2][i];
-                        worlds[1][i] = savedWorlds[0][i];
-                        worlds[2][i] = savedWorlds[1][i];
-                    }
-                }
-                if (logicPosition.Z < -size)
+                for (int i = 0; i <= 2; i++)
                 {
-                    flag = 1;
-                    flag = 1;
-                    Vector3 newPosition = personaje.getPosition();
-                    newPosition.Z = size;
-                    copyWorlds();
-                    //personaje.setPosition(newPosition);
-                    for (int i = 0; i <= 2; i++)
-                    {
-                        savedWorlds[0][i].move(new Vector3(0, 0, size * -6));
-                        worlds[1][i] = savedWorlds[2][i];
-                        worlds[2][i] = savedWorlds[0][i];
-                        worlds[0][i] = savedWorlds[1][i];
-                    }
+                    savedWorlds[2][i].move(new Vector3(0, 0, size * 6));
+                    worlds[0][i] = savedWorlds[2][i];
+                    worlds[1][i] = savedWorlds[0][i];
+                    worlds[2][i] = savedWorlds[1][i];
                 }
+            }
+            if (logicPosition.Z < -size)
+            {
+                flag = 1;
+                flag = 1;
+                Vector3 newPosition = personaje.getPosition();
+                newPosition.Z = size;
+                copyWorlds();
+                //personaje.setPosition(newPosition);
+                for (int i = 0; i <= 2; i++)
+                {
+                    savedWorlds[0][i].move(new Vector3(0, 0, size * -6));
+                    worlds[1][i] = savedWorlds[2][i];
+                    worlds[2][i] = savedWorlds[0][i];
+                    worlds[0][i] = savedWorlds[1][i];
+                }
+            }
             
             currentWorld = worlds[1][1];
             currentWorld.refresh();
@@ -588,7 +593,6 @@ namespace AlumnoEjemplos.NatusVincere
                 for (int j = 0; j <= 2; j++)
                 {
                     savedWorlds[i][j] = worlds[i][j];
-
                 }
             }
         }
@@ -604,20 +608,18 @@ namespace AlumnoEjemplos.NatusVincere
             hachaEnMano.dispose();
             //hud.dispose();
             cam.Enable = false; //para q deje de capturar el mouse
-            
-
         }
         
         public void renderWorlds()
         {
-                for (int i = 0; i <= 2; i++)
+            for (int i = 0; i <= 2; i++)
+            {
+                for (int j = 0; j <= 2; j++)
                 {
-                    for (int j = 0; j <= 2; j++)
-                    {
-                        worlds[i][j].rendered = false;
-                    }
-
+                    worlds[i][j].rendered = false;
                 }
+
+            }
             
             Vector3 viewDir = new Vector3(cam.viewDir.X, 0, cam.viewDir.Z);
             Vector3 logicPosition = personaje.getPosition() - currentWorld.position;

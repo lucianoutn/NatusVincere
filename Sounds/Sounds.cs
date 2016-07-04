@@ -115,5 +115,15 @@ namespace AlumnoEjemplos.NatusVincere
             mediaPlayer.openAndPlay(true, rainPath, rainAlias);
             isRainPlaying = true;
         }
+
+        public void stopRain()
+        {
+            if (isRainPlaying)
+            {
+                mediaPlayer.pause(rainAlias);
+                mediaPlayer.closeFile(rainAlias);
+                isRainPlaying = false;
+            }
+        }
     }
 }

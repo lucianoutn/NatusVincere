@@ -30,13 +30,16 @@ namespace AlumnoEjemplos.NatusVincere
         {
 
             this.size = size;
-            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg"; ;
+            /*
+            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg"; ;
             if (worldPosition.X > 3500)
             {
-                this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture4.jpg";
+                this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg";
             }
             if (worldPosition.X < 3500)
-            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Heighmaps\\" + "TerrainTexture2.jpg";
+            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg";
+            */
+            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg"; ;
 
             this.terrainHeightmap = GuiController.Instance.AlumnoEjemplosDir + "NatusVincere\\" + "heightmap.jpg";
             this.objects = new List<Crafteable>();
@@ -58,8 +61,10 @@ namespace AlumnoEjemplos.NatusVincere
             this.terrain.loadHeightmap(this.terrainHeightmap, this.currentScaleXZ, this.currentScaleY, this.terrainPosition);
         }
 
-        public void render() {
-            if (!this.rendered) { 
+        public void render()
+        {
+            if (!this.rendered)
+            {
                 this.terrain.render();
                 int i;
                 for(i=0; i < objects.Count; i++)
@@ -159,9 +164,13 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 for (int j = 0; j < 7; j++)
                 {
-                    if(rnd.Next(72)%2==0)
+                    int x = rnd.Next(700, 2500);
+                    int z = rnd.Next(900, 1200);
+
+                    if (rnd.Next(72)%2==0)
                     {
-                        crearArbol(j * rnd.Next(700,2500), i * rnd.Next(900, 1200));
+                        crearArbol(j * x, i * z);
+                        //crearArbusto(j * x - 200, i * z + 300);
                     }
                 }
             }
