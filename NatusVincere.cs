@@ -62,9 +62,7 @@ namespace AlumnoEjemplos.NatusVincere
         Sounds sounds;
         
         TgcMesh wilson;
-
-        // Shadow map
-        readonly int SHADOWMAP_SIZE = 1024;
+        
         VertexBuffer screenQuadVB;
         Texture renderTarget2D;
         Surface g_pDSShadow;     // Depth-stencil buffer for rendering to shadow map
@@ -73,6 +71,7 @@ namespace AlumnoEjemplos.NatusVincere
         TgcTexture lluviaTexture;
         TgcTexture alarmaTexture;
         TgcText2d cartelContinuar = new TgcText2d(); //presentacion
+        float timeRed;
         Matrix matPreview = new Matrix(); //presentacion
 
         InterpoladorVaiven intVaivenAlarm;
@@ -255,7 +254,8 @@ namespace AlumnoEjemplos.NatusVincere
             time = 0;
             timeAcumParaCambioDeHorario = 0;
             timeAcumParaLluvia = 0;
-            
+            timeRed = 0;
+
             //presentacion init
             presentacion = true;
             continuar = false;
@@ -318,6 +318,19 @@ namespace AlumnoEjemplos.NatusVincere
                     lookfrom = new Vector3(-2500, 2400, 2000); //animacion
                     GuiController.Instance.Drawer2D.beginDrawSprite();
                     spriteLogo.render();
+
+                    if ( (timeRed>14))
+                    {
+                        cartelContinuar.Color = Color.Transparent;
+                        timeRed ++;
+                        if (timeRed == 30) timeRed = 0;
+                    }
+                    else
+                    {
+                        cartelContinuar.Color = Color.Red;
+                        timeRed ++;
+                    }
+
                     cartelContinuar.render();
                     GuiController.Instance.Drawer2D.endDrawSprite();
                     if (input.keyDown(Key.Return))
