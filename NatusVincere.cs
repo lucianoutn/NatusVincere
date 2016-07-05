@@ -107,7 +107,7 @@ namespace AlumnoEjemplos.NatusVincere
             d3dDevice = GuiController.Instance.D3dDevice;
            
             //worlds
-            int size = 7000;
+            int size = 5000;
             worlds = new World[3][];
             worlds[0] = new World[3];
             worlds[1] = new World[3];
@@ -521,7 +521,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
             
-            int size = 7000 / 2;
+            int size = 5000 / 2;
             if (logicPosition.X > size)
             {
                 Vector3 newPosition = personaje.getPosition();

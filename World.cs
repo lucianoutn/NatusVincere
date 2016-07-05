@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.terrainHeightmap = GuiController.Instance.AlumnoEjemplosDir + "NatusVincere\\" + "heightmap3.jpg";
             this.objects = new List<Crafteable>();
             this.objectsFactory = new ObjectsFactory(this.objects);
-            this.currentScaleXZ = (79.4f / 5000) * size;
+            this.currentScaleXZ = (79.5f / 5000) * size;
             this.currentScaleY = 2f;
             this.position = worldPosition;
             this.terrain = new TgcSimpleTerrain();
@@ -140,11 +140,12 @@ namespace AlumnoEjemplos.NatusVincere
         public void move(Vector3 distance)
         {
             this.setPosition(this.position + distance);
+            this.objects.ForEach(crafteable => { crafteable.move(distance); });
         }
 
         public void setPosition(Vector3 position)
         {
-            this.objects.ForEach(crafteable => { crafteable.move(position); });
+            
             this.position = position;
             this.refreshTerrain();
         }
@@ -160,18 +161,13 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void agregarObjetos()
         {
-            for (int i = 0; i <= 5; i++)
+            for (int i = 0; i <= 9; i++)
             {
-                for (int j = 0; j < 7; j++)
+                for (int j = 0; j < 9; j++)
                 {
-                    int x = rnd.Next(700, 2500);
-                    int z = rnd.Next(900, 1200);
-
-                    if (rnd.Next(72)%2==0)
-                    {
-                        crearArbol(j * x, i * z);
-                        //crearArbusto(j * x - 200, i * z + 300);
-                    }
+                    int x = rnd.Next(-size/2, size/2);
+                    int z = rnd.Next(-size / 2, size / 2);
+                    crearArbol(x, z);
                 }
             }
         }

@@ -97,7 +97,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void move(Vector3 movement)
         {
-            this.mesh.move(movement);
+            this.setPosition(this.getPosition() + movement);
         }
 
         public void scale(Vector3 scale)
