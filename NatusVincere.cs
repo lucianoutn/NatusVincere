@@ -27,10 +27,6 @@ namespace AlumnoEjemplos.NatusVincere
         TgcSprite spriteLogo;
         TgcSprite spriteObjetivos;
         TgcSprite hachaEnMano;
-        //TgcText2d objetivos;
-        //DateTime tiempoLogo;
-        //DateTime tiempoPresentacion;
-        //DateTime tiempoObjetivos;
         Hud hud;
         List<Crafteable> objects;
         NVSkyBox []skyBox;
@@ -46,9 +42,8 @@ namespace AlumnoEjemplos.NatusVincere
         World[][] savedWorlds;
         ObjectsFactory objectsFactory;
         TgcD3dInput input;
-        //TgcViewer.Utils.TgcD3dDevice d3dDevice;
         TgcViewer.Utils.Logger log; 
-        Vector3 lookfrom = new Vector3(-2500, 3400, 2000);
+        Vector3 lookfrom = new Vector3(-2500, 2400, 2000);
         Vector3 lookAt = new Vector3(0, 0, 0);
         Size screenSize;
         int horaDelDia = 2; //0: maniana, 1:dia, 2:tarde, 3:noche
@@ -77,6 +72,8 @@ namespace AlumnoEjemplos.NatusVincere
         Microsoft.DirectX.Direct3D.Effect effect;
         TgcTexture lluviaTexture;
         TgcTexture alarmaTexture;
+        TgcText2d cartelContinuar = new TgcText2d(); //presentacion
+        Matrix matPreview = new Matrix(); //presentacion
 
         InterpoladorVaiven intVaivenAlarm;
 
@@ -85,6 +82,8 @@ namespace AlumnoEjemplos.NatusVincere
         float time;
         float timeAcumParaCambioDeHorario;
         float timeAcumParaLluvia;
+        bool presentacion; //presentacion
+        bool continuar; //presentacion
 
         public override string getCategory()
         {
@@ -183,14 +182,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Hud
             hud = new Hud();
 
-            //Camera en 3ra persona
-            //GuiController.Instance.ThirdPersonCamera.Enable = true;
-            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));// le sumo 50y a la camara para que se vea mjor
-            GuiController.Instance.ThirdPersonCamera.setCamera(targetCamara3, 10f, 60f);
-
-            //camara rotacional
-            GuiController.Instance.RotCamera.setCamera(targetCamara3, 500f);
-
+            
             log = GuiController.Instance.Logger;
             log.clear();
             cam = new NVCamaraFps(personaje);
@@ -199,12 +191,7 @@ namespace AlumnoEjemplos.NatusVincere
             input.EnableMouseSmooth = true;
             log.log("Inicio Juego", Color.Brown);
 
-            //camara rotacional
-            GuiController.Instance.RotCamera.setCamera(targetCamara3, 50f);
-
-            //Configurar posicion y hacia donde se mira
-            eye = targetCamara3;
-            
+                     
             sounds = new Sounds();
             sounds.playMusic();
             personaje.setSounds(sounds);
@@ -268,6 +255,17 @@ namespace AlumnoEjemplos.NatusVincere
             time = 0;
             timeAcumParaCambioDeHorario = 0;
             timeAcumParaLluvia = 0;
+            
+            //presentacion init
+            presentacion = true;
+            continuar = false;
+            cartelContinuar.Text = "PRESIONE ENTER PARA CONTINUAR";
+            cartelContinuar.Color = Color.Red;
+            cartelContinuar.changeFont(TgcDrawText.VERDANA_10);
+            cartelContinuar.Align = TgcText2d.TextAlign.CENTER;
+            cartelContinuar.Position = new Point(0, (int)screenSize.Height / 6 * 5);
+
+
         }
 
         public override void render(float elapsedTime)
@@ -292,46 +290,61 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
 
             //Tambien hay que dibujar el indicador de los ejes cartesianos
-
             //GuiController.Instance.AxisLines.render();
 
             //Renderizo el logo del inicio y el hud
             #region presentacion
-            if (time < 45)
+            if (presentacion)
             {
+
                 //animacion
 
-                if (lookfrom.Y - 250f > currentWorld.calcularAltura(lookfrom.X, lookfrom.Z)) lookfrom.Y += (elapsedTime * -150f);
-                if (lookfrom.X < targetCamara3.X) lookfrom.X += (elapsedTime * 150f);
-                if (lookfrom.Z > targetCamara3.Z) lookfrom.Z += (elapsedTime * -100f);
-
-                lookAt = personaje.getPosition();
-                Matrix lookAtM = Matrix.LookAtLH(lookfrom, lookAt, vNormal);
-                Matrix result = lookAtM;
-                d3dDevice.Transform.View = result;
-                personaje.rotateY(elapsedTime * .3f);
+                if (lookfrom.Y - 250f > currentWorld.calcularAltura(lookfrom.X, lookfrom.Z)) lookfrom.Y += (elapsedTime * -150f); //animacion
+                if (lookfrom.X < targetCamara3.X & lookfrom.X < 15) lookfrom.X += (elapsedTime * 150f); //animacion
+                if (lookfrom.Z > targetCamara3.Z & lookfrom.Z > -15) lookfrom.Z += (elapsedTime * -100f); //animacion
+               
+                lookAt = personaje.getPosition(); //animacion
+                Matrix lookAtM = Matrix.LookAtLH(lookfrom, lookAt, vNormal); //animacion
+                Matrix result = lookAtM; //animacion
+                d3dDevice.Transform.View = result; //animacion
+                personaje.rotateY(elapsedTime * .3f);  //animacion
                 personaje.meshRender();
-                personaje.move(lookfrom - lookAt);
+                personaje.move(lookfrom - lookAt); //animacion
+                
 
-                if (time < 25)
+                if (!continuar)
                 {
-                    lookfrom = new Vector3(-2500, 3400, 2000);
+                    lookfrom = new Vector3(-2500, 2400, 2000); //animacion
                     GuiController.Instance.Drawer2D.beginDrawSprite();
                     spriteLogo.render();
+                    cartelContinuar.render();
                     GuiController.Instance.Drawer2D.endDrawSprite();
+                    if (input.keyDown(Key.Return))
+                    {
+                        continuar = true;
+                        spriteLogo.dispose();
+                    }
                 }
                 else
                 {
+                    
                     GuiController.Instance.Drawer2D.beginDrawSprite();
                     spriteObjetivos.render();
+                    cartelContinuar.render();
                     GuiController.Instance.Drawer2D.endDrawSprite();
-                    spriteLogo.dispose();
+                    
+                    if (input.keyDown(Key.Return))
+                    {
+                        presentacion = false;
+                        spriteObjetivos.dispose();
+                        cartelContinuar.dispose();
+                    }
                 }
 
             }
             else //render del hud
             {
-                spriteObjetivos.dispose();
+                
                 hud.renderizate(personaje);
                 if (personaje.inventory.hachaEquipada)
                 {
@@ -339,11 +352,6 @@ namespace AlumnoEjemplos.NatusVincere
                     hachaEnMano.render();
                     GuiController.Instance.Drawer2D.endDrawSprite();
                 }
-                // GuiController.Instance.CurrentCamera = cam;
-                //GuiController.Instance.ThirdPersonCamera.
-                //GuiController.Instance.FpsCamera.Enable = true;
-
-                // cam.Enable = true;
             }
 
             #endregion presentacion
@@ -598,20 +606,8 @@ namespace AlumnoEjemplos.NatusVincere
                 }
             }
         }
-        
-        public override void close()
-        {
-            //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
-            //pasto.dispose();
-            for (int i = 0; i < 4; i++) skyBox[i].dispose();
-            personaje.dispose();
-            currentWorld.dispose();
-            leon.dispose();
-            hachaEnMano.dispose();
-            //hud.dispose();
-            cam.Enable = false; //para q deje de capturar el mouse
-        }
-        
+
+         
         public void renderWorlds()
         {
             for (int i = 0; i <= 2; i++)
@@ -691,6 +687,20 @@ namespace AlumnoEjemplos.NatusVincere
             }
             return crafteables;
         }
+
+        public override void close()
+        {
+            //Al hacer dispose del original, se hace dispose automáticamente de todas las instancias
+            //pasto.dispose();
+            for (int i = 0; i < 4; i++) skyBox[i].dispose();
+            personaje.dispose();
+            currentWorld.dispose();
+            leon.dispose();
+            hachaEnMano.dispose();
+            //hud.dispose();
+            cam.Enable = false; //para q deje de capturar el mouse
+        }
+        
 
     }
 }
