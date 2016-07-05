@@ -291,7 +291,7 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
 
             //Tambien hay que dibujar el indicador de los ejes cartesianos
-            GuiController.Instance.AxisLines.render();
+            //GuiController.Instance.AxisLines.render();
 
             //Renderizo el logo del inicio y el hud
             #region presentacion
