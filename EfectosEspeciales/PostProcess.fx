@@ -142,15 +142,15 @@ float4 ps_rainMejorado( PS_INPUT_DEFAULT Input ) : COLOR0
 {     
 	//Obtener color segun textura
 	//hacer desplazamiento de la lluvia
-	float2 offset = (0, time);
-	//Input.Texcoord.v + time;
-	float4 color = tex2D( RenderTarget, Input.Texcoord + offset);
+	float2 offset = (0, time * 50);
+	
+	float4 color = tex2D( RenderTarget, Input.Texcoord);
 	
 	//Obtener color de textura de alarma, escalado por un factor
-	float4 color2 = tex2D( sampler_alarma, Input.Texcoord ) * alarmaScaleFactor;
+	float4 color2 = tex2D( sampler_alarma, Input.Texcoord + offset );
 	
 	//Mezclar ambos texels
-	return color + color2;
+	return color+ color2;;
 }
 
 technique RainTechnique
@@ -158,7 +158,7 @@ technique RainTechnique
    pass Pass_0
    {
 	  VertexShader = compile vs_2_0 vs_default();
-	  PixelShader = compile ps_2_0 ps_rain();
+	  PixelShader = compile ps_2_0 ps_rainMejorado();
    }
 }
 

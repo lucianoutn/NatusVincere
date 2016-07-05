@@ -671,6 +671,7 @@ namespace AlumnoEjemplos.NatusVincere
             hachaEnMano.dispose();
             //hud.dispose();
             cam.Enable = false; //para q deje de capturar el mouse
+            Cursor.Show();
         }
         
 
