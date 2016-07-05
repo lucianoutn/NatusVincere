@@ -8,7 +8,6 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 5;
-        private float maderaR = 10.75f;
         private TgcBoundingBox tronco;
 
         public Madera(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
@@ -17,7 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Madera";
             this.minimumDistance = 200;
             this.status = 1;
-            this.tronco = new TgcBoundingBox(new Vector3(position.X-10, position.Y+10, position.Z-40), new Vector3(position.X + 20, position.Y + 20, position.Z + 30));
+            setBB(position);
         }
 
         public override void doAction(Human user)

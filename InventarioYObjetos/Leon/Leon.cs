@@ -10,7 +10,6 @@ namespace AlumnoEjemplos.NatusVincere
 {
     public class Leon
     {
-        private int health;
         private float minimumDistance = 400; //Default
         bool quieto = true;
         bool ataco = false;
@@ -27,7 +26,6 @@ namespace AlumnoEjemplos.NatusVincere
 
         public Leon(TgcMesh mesh, Vector3 position, Vector3 scale)
         {
-            this.health = 20;
             this.mesh = mesh;
             this.mesh.Position = position;
             this.mesh.Scale = scale;
@@ -36,7 +34,7 @@ namespace AlumnoEjemplos.NatusVincere
             //Creo un sprite de logo inicial
             spriteMordida = new TgcSprite();
             spriteMordida.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Leon\\mordida.png");
-            tiempoMordida = 0f;
+            tiempoMordida = 15f;
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteMordida.Texture.Size;
             spriteMordida.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
@@ -150,7 +148,6 @@ namespace AlumnoEjemplos.NatusVincere
                 this.atacarA(personaje);
                 coolDown = 0;
                 ataco = true;
-                tiempoMordida = elapsedTime + 14;
             }
             
 
@@ -158,7 +155,7 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 coolDown++;
                 ataco = false;
-                if (elapsedTime < tiempoMordida)
+                if (coolDown < 5)
                 {
                     GuiController.Instance.Drawer2D.beginDrawSprite();
                     spriteMordida.render();

@@ -62,7 +62,7 @@ namespace AlumnoEjemplos.NatusVincere
             TgcScene fogataScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Fogata\wood+fire-TgcScene.xml");
             this.fogataMesh = fogataScene.Meshes[0];
 
-            TgcScene leonScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Leon\Untitled (2)-TgcScene.xml");
+            TgcScene leonScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Leon\Cheetah+(adult)+TEXTURE-TgcScene.xml");
             this.leonMesh = leonScene.Meshes[0];
 
             TgcScene frutaScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Fruta\Fruta-TgcScene.xml");
