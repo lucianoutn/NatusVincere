@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.terrainHeightmap = GuiController.Instance.AlumnoEjemplosDir + "NatusVincere\\" + "heightmap3.jpg";
             this.objects = new List<Crafteable>();
             this.objectsFactory = new ObjectsFactory(this.objects);
-            this.currentScaleXZ = (79.4f / 5000) * size;
+            this.currentScaleXZ = (79.5f / 5000) * size;
             this.currentScaleY = 2f;
             this.position = worldPosition;
             this.terrain = new TgcSimpleTerrain();
@@ -164,12 +164,13 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 for (int j = 0; j < 7; j++)
                 {
-                    int x = rnd.Next(700, 2500);
-                    int z = rnd.Next(900, 1200);
+                    int x = rnd.Next(-size/2, size/2);
+                    int z = rnd.Next(-size/2, size/2);
 
                     if (rnd.Next(72)%2==0)
                     {
-                        crearArbol(j * x, i * z);
+
+                           crearArbol(x, z);
                         //crearArbusto(j * x - 200, i * z + 300);
                     }
                 }
