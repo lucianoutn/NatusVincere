@@ -162,11 +162,8 @@ namespace AlumnoEjemplos.NatusVincere
             skyBox[2].horario("tarde"); //cambiarlo "maniana" "dia" "tarde" "noche"
             skyBox[3].horario("noche"); //cambiarlo "maniana" "dia" "tarde" "noche"
             for (int i = 0; i < 4; i++) skyBox[i].init();
+            GuiController.Instance.BackgroundColor = Color.DarkGreen;
 
-            GuiController.Instance.Modifiers.addBoolean("FPS", "FPS", true);
-            GuiController.Instance.Modifiers.addBoolean("3ra", "3ra (TEST)", false);
-            GuiController.Instance.Modifiers.addBoolean("ROT", "ROT (TEST)", false);
-            
             //creo el personaje con su altura en el mapa
             Vector3 posicionPersonaje = new Vector3(1000, currentWorld.calcularAltura(1000, 1000), 1000);
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
@@ -181,17 +178,20 @@ namespace AlumnoEjemplos.NatusVincere
             
             //Hud
             hud = new Hud();
-
             
+            //log
             log = GuiController.Instance.Logger;
             log.clear();
+            log.log("Inicio Juego", Color.Brown);
+
+            //cam
             cam = new NVCamaraFps(personaje);
             cam.alturaPreseteada = 100;
             cam.setCamera(personaje.getPosition(), personaje.getPosition() + new Vector3(50f, 0, 0));
             input.EnableMouseSmooth = true;
-            log.log("Inicio Juego", Color.Brown);
+            
+            
 
-                     
             sounds = new Sounds();
             sounds.playMusic();
             personaje.setSounds(sounds);
@@ -264,8 +264,9 @@ namespace AlumnoEjemplos.NatusVincere
             cartelContinuar.changeFont(TgcDrawText.VERDANA_10);
             cartelContinuar.Align = TgcText2d.TextAlign.CENTER;
             cartelContinuar.Position = new Point(0, (int)screenSize.Height / 6 * 5);
+            Cursor.Hide();
 
-
+            
         }
 
         public override void render(float elapsedTime)
@@ -401,12 +402,13 @@ namespace AlumnoEjemplos.NatusVincere
             currentXCam = cam.getPosition().X;
             currentZCam = cam.getPosition().Z;
             alturaCam = currentWorld.calcularAltura(currentXCam, currentZCam);
+            cam.Enable = true;
             cam.setPosition(new Vector3(currentXCam, alturaCam + cam.alturaPreseteada, currentZCam));
             personaje.setPosition(new Vector3(currentXCam, alturaCam, currentZCam));
             personaje.render(); //no renderiza el mesh, solo actualiza valores y lo mata
             refreshWorlds();
             //personaje.refresh(currentWorld, -cam.viewDir, elapsedTime);
-            refreshCamera(); //Necesita que se actualice primero el personaje
+            
 
 
             GuiController.Instance.Frustum.updateVolume(GuiController.Instance.D3dDevice.Transform.View,
@@ -435,13 +437,13 @@ namespace AlumnoEjemplos.NatusVincere
             if (timeAcumParaLluvia > 20) activarLluvia();
             if (timeAcumParaLluvia > 50) desactivarLluvia();
 
-            PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, lluviaTexture);
+            PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, lluviaTexture, time);
 
 
             if (leon.isNear(personaje))
             {
                 leon.acercateA(personaje, currentWorld, elapsedTime);
-                PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, alarmaTexture);
+                PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, alarmaTexture, time);
             }
         }
 
@@ -486,37 +488,7 @@ namespace AlumnoEjemplos.NatusVincere
         }
             
 
-        public void refreshCamera()
-        {
-            //actualizando camaras
-            targetCamara3 = ((personaje.getPosition()) + new Vector3(0, 50f, 0));
-            targetCamara1 = ((personaje.getPosition()) + new Vector3(0, 30f, 0));
-
-            //Controlo los modificadores de la camara
-            if ((bool)GuiController.Instance.Modifiers["3ra"])
-            {
-                GuiController.Instance.ThirdPersonCamera.Enable = (bool)GuiController.Instance.Modifiers["3ra"];
-                personaje.meshRender();
-                //GuiController.Instance.D3dInput
-            }
-            GuiController.Instance.RotCamera.Enable = (bool)GuiController.Instance.Modifiers["ROT"];
-            if ((bool)GuiController.Instance.Modifiers["FPS"])
-            {
-                cam.Enable = true;
-                //personaje.render(); //para test
-                Cursor.Hide();
-            }
-            else
-            {
-                Cursor.Show();
-                //personaje.render();
-                personaje.meshRender();
-            }
-
-            GuiController.Instance.ThirdPersonCamera.Target = targetCamara3;
-            GuiController.Instance.BackgroundColor = Color.AntiqueWhite;
-        }
-
+        
         public void refreshWorlds()
         {
             Vector3 logicPosition = personaje.getPosition() - currentWorld.position;

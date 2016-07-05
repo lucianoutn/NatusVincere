@@ -20,7 +20,7 @@ namespace AlumnoEjemplos.NatusVincere
         /// </summary>
         public static void drawPostProcess(Microsoft.DirectX.Direct3D.Device d3dDevice,
             Effect effect, VertexBuffer screenQuadVB, InterpoladorVaiven intVaivenAlarm,
-            Texture renderTarget2D, TgcTexture lluviaTexture)
+            Texture renderTarget2D, TgcTexture lluviaTexture, float time)
         {
             //Arrancamos la escena
             d3dDevice.BeginScene();
@@ -42,6 +42,7 @@ namespace AlumnoEjemplos.NatusVincere
             effect.SetValue("render_target2D", renderTarget2D);
             effect.SetValue("textura_alarma", lluviaTexture.D3dTexture);
             effect.SetValue("alarmaScaleFactor", intVaivenAlarm.update());
+            effect.SetValue("time", time);
 
             //Limiamos la pantalla y ejecutamos el render del shader
             d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);

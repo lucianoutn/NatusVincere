@@ -1,6 +1,11 @@
 /*
 * Shaders para efectos de Post Procesadosss
 */
+/**************************************************************************************/
+/* Variables comunes */
+/**************************************************************************************/
+
+float time;
 
 
 /**************************************************************************************/
@@ -124,6 +129,22 @@ float4 ps_rain( PS_INPUT_DEFAULT Input ) : COLOR0
 {     
 	//Obtener color segun textura
 	float4 color = tex2D( RenderTarget, Input.Texcoord );
+	
+	//Obtener color de textura de alarma, escalado por un factor
+	float4 color2 = tex2D( sampler_alarma, Input.Texcoord ) * alarmaScaleFactor;
+	
+	//Mezclar ambos texels
+	return color + color2;
+}
+
+//Pixel Shader de Lluvia
+float4 ps_rainMejorado( PS_INPUT_DEFAULT Input ) : COLOR0
+{     
+	//Obtener color segun textura
+	//hacer desplazamiento de la lluvia
+	float2 offset = (0, time);
+	//Input.Texcoord.v + time;
+	float4 color = tex2D( RenderTarget, Input.Texcoord + offset);
 	
 	//Obtener color de textura de alarma, escalado por un factor
 	float4 color2 = tex2D( sampler_alarma, Input.Texcoord ) * alarmaScaleFactor;
