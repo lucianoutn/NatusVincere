@@ -140,11 +140,12 @@ namespace AlumnoEjemplos.NatusVincere
         public void move(Vector3 distance)
         {
             this.setPosition(this.position + distance);
+            this.objects.ForEach(crafteable => { crafteable.move(distance); });
         }
 
         public void setPosition(Vector3 position)
         {
-            this.objects.ForEach(crafteable => { crafteable.move(position); });
+            
             this.position = position;
             this.refreshTerrain();
         }
@@ -160,19 +161,13 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void agregarObjetos()
         {
-            for (int i = 0; i <= 5; i++)
+            for (int i = 0; i <= 9; i++)
             {
-                for (int j = 0; j < 7; j++)
+                for (int j = 0; j < 9; j++)
                 {
                     int x = rnd.Next(-size/2, size/2);
-                    int z = rnd.Next(-size/2, size/2);
-
-                    if (rnd.Next(72)%2==0)
-                    {
-
-                           crearArbol(x, z);
-                        //crearArbusto(j * x - 200, i * z + 300);
-                    }
+                    int z = rnd.Next(-size / 2, size / 2);
+                    crearArbol(x, z);
                 }
             }
         }
