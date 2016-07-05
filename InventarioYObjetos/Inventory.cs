@@ -49,6 +49,12 @@ namespace AlumnoEjemplos.NatusVincere
                 this.texts[freeIndex] = textCreator.createText((freeIndex+1) + " - " + item.description);
                 this.selections[freeIndex] = false;
                 item.addToInventory();
+                ////para que la clase HACHA renderice el hacha en mano
+                if (item.getType() == 9)
+                {
+                    this.hachaEquipada = true;
+
+                }
             }
         }
 
@@ -319,9 +325,17 @@ namespace AlumnoEjemplos.NatusVincere
 
             if (firstIndex >= 0) {
                 leftObject = this.items[firstIndex];
+                ////para que la clase HACHA deje de renderizar el hacha en mano
+                if (leftObject.getType() == 9)
+                {
+                    this.hachaEquipada = false;
+
+                }
                 dropObject(firstIndex);
                 leftObject.drop(position);
             }
+            
+            
             return leftObject;
         }
 

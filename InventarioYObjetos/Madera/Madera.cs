@@ -7,7 +7,7 @@ namespace AlumnoEjemplos.NatusVincere
     public class Madera : Crafteable
     {
         public new int uses = 3;
-        public new int type = 3;
+        public new int type = 5;
         private float maderaR = 10.75f;
         private TgcBoundingBox tronco;
 
