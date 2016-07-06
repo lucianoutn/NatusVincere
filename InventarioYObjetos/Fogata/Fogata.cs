@@ -17,7 +17,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Fogata";
             this.minimumDistance = 200;
             this.storable = true;
-            this.fogataBB = new TgcBoundingBox(new Vector3(position.X+10, position.Y+ 10, position.Z+10), new Vector3(position.X + 10, position.Y + 10, position.Z + 10));
+            setBB(position);
         }
 
         public override void doAction(Human user)
@@ -53,7 +53,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void setBB(Vector3 position)
         {
-            this.fogataBB = new TgcBoundingBox(new Vector3(position.X+10, position.Y + 10, position.Z + 10), new Vector3(position.X + 10, position.Y + 10, position.Z + 10));
+            this.fogataBB = new TgcBoundingBox(new Vector3(position.X+10, position.Y, position.Z), new Vector3(position.X+50, position.Y + 50, position.Z+70));
         }
     }
 }

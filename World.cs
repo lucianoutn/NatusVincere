@@ -239,5 +239,9 @@ namespace AlumnoEjemplos.NatusVincere
         {
             return objectsFactory.createPiedra(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
+        public Fogata crearFogata(float x, float z)
+        {
+            return objectsFactory.createFogata(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 0.55f, 0.75f));
+        }
     }
 }

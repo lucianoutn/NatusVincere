@@ -1,4 +1,5 @@
 ﻿using Microsoft.DirectX;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.NatusVincere
@@ -7,6 +8,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public new int uses = 3;
         public new int type = 9;
+        private TgcBoundingBox tronco;
 
         public Hacha(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
@@ -14,6 +16,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.description = "Hacha";
             this.minimumDistance = 200;
             this.status = 1;
+            setBB(position);
         }
 
         
@@ -33,5 +36,25 @@ namespace AlumnoEjemplos.NatusVincere
             return this.type;
         }
 
+        public override TgcBoundingBox getBB()
+        {
+            return this.tronco;
+        }
+
+        public override void Render()
+        {
+            tronco.render();
+        }
+
+        public override void borrarBB()
+        {
+            this.tronco.dispose();
+            this.tronco = new TgcBoundingBox(new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
+        }
+
+        public override void setBB(Vector3 position)
+        {
+            this.tronco = new TgcBoundingBox(new Vector3(position.X-2, position.Y, position.Z-2), new Vector3(position.X +2, position.Y + 40, position.Z +2));
+        }
     }
 }
