@@ -52,7 +52,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void setBB(Vector3 position)
         {
-            this.tronco = new TgcBoundingBox(new Vector3(position.X+10, position.Y + 10, position.Z), new Vector3(position.X + 10, position.Y + 10, position.Z));
+            this.tronco = new TgcBoundingBox(new Vector3(position.X-20, position.Y, position.Z-10), new Vector3(position.X + 40, position.Y + 20, position.Z+10));
         }
     }
 }

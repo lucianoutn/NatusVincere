@@ -27,6 +27,11 @@ namespace AlumnoEjemplos.NatusVincere
                         objetos[i].setEfecto("AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\windShader.fx", "Viento");
                         objetos[i].getEfecto().SetValue("time", vientoPlayedTime);
                     }
+                    else
+                    {
+                        objetos[i].setEfecto("AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\windShader.fx", "renderNormal");
+                        objetos[i].getEfecto().SetValue("time", vientoPlayedTime);
+                    }
                 }
                 vientoPlaying = true;
             }

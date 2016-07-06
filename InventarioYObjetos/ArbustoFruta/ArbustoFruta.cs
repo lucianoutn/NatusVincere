@@ -7,12 +7,12 @@ namespace AlumnoEjemplos.NatusVincere
     public class ArbustoFruta : Crafteable
     {
         public new int uses = 3;
-        public new int type = 3;
+        public new int type;
         private TgcBoundingBox piedraBB;
 
         public ArbustoFruta(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
-            this.type = 3;
+            this.type = 1;
             this.description = "ArbustoFruta";
             this.minimumDistance = 200;
             setBB(position);
@@ -53,6 +53,14 @@ namespace AlumnoEjemplos.NatusVincere
         public override void setBB(Vector3 position)
         {
             this.piedraBB = new TgcBoundingBox(new Vector3(position.X +20, position.Y + 48, position.Z + 15), new Vector3(position.X + 55, position.Y + 228, position.Z + 55));
+        }
+
+        public override void aplicarTransformacion(Crafteable crafteable, Sounds sounds, World currentWorld)
+        {
+            sounds.playTalarArbol();
+            //this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
+            Fruta newFruta = currentWorld.crearFruta(crafteable.getPosition().X, crafteable.getPosition().Z);
+            crafteable.destroy();
         }
     }
 }

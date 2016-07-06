@@ -126,6 +126,11 @@ namespace AlumnoEjemplos.NatusVincere
             return this.type;
         }
 
+        public virtual int getTipo()
+        {
+            return 2;
+        }
+
         public virtual bool getConsumible()
         {
             return this.consumible;
@@ -180,6 +185,11 @@ namespace AlumnoEjemplos.NatusVincere
         public  Effect getEfecto()
         {
             return this.getMesh().Effect;
+        }
+
+        public virtual void aplicarTransformacion(Crafteable crafteable, Sounds sounds, World currentWorld)
+        {
+
         }
 
     }

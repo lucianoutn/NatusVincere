@@ -44,10 +44,10 @@ namespace AlumnoEjemplos.NatusVincere
             TgcScene arbolScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\ArbolSelvatico\ArbolSelvatico-TgcScene.xml");
             this.arbolMesh = arbolScene.Meshes[0];
 
-            TgcScene pinoScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Pino\Pino-TgcScene.xml");
+            TgcScene pinoScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Pino\Roca-TgcScene.xml");
             this.pinoMesh = pinoScene.Meshes[0];
 
-            TgcScene arbustoScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Planta\Planta-TgcScene.xml");
+            TgcScene arbustoScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Planta\Planta3-TgcScene.xml");
             this.arbustoMesh = arbustoScene.Meshes[0];
 
             TgcScene piedraScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Roca\Roca-TgcScene.xml");
@@ -186,6 +186,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public void transform(Crafteable crafteable, Sounds sounds, World currentWorld)
         {
+            /*
             if (crafteable.getType() == 1 && crafteable.getStatus() == 1)
             {
                 sounds.playTalarArbol();
@@ -199,6 +200,11 @@ namespace AlumnoEjemplos.NatusVincere
                 //this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
                 Fruta newFruta = currentWorld.crearFruta(crafteable.getPosition().X, crafteable.getPosition().Z);
                 crafteable.destroy();
+            }
+            */
+            if(crafteable.getStatus() == 1)
+            {
+                crafteable.aplicarTransformacion(crafteable, sounds, currentWorld);
             }
 
         }

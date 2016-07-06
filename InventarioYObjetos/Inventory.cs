@@ -234,9 +234,9 @@ namespace AlumnoEjemplos.NatusVincere
                 Crafteable firstItem = items[selected[0]];
                 Crafteable secondItem = items[selected[1]];
 
-                return firstItem.getType() == 2 && secondItem.getType() == 5 ||
-                    firstItem.getType() == 5 && secondItem.getType() == 2 ||
-                    firstItem.getType() == 5 && secondItem.getType() == 5;
+                return firstItem.getTipo() == 2 && secondItem.getTipo() == 5 ||
+                    firstItem.getTipo() == 5 && secondItem.getTipo() == 2 ||
+                    firstItem.getTipo() == 5 && secondItem.getTipo() == 5;
             }
 
             return false;
@@ -262,7 +262,7 @@ namespace AlumnoEjemplos.NatusVincere
             
             //TODO: REFACTOR URGENTE: Crear un COMBINADOR de objetos perteneciente al humano.
 
-            if (firstItem.getType() == 5 && secondItem.getType() == 2 || firstItem.getType() == 2 && secondItem.getType() == 5)
+            if ( (firstItem.getType() == 5 && secondItem.getType() == 2) || (firstItem.getType() == 2 && secondItem.getType() == 5) )
             {
                 newObject = this.objectsFactory.createHacha(new Vector3(0, 0, 200), new Vector3(5, 5,5));
                 this.hachaEquipada = true;
