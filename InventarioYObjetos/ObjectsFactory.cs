@@ -170,6 +170,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             objectId++;
             position.Y += 20;
+            position.X -= 20;
             TgcMesh meshInstance = this.frutaMesh.createMeshInstance("fruta_" + objectId);
             Fruta fruta = new Fruta(meshInstance, position, scale);
             this.objectList.Add(fruta);
@@ -196,7 +197,7 @@ namespace AlumnoEjemplos.NatusVincere
             if (crafteable.getType() == 3 && crafteable.getStatus() == 1)
             {
                 sounds.playTalarArbol();
-                this.createFruta(crafteable.getPosition(), new Vector3(20f, 20f, 20f));
+                this.createFruta(crafteable.getPosition(), new Vector3(2f, 2f, 2f));
                 crafteable.destroy();
             }
 

@@ -52,7 +52,7 @@ namespace AlumnoEjemplos.NatusVincere
         int worldSize = 7500;
         //bool showPersonajeMesh = true;
         int flag = 0;
-
+        float waitTime = 0f;
         //string animationCaminar = "Walk";
         const float MOVEMENT_SPEED = 200f;
         int sectorToRender;
@@ -278,6 +278,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
           
             renderVictoria();
+            waitTime -= elapsedTime;
             time += elapsedTime;
             timeAcumParaCambioDeHorario += elapsedTime;
             timeAcumParaLluvia += elapsedTime;
@@ -340,17 +341,10 @@ namespace AlumnoEjemplos.NatusVincere
 
                     cartelContinuar.render();
                     GuiController.Instance.Drawer2D.endDrawSprite();
-                    if (input.keyDown(Key.Return) && !victoria)
+                    if (input.keyDown(Key.Return) && !victoria && waitTime < 0)
                     {
                         victoria = false;
                         continuar = true;
-                        spriteLogo.dispose();
-                    }
-                    if (input.keyDown(Key.Return) && victoria)
-                    {
-                        lookfrom = new Vector3(-2500, 2400, 2000);
-                        continuar = false;
-                        presentacion = true;
                     }
                 }
                 else
@@ -364,7 +358,6 @@ namespace AlumnoEjemplos.NatusVincere
                     if (input.keyDown(Key.Return))
                     {
                         presentacion = false;
-                        spriteObjetivos.dispose();
                     }
                 }
 
@@ -599,6 +592,16 @@ namespace AlumnoEjemplos.NatusVincere
         public void renderVictoria()
         {
             if (victoria) {
+                if (input.keyDown(Key.Return))
+                {
+                    waitTime = 2f;
+                    lookfrom = new Vector3(-2500, 2400, 2000);
+                    continuar = false;
+                    presentacion = true;
+                    victoria = false;
+                    cam.setPosition(lookfrom);
+                    personaje.setPosition(new Vector3(1000, currentWorld.calcularAltura(1000, 1000), 3000));
+                }
                 GuiController.Instance.Drawer2D.beginDrawSprite();
                 spriteWin.render();
                 GuiController.Instance.Drawer2D.endDrawSprite();
