@@ -119,11 +119,11 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 if (xL > xP)
                 {
-                    xL = xL - 1;
+                    xL = xL - 5;
                 }
                 else
                 {
-                    xL = xL + 1;
+                    xL = xL + 5;
                 }
 
                 quieto = false;
@@ -132,11 +132,11 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 if (zL > zP)
                 {
-                    zL = zL - 1;
+                    zL = zL - 5;
                 }
                 else
                 {
-                    zL = zL + 1;
+                    zL = zL + 5;
                 }
 
                 quieto = false;

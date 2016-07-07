@@ -70,7 +70,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void setBB(Vector3 position)
         {
-            this.piedraBB = new TgcBoundingBox(new Vector3(position.X - 5, position.Y + 8, position.Z + 10), new Vector3(position.X + 22, position.Y + 28, position.Z));
+            this.piedraBB = new TgcBoundingBox(new Vector3(position.X - 5, position.Y, position.Z + 10), new Vector3(position.X + 22, position.Y + 28, position.Z));
         }
     }
 }

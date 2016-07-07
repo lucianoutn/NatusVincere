@@ -30,15 +30,6 @@ namespace AlumnoEjemplos.NatusVincere
         {
 
             this.size = size;
-            /*
-            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg"; ;
-            if (worldPosition.X > 3500)
-            {
-                this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg";
-            }
-            if (worldPosition.X < 3500)
-            this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg";
-            */
             this.terrainTexture = GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "Pasto.jpg"; ;
 
             this.terrainHeightmap = GuiController.Instance.AlumnoEjemplosDir + "NatusVincere\\" + "heightmap3.jpg";
@@ -49,8 +40,8 @@ namespace AlumnoEjemplos.NatusVincere
             this.position = worldPosition;
             this.terrain = new TgcSimpleTerrain();
             this.refreshTerrain();
-            this.agregarObjetos();
             this.terrain.loadTexture(terrainTexture);
+            this.agregarObjetos();
 
         }
 
@@ -175,13 +166,19 @@ namespace AlumnoEjemplos.NatusVincere
                     crearArbol(x, z);
                 }
             }
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 5; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 4; j++)
                 {
                     x = rnd.Next(-size / 2, size / 2);
                     z = rnd.Next(-size / 2, size / 2);
                     crearPiedra(x, z);
+                }
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
                     x = rnd.Next(-size / 2, size / 2);
                     z = rnd.Next(-size / 2, size / 2);
                     crearArbustoFruta(x, z);
@@ -196,52 +193,69 @@ namespace AlumnoEjemplos.NatusVincere
         }
         public Arbol crearArbol(float x, float z)
         {
-            return objectsFactory.createArbol(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            x += position.X;
+            z += position.Z;
+
+            return objectsFactory.createArbol(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+        }
+        public Piedra crearPiedra(float x, float z)
+        {
+            x += position.X;
+            z += position.Z;
+
+            return objectsFactory.createPiedra(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
         public Pino crearPino(float x, float z)
         {
-            return objectsFactory.createPino(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            x += position.X;
+            z += position.Z;
+            return objectsFactory.createPino(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
-
         public Arbusto crearArbusto(float x, float z)
         {
-            return objectsFactory.createArbusto(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            x += position.X;
+            z += position.Z;
+            return objectsFactory.createArbusto(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public Leon crearLeon(float x, float z)
         {
-            return objectsFactory.createLeon(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            x += position.X;
+            z += position.Z;
+            return objectsFactory.createLeon(new Vector3(x, calcularAltura(x, z), z), new Vector3(20.75f, 21.75f, 20.75f));
         }
-
 
         public Fruta crearFruta(float x, float z)
         {
-            return objectsFactory.createFruta(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.15f, 0.25f, 0.15f));
+            x += position.X;
+            z += position.Z;
+            return objectsFactory.createFruta(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.15f, 0.25f, 0.15f));
         }
-
-
         public ArbustoFruta crearArbustoFruta(float x, float z)
         {
-            return objectsFactory.createArbustoFruta(this.position + new Vector3(x-100, calcularAltura(x-100, z-50), z-50), new Vector3(0.75f, 1.75f, 0.75f));
+            x += position.X;
+            z += position.Z;
+            return objectsFactory.createArbustoFruta(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public Hacha crearHacha(float x, float z)
         {
-            return objectsFactory.createHacha(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            x += position.X;
+            z += position.Z;
+            return objectsFactory.createHacha(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
 
         public Madera crearMadera(float x, float z)
         {
-            return objectsFactory.createMadera(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
-        }
-
-        public Piedra crearPiedra(float x, float z)
-        {
-            return objectsFactory.createPiedra(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
+            x += position.X;
+            z += position.Z;
+            return objectsFactory.createMadera(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 1.75f, 0.75f));
         }
         public Fogata crearFogata(float x, float z)
         {
-            return objectsFactory.createFogata(this.position + new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 0.55f, 0.75f));
+            x += position.X;
+            z += position.Z;
+            return objectsFactory.createFogata(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f, 0.55f, 0.75f));
         }
     }
 }

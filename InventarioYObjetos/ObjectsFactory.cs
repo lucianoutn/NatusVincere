@@ -62,13 +62,13 @@ namespace AlumnoEjemplos.NatusVincere
             TgcScene fogataScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Fogata\wood+fire-TgcScene.xml");
             this.fogataMesh = fogataScene.Meshes[0];
 
-            TgcScene leonScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Leon\Cheetah+(adult)+TEXTURE-TgcScene.xml");
+            TgcScene leonScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Leon\Sans+titre-TgcScene.xml");
             this.leonMesh = leonScene.Meshes[0];
 
             TgcScene frutaScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\Fruta\Fruta-TgcScene.xml");
             this.frutaMesh = frutaScene.Meshes[0];
 
-            TgcScene arbustoFrutaScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\ArbustoFruta\groseille+fruit-TgcScene.xml");
+            TgcScene arbustoFrutaScene = loader.loadSceneFromFile(System.Environment.CurrentDirectory + @"\AlumnoEjemplos\NatusVincere\InventarioYObjetos\ArbustoFruta\Peach-TgcScene.xml");
             this.arbustoFrutaMesh = arbustoFrutaScene.Meshes[0];
 
             dirAnim = new DirectoryInfo(skeletalPath + "Animations\\");
@@ -169,8 +169,6 @@ namespace AlumnoEjemplos.NatusVincere
         public Fruta createFruta(Vector3 position, Vector3 scale)
         {
             objectId++;
-            position.Y += 20;
-            position.X -= 20;
             TgcMesh meshInstance = this.frutaMesh.createMeshInstance("fruta_" + objectId);
             Fruta fruta = new Fruta(meshInstance, position, scale);
             this.objectList.Add(fruta);
@@ -197,7 +195,7 @@ namespace AlumnoEjemplos.NatusVincere
             if (crafteable.getType() == 3 && crafteable.getStatus() == 1)
             {
                 sounds.playTalarArbol();
-                this.createFruta(crafteable.getPosition(), new Vector3(2f, 2f, 2f));
+                this.createFruta(crafteable.getPosition(), new Vector3(0.1f, 0.10f, 0.1f));
                 crafteable.destroy();
             }
 

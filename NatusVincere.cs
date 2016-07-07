@@ -128,7 +128,6 @@ namespace AlumnoEjemplos.NatusVincere
             worlds[2][1] = new World(new Vector3(0, 0, -size), size);
             worlds[2][2] = new World(new Vector3(size, 0, -size), size);
             
-            currentWorld = worlds[1][1];
 
             //FullScreen
             GuiController.Instance.FullScreenEnable = this.FullScreen();
@@ -180,10 +179,12 @@ namespace AlumnoEjemplos.NatusVincere
             GuiController.Instance.BackgroundColor = Color.DarkGreen;
 
             //creo el personaje con su altura en el mapa
+            currentWorld = worlds[1][1];
             Vector3 posicionPersonaje = new Vector3(1000, currentWorld.calcularAltura(1000, 1000), 1000);
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
 
-            leon = currentWorld.crearLeon(posicionPersonaje.X - 390, posicionPersonaje.Z - 490);
+            // cheeta leon = currentWorld.crearLeon(posicionPersonaje.X - 390, posicionPersonaje.Z - 490);
+            leon = currentWorld.crearLeon(posicionPersonaje.X - 90, posicionPersonaje.Z - 1890);
 
             currentWorld.crearMadera(posicionPersonaje.X - 90, posicionPersonaje.Z - 90);
             currentWorld.crearPiedra(posicionPersonaje.X + 90, posicionPersonaje.Z + 90);

@@ -52,7 +52,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void setBB(Vector3 position)
         {
-            this.piedraBB = new TgcBoundingBox(new Vector3(position.X +20, position.Y + 48, position.Z + 15), new Vector3(position.X + 55, position.Y + 228, position.Z + 55));
+            this.piedraBB = new TgcBoundingBox(new Vector3(position.X +20, position.Y, position.Z + 15), new Vector3(position.X + 55, position.Y + 228, position.Z + 55));
         }
 
         public override void aplicarTransformacion(Crafteable crafteable, Sounds sounds, World currentWorld)
