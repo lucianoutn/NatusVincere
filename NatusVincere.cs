@@ -139,13 +139,24 @@ namespace AlumnoEjemplos.NatusVincere
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\NaVi_LOGO.png");
+            //sprite de win
             spriteWin = new TgcSprite();
-            spriteWin.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\Ganaste.png");
+            spriteWin.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\win.png");
 
             screenSize = GuiController.Instance.Panel3d.Size;
+            
             Size textureSizeLogo = spriteLogo.Texture.Size;
+            Size textureSizeWin = spriteWin.Texture.Size;
+            
+           // int escX = (screenSize.Width / textureSizeWin.Width);
+           // int escY = (screenSize.Height / textureSizeWin.Height);
+            //spriteWin.ScalingCenter = new Vector2(textureSizeWin.Width / 2, textureSizeWin.Height / 2);
+            //spriteWin.Scaling = new Vector2(1/8,1/8);
+            //spriteWin.TransformationMatrix.Scale(new Vector3(24,24,1));
+           // spriteWin.updateTransformationMatrix();
+           
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
-            spriteWin.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
+            spriteWin.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeWin.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeWin.Height / 2, 0));
             spriteObjetivos = new TgcSprite();
             spriteObjetivos.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\objetivos.png");
             spriteObjetivos.Position = new Vector2(2, 2);
@@ -341,7 +352,7 @@ namespace AlumnoEjemplos.NatusVincere
 
                     cartelContinuar.render();
                     GuiController.Instance.Drawer2D.endDrawSprite();
-                    if (input.keyDown(Key.Return) && !victoria && waitTime < 0)
+                    if (input.keyUp(Key.Return) && !victoria && waitTime < 0)
                     {
                         victoria = false;
                         continuar = true;
