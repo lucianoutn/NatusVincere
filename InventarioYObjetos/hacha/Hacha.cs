@@ -1,6 +1,7 @@
 ﻿using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer.Utils._2D;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -9,11 +10,14 @@ namespace AlumnoEjemplos.NatusVincere
         public new int uses = 3;
         public new int type = 9;
         private TgcBoundingBox tronco;
+        public TgcSprite invImg;
 
         public Hacha(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
             this.type = 9;
             this.description = "Hacha";
+            this.invImg = new TgcSprite();
+            invImg.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\hacha\\inv.png");
             this.minimumDistance = 200;
             this.status = 1;
             setBB(position);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer.Utils._2D;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -10,11 +11,14 @@ namespace AlumnoEjemplos.NatusVincere
         public new int type = 6;
         private float fogataR = 12.75f;
         TgcBoundingBox fogataBB;
+        public TgcSprite invImg;
 
         public Fogata(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
             this.type = 6;
             this.description = "Fogata";
+            this.invImg = new TgcSprite();
+            invImg.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Fogata\\inv.png");
             this.minimumDistance = 200;
             this.storable = true;
             setBB(position);

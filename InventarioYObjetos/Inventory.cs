@@ -19,6 +19,7 @@ namespace AlumnoEjemplos.NatusVincere
     {
         public Crafteable[] items;
         TgcText2d[] texts;
+        TgcSprite[] img;
         bool[] selections;
         TgcText2d title;
         TextCreator textCreator = new TextCreator("Arial", 16, new Size(300, 16));
@@ -34,6 +35,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.setPosition(position);
             this.items = new Crafteable[inventorySize];
             this.texts = new TgcText2d[inventorySize];
+            this.img = new TgcSprite[inventorySize];
             this.selections = new bool[inventorySize];
             this.title = textCreator.createText("Inventario");
             for (int i = 0; i < selections.Length; i++) this.selections[i] = false;
@@ -47,6 +49,7 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 this.items[freeIndex] = item;
                 this.texts[freeIndex] = textCreator.createText((freeIndex+1) + " - " + item.description);
+                this.img[freeIndex] = item.invImg;
                 this.selections[freeIndex] = false;
                 item.addToInventory();
                 ////para que la clase HACHA renderice el hacha en mano
@@ -70,6 +73,10 @@ namespace AlumnoEjemplos.NatusVincere
                     position.Y += 40;
                     this.texts[i].Position = position;
                     this.texts[i].render();
+                    //this.img[i].Position = new Vector2(position.X, position.Y);
+                    GuiController.Instance.Drawer2D.beginDrawSprite();
+                    this.items[i].renderImg();
+                    GuiController.Instance.Drawer2D.endDrawSprite();
                 }
             }
         }

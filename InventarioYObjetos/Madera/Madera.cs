@@ -1,6 +1,9 @@
 ﻿using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer.Utils._2D;
+using TgcViewer;
+
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -9,11 +12,14 @@ namespace AlumnoEjemplos.NatusVincere
         public new int uses = 3;
         public new int type = 5;
         private TgcBoundingBox tronco;
+        public TgcSprite invImg;
 
         public Madera(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
             this.type = 5;
             this.description = "Madera";
+            this.invImg = new TgcSprite();
+            invImg.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Madera\\inv.png");
             this.minimumDistance = 200;
             this.status = 1;
             setBB(position);
@@ -24,6 +30,13 @@ namespace AlumnoEjemplos.NatusVincere
             Vector3 direction = this.getPosition() - user.getPosition();
             direction.Normalize();
             this.move(direction);
+        }
+
+        public void renderImg()
+        {
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+            this.invImg.render();
+            GuiController.Instance.Drawer2D.endDrawSprite();
         }
 
         public override float getMinimumDistance()

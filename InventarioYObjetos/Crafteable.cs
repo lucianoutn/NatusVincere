@@ -4,6 +4,8 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using Microsoft.DirectX.Direct3D;
 using TgcViewer.Utils.Shaders;
+using TgcViewer.Utils._2D;
+using TgcViewer;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -19,6 +21,7 @@ namespace AlumnoEjemplos.NatusVincere
         public bool storable;
         public bool consumible;
         private TgcBoundingBox BB;
+        public TgcSprite invImg;
 
         public Crafteable(TgcMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -43,6 +46,14 @@ namespace AlumnoEjemplos.NatusVincere
                 this.destroy();
             }
         }
+
+       public void renderImg()
+       {
+           GuiController.Instance.Drawer2D.beginDrawSprite();
+           this.invImg.render();
+           GuiController.Instance.Drawer2D.endDrawSprite();
+       }
+
 
         public bool isStorable()
         {
@@ -93,7 +104,7 @@ namespace AlumnoEjemplos.NatusVincere
             if (this.getStatus() == 3) return;
 
             this.mesh.render();
-            getBB().render();
+            //getBB().render();
         }
 
         public void move(Vector3 movement)

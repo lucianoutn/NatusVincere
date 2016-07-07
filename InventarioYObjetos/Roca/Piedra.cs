@@ -1,6 +1,7 @@
 ﻿using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer.Utils._2D;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -9,11 +10,14 @@ namespace AlumnoEjemplos.NatusVincere
         public new int uses = 3;
         public new int type = 2;
         private TgcBoundingBox tronco;
+        public TgcSprite invImg;
 
         public Piedra(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
             this.type = 2;
             this.description = "Piedra";
+            this.invImg = new TgcSprite();
+            invImg.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Roca\\inv.png");
             this.minimumDistance = 200;
             this.storable = true;
             setBB(position);

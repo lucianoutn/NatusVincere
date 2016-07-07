@@ -1,6 +1,7 @@
 ﻿using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer.Utils._2D;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -9,11 +10,16 @@ namespace AlumnoEjemplos.NatusVincere
         public new int uses = 3;
         public new int type = 14;
         private TgcBoundingBox piedraBB;
+        public TgcSprite invImg;
 
         public Fruta(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
             this.type = 14;
             this.description = "Fruta";
+
+            this.invImg = new TgcSprite();
+
+            invImg.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Fruta\\inv.png");
             this.minimumDistance = 200;
             storable = true;
             consumible = true;

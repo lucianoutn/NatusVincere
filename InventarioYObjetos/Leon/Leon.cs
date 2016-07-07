@@ -165,11 +165,15 @@ namespace AlumnoEjemplos.NatusVincere
 
             this.setPosition(new Vector3(xL, currentWorld.calcularAltura(xL, zL),zL));
             this.setBB(new Vector3(xL, currentWorld.calcularAltura(xL, zL), zL));
+
+          
+            
+            
         }
 
         private void atacarA(Human personaje)
         {
-            personaje.causarDaño(11);
+            personaje.causarDaño(70);
         }
 
         private bool hayColision(Human personaje)
@@ -185,5 +189,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             spriteMordida.dispose();
         }
+
+        
     }
 }
