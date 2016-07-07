@@ -32,7 +32,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.move(direction);
         }
 
-        public void renderImg()
+        public override void renderImg()
         {
             GuiController.Instance.Drawer2D.beginDrawSprite();
             this.invImg.render();

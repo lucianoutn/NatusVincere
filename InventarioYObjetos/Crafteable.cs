@@ -47,7 +47,7 @@ namespace AlumnoEjemplos.NatusVincere
             }
         }
 
-       public void renderImg()
+       public virtual void renderImg()
        {
            GuiController.Instance.Drawer2D.beginDrawSprite();
            this.invImg.render();
