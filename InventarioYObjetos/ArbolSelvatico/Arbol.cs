@@ -56,12 +56,12 @@ namespace AlumnoEjemplos.NatusVincere
             this.BC = new TgcBoundingBox(new Vector3(position.X- 90, position.Y, position.Z - 75), new Vector3(position.X + 70, position.Y + 225, position.Z + 70));
         }
 
-        public override void aplicarTransformacion(Crafteable crafteable, Sounds sounds, World currentWorld)
+       /* public override void aplicarTransformacion(Crafteable crafteable, Sounds sounds, World currentWorld)
         {
-            sounds.playTalarArbol();
+            //sounds.playTalarArbol();
             //this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
             Madera newMadera = currentWorld.crearMadera(crafteable.getPosition().X, crafteable.getPosition().Z);
             crafteable.destroy();
-        }
+        }*/
     }
 }

@@ -24,7 +24,9 @@ namespace AlumnoEjemplos.NatusVincere
 {
     public class NatusVincere : TgcExample
     {
+        bool victoria = false;
         TgcSprite spriteLogo;
+        TgcSprite spriteWin;
         TgcSprite spriteObjetivos;
         TgcSprite hachaEnMano;
         Hud hud;
@@ -47,7 +49,7 @@ namespace AlumnoEjemplos.NatusVincere
         Vector3 lookAt = new Vector3(0, 0, 0);
         Size screenSize;
         int horaDelDia = 2; //0: maniana, 1:dia, 2:tarde, 3:noche
-        
+        int worldSize = 7500;
         //bool showPersonajeMesh = true;
         int flag = 0;
 
@@ -106,7 +108,7 @@ namespace AlumnoEjemplos.NatusVincere
             d3dDevice = GuiController.Instance.D3dDevice;
            
             //worlds
-            int size = 5000;
+            int size = worldSize;
             worlds = new World[3][];
             worlds[0] = new World[3];
             worlds[1] = new World[3];
@@ -137,10 +139,13 @@ namespace AlumnoEjemplos.NatusVincere
             //Creo un sprite de logo inicial
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\NaVi_LOGO.png");
+            spriteWin = new TgcSprite();
+            spriteWin.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\NaVi_LOGO2.png");
 
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
             spriteLogo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
+            spriteWin.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeLogo.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSizeLogo.Height / 2, 0));
             spriteObjetivos = new TgcSprite();
             spriteObjetivos.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\objetivos.png");
             spriteObjetivos.Position = new Vector2(2, 2);
@@ -271,6 +276,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void render(float elapsedTime)
         {
+            renderVictoria();
             time += elapsedTime;
             timeAcumParaCambioDeHorario += elapsedTime;
             timeAcumParaLluvia += elapsedTime;
@@ -333,10 +339,18 @@ namespace AlumnoEjemplos.NatusVincere
 
                     cartelContinuar.render();
                     GuiController.Instance.Drawer2D.endDrawSprite();
-                    if (input.keyDown(Key.Return))
+                    if (input.keyDown(Key.Return) && !victoria)
                     {
+                        victoria = false;
                         continuar = true;
                         spriteLogo.dispose();
+                    }
+                    if (input.keyDown(Key.Return) && victoria)
+                    {
+                        lookfrom = new Vector3(-2500, 2400, 2000);
+                        continuar = false;
+                        spriteWin.dispose();
+                        presentacion = true;
                     }
                 }
                 else
@@ -377,7 +391,7 @@ namespace AlumnoEjemplos.NatusVincere
 
             if (input.keyDown(Key.E))
             {
-                currentWorld.objects.ForEach(crafteable => { if (crafteable.isNear(personaje)) objectsFactory.transform(crafteable, sounds, currentWorld); });
+                currentWorld.transform(personaje, sounds);
             }
 
             if (input.keyDown(Key.R))
@@ -466,6 +480,7 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 PostProcessing.lluviaActivada = false;
                 sounds.playVictoria();
+                victoria = true;
             }
         }
 
@@ -506,7 +521,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
             
-            int size = 5000 / 2;
+            int size = worldSize / 2;
             if (logicPosition.X > size)
             {
                 Vector3 newPosition = personaje.getPosition();
@@ -581,6 +596,29 @@ namespace AlumnoEjemplos.NatusVincere
             text.dispose();
         }
 
+        public void renderVictoria()
+        {
+            if (victoria) {
+               /* lookfrom = new Vector3(-2500, 2400, 2000);
+                GuiController.Instance.Drawer2D.beginDrawSprite();
+                spriteWin.render();
+
+                if ((timeRed > 14))
+                {
+                    cartelContinuar.Color = Color.Transparent;
+                    timeRed++;
+                    if (timeRed == 30) timeRed = 0;
+                }
+                else
+                {
+                    cartelContinuar.Color = Color.Red;
+                    timeRed++;
+                }
+
+                cartelContinuar.render();
+                GuiController.Instance.Drawer2D.endDrawSprite();*/
+            }
+        }
         public void copyWorlds()
         {
             for (int i = 0; i <= 2; i++)
@@ -603,16 +641,16 @@ namespace AlumnoEjemplos.NatusVincere
                 }
 
             }
-            
+
+            int constante = -200;
             Vector3 viewDir = new Vector3(cam.viewDir.X, 0, cam.viewDir.Z);
             Vector3 logicPosition = personaje.getPosition() - currentWorld.position;
             Vector3 personajePosition = personaje.getPosition();
             worlds[1][1].render();
-
-            if (logicPosition.X < -3000)
+           /* if (logicPosition.X < -3000)
             {
                 worlds[1][0].render();
-            } else if (logicPosition.X > -3000)
+            } else if (logicPosition.X > 3000)
             {
                 worlds[1][2].render();
             }
@@ -621,12 +659,12 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 worlds[2][1].render();
             }
-            else if (logicPosition.Z > -3000)
+            else if (logicPosition.Z > 3000)
             {
                 worlds[0][1].render();
-            }
+            }*/
 
-            if ((viewDir.X > 0 && viewDir.Z > 0) || sectorToRender == 1)
+            if ((viewDir.X > constante && viewDir.Z > constante) || sectorToRender == 1)
             {
                 sectorToRender = 1;
                 worlds[0][1].render();
@@ -634,7 +672,7 @@ namespace AlumnoEjemplos.NatusVincere
                 worlds[1][2].render();
             }
 
-            if ((viewDir.X < 0 && viewDir.Z > 0) || sectorToRender == 2)
+            if ((viewDir.X < -constante && viewDir.Z > constante) || sectorToRender == 2)
             {
                 sectorToRender = 2;
                 worlds[0][1].render();
@@ -642,7 +680,7 @@ namespace AlumnoEjemplos.NatusVincere
                 worlds[1][0].render();
             }
 
-            if ((viewDir.X > 0 && viewDir.Z < 0) || sectorToRender == 3)
+            if ((viewDir.X > constante && viewDir.Z < -constante) || sectorToRender == 3)
             {
                 sectorToRender = 3;
                 worlds[1][2].render();
@@ -650,7 +688,7 @@ namespace AlumnoEjemplos.NatusVincere
                 worlds[2][2].render();
             }
 
-            if ((viewDir.X < 0 && viewDir.Z < 0) || sectorToRender == 4)
+            if ((viewDir.X < -constante && viewDir.Z < -constante) || sectorToRender == 4)
             {
                 sectorToRender = 4;
                 worlds[1][0].render();

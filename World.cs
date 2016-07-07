@@ -81,9 +81,9 @@ namespace AlumnoEjemplos.NatusVincere
             }
         }
 
-        public void transform(Human human)
+        public void transform(Human human, Sounds sounds)
         {
-            this.objects.ForEach(crafteable => { if (crafteable.isNear(human)) this.objectsFactory.transform(crafteable, null, null); });
+            this.objects.ForEach(crafteable => { if (crafteable.isNear(human)) this.objectsFactory.transform(crafteable, sounds); });
         }
 
         public void addObject(Crafteable crafteable)
@@ -163,9 +163,9 @@ namespace AlumnoEjemplos.NatusVincere
         {
             int x, z;
 
-            for (int i = 0; i <= 9; i++)
+            for (int i = 0; i <= 5; i++)
             {
-                for (int j = 0; j < 9; j++)
+                for (int j = 0; j <8; j++)
                 {
                     x = rnd.Next(-size/2, size/2);
                     z = rnd.Next(-size / 2, size / 2);

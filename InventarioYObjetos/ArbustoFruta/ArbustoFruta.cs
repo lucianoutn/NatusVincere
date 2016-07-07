@@ -7,12 +7,12 @@ namespace AlumnoEjemplos.NatusVincere
     public class ArbustoFruta : Crafteable
     {
         public new int uses = 3;
-        public new int type;
+        public new int type = 3;
         private TgcBoundingBox piedraBB;
 
         public ArbustoFruta(TgcMesh mesh, Vector3 position, Vector3 scale) : base(mesh, position, scale)
         {
-            this.type = 1;
+            this.type = 3;
             this.description = "ArbustoFruta";
             this.minimumDistance = 200;
             setBB(position);
@@ -31,7 +31,7 @@ namespace AlumnoEjemplos.NatusVincere
         }
         public override int getType()
         {
-            return this.type;
+            return 3;
         }
 
         public override TgcBoundingBox getBB()

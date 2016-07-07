@@ -169,6 +169,7 @@ namespace AlumnoEjemplos.NatusVincere
         public Fruta createFruta(Vector3 position, Vector3 scale)
         {
             objectId++;
+            position.Y += 20;
             TgcMesh meshInstance = this.frutaMesh.createMeshInstance("fruta_" + objectId);
             Fruta fruta = new Fruta(meshInstance, position, scale);
             this.objectList.Add(fruta);
@@ -184,27 +185,19 @@ namespace AlumnoEjemplos.NatusVincere
             return leon;
         }
 
-        public void transform(Crafteable crafteable, Sounds sounds, World currentWorld)
+        public void transform(Crafteable crafteable, Sounds sounds)
         {
-            /*
             if (crafteable.getType() == 1 && crafteable.getStatus() == 1)
             {
                 sounds.playTalarArbol();
-                //this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
-                Madera newMadera = currentWorld.crearMadera(crafteable.getPosition().X, crafteable.getPosition().Z);
+                this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
                 crafteable.destroy();
             }
             if (crafteable.getType() == 3 && crafteable.getStatus() == 1)
             {
                 sounds.playTalarArbol();
-                //this.createMadera(crafteable.getPosition(), new Vector3(1f, 1f, 1f));
-                Fruta newFruta = currentWorld.crearFruta(crafteable.getPosition().X, crafteable.getPosition().Z);
+                this.createFruta(crafteable.getPosition(), new Vector3(20f, 20f, 20f));
                 crafteable.destroy();
-            }
-            */
-            if(crafteable.getStatus() == 1)
-            {
-                crafteable.aplicarTransformacion(crafteable, sounds, currentWorld);
             }
 
         }
