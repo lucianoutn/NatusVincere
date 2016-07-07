@@ -66,16 +66,21 @@ namespace AlumnoEjemplos.NatusVincere
         {
             int i = 0;
             Point position = this.position;
+            Point posIMG = this.position;
+            posIMG.Y += 60;
+            posIMG.X = 100;
             this.title.render();
             for (i = 0; i < this.items.Length; i++) {
                 if (this.items[i] != null)
                 {
-                    position.Y += 40;
+                    position.Y += 60;
+                    posIMG.Y = 5;
+                    posIMG.X += 50;
                     this.texts[i].Position = position;
                     this.texts[i].render();
                     //this.img[i].Position = new Vector2(position.X, position.Y);
                     //GuiController.Instance.Drawer2D.beginDrawSprite();
-                    this.items[i].renderImg(position);
+                    this.items[i].renderImg(posIMG);
                     //GuiController.Instance.Drawer2D.endDrawSprite();
                 }
             }

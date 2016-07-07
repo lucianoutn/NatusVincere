@@ -56,7 +56,7 @@ namespace AlumnoEjemplos.NatusVincere
        {
            GuiController.Instance.Drawer2D.beginDrawSprite();
            this.invImg = new TgcSprite();
-           this.invImg.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Madera\\inv.png");
+           this.invImg.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\trans.png");
         
            this.invImg.render();
            GuiController.Instance.Drawer2D.endDrawSprite();
