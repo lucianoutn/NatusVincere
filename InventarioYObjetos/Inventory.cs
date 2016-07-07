@@ -75,7 +75,7 @@ namespace AlumnoEjemplos.NatusVincere
                     this.texts[i].render();
                     //this.img[i].Position = new Vector2(position.X, position.Y);
                     //GuiController.Instance.Drawer2D.beginDrawSprite();
-                    this.items[i].renderImg();
+                    this.items[i].renderImg(position);
                     //GuiController.Instance.Drawer2D.endDrawSprite();
                 }
             }

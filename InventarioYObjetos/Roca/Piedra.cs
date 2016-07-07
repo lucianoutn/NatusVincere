@@ -2,6 +2,8 @@
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils._2D;
+using TgcViewer;
+using System.Drawing;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -27,6 +29,15 @@ namespace AlumnoEjemplos.NatusVincere
             Vector3 direction = this.getPosition() - user.getPosition();
             direction.Normalize();
             this.move(direction);
+        }
+
+
+        public override void renderImg(Point pos)
+        {
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+            this.invImg.Position = new Vector2(pos.X, pos.Y);
+            this.invImg.render();
+            GuiController.Instance.Drawer2D.endDrawSprite();
         }
 
         public override float getMinimumDistance()

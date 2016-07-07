@@ -6,6 +6,7 @@ using Microsoft.DirectX.Direct3D;
 using TgcViewer.Utils.Shaders;
 using TgcViewer.Utils._2D;
 using TgcViewer;
+using System.Drawing;
 
 namespace AlumnoEjemplos.NatusVincere
 {
@@ -19,9 +20,12 @@ namespace AlumnoEjemplos.NatusVincere
         private Human owner;
         private TgcMesh mesh;
         public bool storable;
+         
         public bool consumible;
         private TgcBoundingBox BB;
+    
         public TgcSprite invImg;
+          
 
         public Crafteable(TgcMesh mesh, Vector3 position, Vector3 scale)
         {
@@ -29,6 +33,7 @@ namespace AlumnoEjemplos.NatusVincere
             this.mesh.Position = position;
             this.mesh.Scale = scale;
             this.storable = true;
+
             this.consumible = false;
             this.setBB(position);
             this.mesh.AlphaBlendEnable = true;
@@ -47,9 +52,12 @@ namespace AlumnoEjemplos.NatusVincere
             }
         }
 
-       public virtual void renderImg()
+       public virtual void renderImg(Point position)
        {
            GuiController.Instance.Drawer2D.beginDrawSprite();
+           this.invImg = new TgcSprite();
+           this.invImg.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\InventarioYObjetos\\Madera\\inv.png");
+        
            this.invImg.render();
            GuiController.Instance.Drawer2D.endDrawSprite();
        }
@@ -59,6 +67,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             return this.storable;
         }
+
 
        
         public void drop(Vector3 position)
