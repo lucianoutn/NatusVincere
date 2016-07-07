@@ -140,7 +140,7 @@ namespace AlumnoEjemplos.NatusVincere
             spriteLogo = new TgcSprite();
             spriteLogo.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\NaVi_LOGO.png");
             spriteWin = new TgcSprite();
-            spriteWin.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\NaVi_LOGO2.png");
+            spriteWin.Texture = TgcTexture.createTexture("AlumnoEjemplos\\NatusVincere\\NaVi\\Ganaste.png");
 
             screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSizeLogo = spriteLogo.Texture.Size;
@@ -276,6 +276,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         public override void render(float elapsedTime)
         {
+          
             renderVictoria();
             time += elapsedTime;
             timeAcumParaCambioDeHorario += elapsedTime;
@@ -349,7 +350,6 @@ namespace AlumnoEjemplos.NatusVincere
                     {
                         lookfrom = new Vector3(-2500, 2400, 2000);
                         continuar = false;
-                        spriteWin.dispose();
                         presentacion = true;
                     }
                 }
@@ -365,7 +365,6 @@ namespace AlumnoEjemplos.NatusVincere
                     {
                         presentacion = false;
                         spriteObjetivos.dispose();
-                        cartelContinuar.dispose();
                     }
                 }
 
@@ -449,7 +448,8 @@ namespace AlumnoEjemplos.NatusVincere
             leon.Render();
             wilson.render();
             chequearVictoria();
-            
+            renderVictoria();
+
             //Terminamos manualmente el renderizado de esta escena. Esto manda todo a dibujar al GPU al Render Target que cargamos antes
             d3dDevice.EndScene();
 
@@ -599,10 +599,9 @@ namespace AlumnoEjemplos.NatusVincere
         public void renderVictoria()
         {
             if (victoria) {
-               /* lookfrom = new Vector3(-2500, 2400, 2000);
                 GuiController.Instance.Drawer2D.beginDrawSprite();
                 spriteWin.render();
-
+                GuiController.Instance.Drawer2D.endDrawSprite();
                 if ((timeRed > 14))
                 {
                     cartelContinuar.Color = Color.Transparent;
@@ -616,7 +615,6 @@ namespace AlumnoEjemplos.NatusVincere
                 }
 
                 cartelContinuar.render();
-                GuiController.Instance.Drawer2D.endDrawSprite();*/
             }
         }
         public void copyWorlds()
