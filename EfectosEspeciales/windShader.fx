@@ -52,7 +52,7 @@ VS_OUTPUT VS_viento (
 	VS_OUTPUT Out = (VS_OUTPUT)0;
 
 	float timeFactor = sin(time);
-	if(Position.y > 100){
+	if(Position.y > 140){
 		Position.z += Position.y *  timeFactor  * 0.2;
         	Position.x += Position.y * timeFactor  * 0.1;
 	}
@@ -60,6 +60,27 @@ VS_OUTPUT VS_viento (
 	Out.Color = Color; 
 	Out.TexCoord = TexCoord;
 	
+	return Out;
+}
+
+VS_OUTPUT VS_viento2(
+	float4 Position : POSITION,
+	float3 Normal : NORMAL,
+	float4 Color : COLOR,
+	float2 TexCoord : TEXCOORD0
+	)
+{
+	VS_OUTPUT Out = (VS_OUTPUT)0;
+
+	float timeFactor = sin(time);
+	if (Position.y > 7) {
+		Position.z += Position.y *  timeFactor  * 0.2;
+		Position.x += Position.y * timeFactor  * 0.1;
+	}
+	Out.Position = mul(Position, matWorldViewProj);
+	Out.Color = Color;
+	Out.TexCoord = TexCoord;
+
 	return Out;
 }
 
@@ -82,6 +103,13 @@ technique Viento {
 technique renderNormal {
 	pass p0 {
 		VertexShader = compile vs_2_0 VS_onlyTexture();
+		PixelShader = compile ps_2_0 PS_onlyTexture();
+	}
+}
+
+technique Viento2 {
+	pass p0 {
+		VertexShader = compile vs_2_0 VS_viento2();
 		PixelShader = compile ps_2_0 PS_onlyTexture();
 	}
 }
