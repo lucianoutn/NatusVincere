@@ -183,8 +183,7 @@ namespace AlumnoEjemplos.NatusVincere
             Vector3 posicionPersonaje = new Vector3(1000, currentWorld.calcularAltura(1000, 1000), 1000);
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
 
-            // cheeta leon = currentWorld.crearLeon(posicionPersonaje.X - 390, posicionPersonaje.Z - 490);
-            leon = currentWorld.crearLeon(posicionPersonaje.X - 90, posicionPersonaje.Z - 1890);
+            leon = currentWorld.crearLeon(posicionPersonaje.X - 390, posicionPersonaje.Z - 490);
 
             currentWorld.crearMadera(posicionPersonaje.X - 90, posicionPersonaje.Z - 90);
             currentWorld.crearPiedra(posicionPersonaje.X + 90, posicionPersonaje.Z + 90);

@@ -119,11 +119,11 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 if (xL > xP)
                 {
-                    xL = xL - 5;
+                    xL = xL - 2;
                 }
                 else
                 {
-                    xL = xL + 5;
+                    xL = xL + 2;
                 }
 
                 quieto = false;
@@ -132,11 +132,11 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 if (zL > zP)
                 {
-                    zL = zL - 5;
+                    zL = zL - 2;
                 }
                 else
                 {
-                    zL = zL + 5;
+                    zL = zL + 2;
                 }
 
                 quieto = false;
@@ -173,7 +173,7 @@ namespace AlumnoEjemplos.NatusVincere
 
         private void atacarA(Human personaje)
         {
-            personaje.causarDaño(70);
+            personaje.causarDaño(10);
         }
 
         private bool hayColision(Human personaje)

@@ -22,16 +22,22 @@ namespace AlumnoEjemplos.NatusVincere
             {
                 for (i = 0; i < objetos.Count; i++)
                 {
-                    if (objetos[i].getType() == 1 || objetos[i].getType() == 3)
+                    if (objetos[i].getType() == 1)
                     {
                         objetos[i].setEfecto("AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\windShader.fx", "Viento");
-                        objetos[i].getEfecto().SetValue("time", vientoPlayedTime);
                     }
                     else
                     {
-                        objetos[i].setEfecto("AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\windShader.fx", "renderNormal");
-                        objetos[i].getEfecto().SetValue("time", vientoPlayedTime);
+                        if (objetos[i].getType() == 3)
+                        {
+                            objetos[i].setEfecto("AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\windShader.fx", "Viento2");
+                        }
+                        else
+                        {
+                            objetos[i].setEfecto("AlumnoEjemplos\\NatusVincere\\EfectosEspeciales\\windShader.fx", "renderNormal");
+                        }
                     }
+                    objetos[i].getEfecto().SetValue("time", vientoPlayedTime);
                 }
                 vientoPlaying = true;
             }
