@@ -222,7 +222,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             x += position.X;
             z += position.Z;
-            return objectsFactory.createLeon(new Vector3(x, calcularAltura(x, z), z), new Vector3(0.75f,1.75f, 0.75f));
+            return objectsFactory.createLeon(new Vector3(x, calcularAltura(x, z), z), new Vector3(20.75f,21.75f, 20.75f));
         }
 
         public Fruta crearFruta(float x, float z)
