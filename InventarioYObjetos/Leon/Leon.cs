@@ -10,7 +10,7 @@ namespace AlumnoEjemplos.NatusVincere
 {
     public class Leon
     {
-        private float minimumDistance = 400; //Default
+        private float minimumDistance = 1400; //Default
         bool quieto = true;
         bool ataco = false;
         int coolDownTotal = 120;
@@ -57,7 +57,7 @@ namespace AlumnoEjemplos.NatusVincere
         {
             Vector3 distance = user.getPosition();
             distance.Multiply(-1);
-            distance.Add(this.getPosition());
+            distance.Add(new Vector3(this.getPosition().X+500, this.getPosition().Y, this.getPosition().Z + 500));
 
             return distance;
         }
@@ -111,11 +111,11 @@ namespace AlumnoEjemplos.NatusVincere
             float xL = this.getPosition().X;
             float zL = this.getPosition().Z;
             float xP = personaje.getPosition().X;
-            float zP = personaje.getPosition().Z - 40;
+            float zP = personaje.getPosition().Z;
 
             quieto = true;
 
-            if (Math.Abs(Math.Abs(xL) - Math.Abs(xP))>40)
+            if (Math.Abs(Math.Abs(xL) - Math.Abs(xP))>3340)
             {
                 if (xL > xP)
                 {
@@ -128,7 +128,7 @@ namespace AlumnoEjemplos.NatusVincere
 
                 quieto = false;
             }
-            if(Math.Abs(Math.Abs(zL) - Math.Abs(zP)) > 30)
+            if(Math.Abs(Math.Abs(zL) - Math.Abs(zP)) > 3230)
             {
                 if (zL > zP)
                 {
@@ -143,7 +143,7 @@ namespace AlumnoEjemplos.NatusVincere
             }
 
 
-            if ( (distancia(personaje).Length() < 100) && (quieto==true) && (coolDown >= coolDownTotal))
+            if ((quieto==true) && (coolDown >= coolDownTotal))
             {
                 this.atacarA(personaje);
                 coolDown = 0;

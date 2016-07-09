@@ -183,7 +183,7 @@ namespace AlumnoEjemplos.NatusVincere
             Vector3 posicionPersonaje = new Vector3(1000, currentWorld.calcularAltura(1000, 1000), 1000);
             personaje = objectsFactory.createHuman(posicionPersonaje, new Vector3(2, 2, 2));
 
-            leon = currentWorld.crearLeon(posicionPersonaje.X - 390, posicionPersonaje.Z - 490);
+            leon = currentWorld.crearLeon(posicionPersonaje.X - 390, posicionPersonaje.Z - 2490);
 
             currentWorld.crearMadera(posicionPersonaje.X - 90, posicionPersonaje.Z - 90);
             currentWorld.crearPiedra(posicionPersonaje.X + 90, posicionPersonaje.Z + 90);
@@ -465,8 +465,8 @@ namespace AlumnoEjemplos.NatusVincere
             d3dDevice.SetRenderTarget(0, pOldRT);
 
             //Luego tomamos lo dibujado antes y lo combinamos con una textura con efecto de alarma
-            if (timeAcumParaLluvia > 20) activarLluvia();
-            if (timeAcumParaLluvia > 50) desactivarLluvia();
+            if (timeAcumParaLluvia > 40) activarLluvia();
+            if (timeAcumParaLluvia > 40) desactivarLluvia();
 
             PostProcessing.drawPostProcess(d3dDevice, effect, screenQuadVB, intVaivenAlarm, renderTarget2D, lluviaTexture, time);
 
